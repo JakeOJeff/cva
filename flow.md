@@ -1,1 +1,1 @@
-Test Init
+python main.py assets/audio.mp3 --lang ml
