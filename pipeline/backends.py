@@ -54,6 +54,8 @@ class LocalBackend:
 
     name = "local"
     needs_network = False
+    # faster-whisper and pyannote both read the normalised 16k wav.
+    needs_wav = True
 
     def run(self, *, audio_path, wav_path, language, progress=None,
             model_size="tiny", beam_size=5, num_speakers=None,
@@ -185,6 +187,11 @@ class ScribeBackend:
 
     name = "scribe"
     needs_network = True
+    # Scribe is handed the ORIGINAL file (see run() below), so decoding a
+    # 16k wav here would cost a 115MB write and the memory to build it for
+    # a waveform nothing ever opens. On a 512MB host that is the whole
+    # difference between working and being OOM-killed at the first stage.
+    needs_wav = False
 
     def run(self, *, audio_path, wav_path, language, progress=None,
             num_speakers=None, max_speakers=None, **_):
