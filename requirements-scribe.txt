@@ -1,0 +1,49 @@
+# Scribe-only dependencies: everything needed to run with CVA_BACKEND=scribe
+# and nothing else. Use this on a small free host; use requirements.txt on
+# anything that has to transcribe locally.
+#
+# The measured reason this file exists. Loading the local pipeline costs
+# 726MB of RSS before a single second of audio is processed:
+#
+#     bare python                    19 MB
+#     + fastapi/web.app              50 MB
+#     + import torch                234 MB
+#     + faster-whisper tiny (int8)  339 MB
+#     + pyannote pipeline           726 MB
+#     + 10 min of decoded audio     726 MB   <- unchanged
+#
+# That last row is the point: the cost is model runtimes, not audio, so
+# chunking or streaming the input cannot reduce it. A 512MB free container is
+# 1.4x under the floor before it starts. Removing the models is the only
+# lever, and that is what CVA_BACKEND=scribe does.
+#
+# What is deliberately absent, and why it is safe to drop:
+#   torch, torchaudio, pyannote.audio   diarize.py imports these inside its
+#                                       functions, and Scribe diarizes, so
+#                                       nothing on this path reaches them.
+#   faster-whisper                      transcribe.py imports it inside
+#                                       get_model(); run.py only calls its
+#                                       save()/load(), which are plain JSON.
+#
+# Adding a local-backend job to a server built from this file fails at import
+# time with a clear ModuleNotFoundError - by design. It cannot silently fall
+# back, because there is nothing to fall back to.
+
+# --- web app ---
+fastapi>=0.115
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9
+
+# --- audio decode -------------------------------------------------------
+# Normally arrives as a faster-whisper dependency; pinned explicitly here
+# because faster-whisper is gone and pipeline/audio.py imports it directly.
+av>=12.0
+
+# --- the Scribe request -------------------------------------------------
+# Same story: usually transitive via huggingface_hub, which is also gone.
+requests>=2.31
+
+# --- analysis ---
+anthropic>=0.40
+numpy>=1.26
+python-dotenv>=1.0
