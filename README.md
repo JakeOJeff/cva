@@ -179,6 +179,21 @@ estimates, not promises — but the ordering is reliable:
 The uncomfortable conclusion: **on CPU, every affordable host is slower than
 the machine you already have.** Hosting buys availability, not speed.
 
+### Free, for a demo
+
+Hugging Face Spaces runs the container for nothing on 2 shared vCPU, which is
+the right trade when the point is showing the thing works rather than
+processing real lessons. `deploy/huggingface/` holds a Spaces-specific
+Dockerfile and the README with its config block; see that folder for the
+four-step setup.
+
+Three platform constraints shape that variant: Spaces runs the container as
+UID 1000 with no root, expects port 7860, and wipes the disk on every restart
+- so it caps uploads at 5 minutes of audio, because an hour of audio on two
+shared cores is an all-day job that would sit in the queue forever.
+
+Measured in the constrained container: a 2-minute clip took 141 seconds.
+
 ### Choosing
 
 **A CPU VPS, if overnight turnaround is fine.** Hetzner CCX33 (8 dedicated
