@@ -254,9 +254,14 @@ def _run_one(job_id: str) -> None:
             num_speakers=opts.get("num_speakers"),
             max_speakers=opts.get("max_speakers", 6),
             use_llm=opts.get("use_llm", False),
+            backend=opts.get("backend"),
             on_progress=on_progress,
         )
-        if opts.get("stream", True):
+        # Scribe returns the whole transcript in one response, so there is
+        # nothing to stream block by block. Choosing it silently falling back
+        # to the local models would be worse than ignoring the stream flag.
+        streaming = opts.get("stream", True) and opts.get("backend") != "scribe"
+        if streaming:
             # Chunked: emits each block as it finishes, then reconciles
             # speakers across the whole lesson at the end.
             pipeline_stream.run_streaming(

@@ -278,6 +278,60 @@ Batch mode is still the more accurate of the two: diarizing 64 minutes at once
 gives the clustering far more to work with than diarizing thirteen 5-minute
 blocks and stitching them together.
 
+## Two backends behind one seam
+
+Everything downstream - roles, metrics, the review, the whole web app - is a
+pure function over one shape:
+
+```python
+segments: [{"start", "end", "text", "speaker"}]
+turns:    [{"start", "end", "speaker"}]
+```
+
+So the entire transcription-and-diarization half is swappable. `backends.py`
+holds both implementations behind one call, chosen with `CVA_BACKEND` or
+`--backend`:
+
+| | `local` (default) | `scribe` |
+|---|---|---|
+| What | faster-whisper + pyannote | ElevenLabs Scribe v2 |
+| Where | this machine | their servers |
+| Cost | free | per audio minute |
+| Speed | tens of minutes to hours on CPU | about the upload time |
+| Hindi | needs `small`; `tiny` cannot write Devanagari | <=10% WER |
+| Malayalam | same | <=5% WER |
+| Privacy | nothing leaves the box | audio is uploaded |
+| Needs | `HF_TOKEN`, ~600MB of weights | `ELEVENLABS_API_KEY` |
+
+`local` stays the default because it is the one that works with no account,
+no key and no network.
+
+### What the adapter has to reconcile
+
+Scribe returns **words**, not segments: a flat list where each item is a
+`word`, `spacing`, or `audio_event`, carrying optional `start`, `end` and
+`speaker_id`. Getting to our shape means four decisions, all in
+`words_to_segments`:
+
+- **Only `word` items are speech.** `spacing` is punctuation and
+  `audio_event` is laughter or a door. Counting either as a turn would skew
+  every talk ratio.
+- **Words with no timings are dropped** — `start`/`end` are optional in their
+  schema, and a segment without a clock cannot be placed on a timeline.
+- **Speaker ids are mapped in order of first appearance**, not parsed. The
+  only guarantee worth relying on is that equal ids mean the same voice.
+- **A pause longer than 0.8s splits a segment**, so one uninterrupted
+  monologue does not become a single unreadable block.
+
+There is one thing the hosted path gets for free: Scribe attributes every
+*word* to a speaker, so there is no separate diarization to disagree with the
+transcript. The whole class of "this segment straddles a speaker change"
+simply does not arise, and `speaker_conf` is always 1.0.
+
+Streaming is local-only. Scribe answers in one response, so there are no
+blocks to emit as they finish; asking for both quietly runs the whole file
+through Scribe instead of silently falling back to the local models.
+
 ## What comes out
 
 `metrics` are deterministic and comparable across sessions — teacher talk
