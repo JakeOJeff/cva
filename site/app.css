@@ -248,3 +248,48 @@ td a:hover { text-decoration: underline; }
 .utt.low .tx::after {
   content: " ~"; color: var(--muted); font-size: 11px;
 }
+
+/* metric glossary
+   The brief asks each metric to carry its formula, its logic and how to read
+   it. Rendering that beside the numbers is cheaper than asking anyone to
+   trust a tile. */
+.metricdef { padding: 16px 0; border-bottom: 1px solid var(--line); }
+.metricdef:last-child { border-bottom: none; padding-bottom: 0; }
+.metricdef h3 { font-size: 15px; margin: 0 0 8px; }
+.metricdef p { margin: 0 0 7px; font-size: 14px; }
+.metricdef p:last-child { margin-bottom: 0; }
+.metricdef .formula {
+  background: var(--bg); border: 1px solid var(--line); border-radius: 6px;
+  padding: 8px 11px; margin-bottom: 9px; overflow-x: auto; white-space: nowrap;
+}
+.metricdef .reading { color: var(--muted); }
+
+/* static demo: the session picker
+   A list of the actual recordings, named as they are named in the dataset.
+   Deliberately not a drag-and-drop zone: this page computes nothing, and a
+   control that implies otherwise would be a lie about what it does. */
+.picker { display: flex; flex-direction: column; gap: 8px; }
+.sessionbtn {
+  display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap;
+  width: 100%; text-align: left; font: inherit; font-size: 14px;
+  padding: 13px 15px; border-radius: var(--radius);
+  border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+}
+.sessionbtn:hover { border-color: var(--accent); background: var(--accent-soft); filter: none; }
+.sessionbtn.on { border-color: var(--accent); background: var(--accent-soft); }
+.sessionbtn .name {
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 13px; font-weight: 600; flex: 1; min-width: 260px; word-break: break-all;
+}
+.sessionbtn .meta { color: var(--muted); font-size: 12.5px; }
+.sessionbtn.on .meta { color: var(--ink); }
+
+footer.note {
+  margin-top: 30px; padding-top: 18px; border-top: 1px solid var(--line);
+  color: var(--muted); font-size: 12.5px; line-height: 1.6;
+}
+footer.note code {
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 12px; background: var(--panel);
+  border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px;
+}

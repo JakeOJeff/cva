@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Classroom Voice Analysis &middot; demo</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <h1>Classroom Voice Analysis</h1>
+    <span class="sub">transcript, engagement metrics and summary, from classroom audio</span>
+  </header>
+
+  <div class="panel">
+    <h2>Lessons</h2>
+    <p class="sub" style="margin:0 0 12px">
+      Each recording below was processed offline and its analysis committed to
+      this repository as JSON. Nothing is transcribed in your browser &mdash;
+      this page only reads results.
+    </p>
+    <div class="picker" id="picker"><p class="empty">Loading&hellip;</p></div>
+  </div>
+
+  <div class="sub" id="subtitle" style="margin-top:22px"></div>
+  <div id="body"></div>
+
+  <footer class="note">
+    <b>Analysis is precomputed offline.</b> This is a static page: the pipeline
+    runs on a machine with the audio on it, and only the derived JSON is
+    published here. To regenerate a session, run
+    <code>python main.py &lt;audio&gt; --lang mr --model small --out out</code>
+    and then <code>python -m pipeline.publish out</code>, which writes
+    <code>site/data/</code>.
+    <br>
+    Source audio comes from the MakerGhat classroom recordings; it is not
+    published here.
+  </footer>
+
+</div>
+
+<script src="report.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = Report.esc;
+
+// One fetch of the whole result document per session, cached after the first
+// click. A 64-minute lesson is a few hundred KB, so there is nothing to be
+// clever about - but re-fetching on every tab switch would still be rude.
+const cache = new Map();
+let sessions = [];
+
+function fileHint() {
+  return location.protocol === "file:"
+    ? `<div class="warnbox"><b>Opened from the filesystem.</b> Browsers block
+       <span class="mono">fetch()</span> on <span class="mono">file://</span>,
+       so the analyses cannot be loaded this way. Serve the folder instead:
+       <div class="mono" style="margin-top:6px">python -m http.server -d site 8080</div>
+       then open <span class="mono">http://localhost:8080</span>.</div>`
+    : "";
+}
+
+async function boot() {
+  let manifest;
+  try {
+    manifest = await (await fetch("data/manifest.json", { cache: "no-store" })).json();
+  } catch (e) {
+    $("picker").innerHTML = fileHint() ||
+      `<p class="empty">Could not read <span class="mono">data/manifest.json</span>
+       (${esc(e.message)}).</p>`;
+    return;
+  }
+
+  sessions = manifest.sessions || [];
+  if (!sessions.length) {
+    $("picker").innerHTML = `<p class="empty">No analyses have been published yet.
+      Process a recording &mdash; <span class="mono">python main.py &lt;audio&gt;
+      --lang mr --model small --out out</span> &mdash; then publish it with
+      <span class="mono">python -m pipeline.publish out</span>.</p>`;
+    return;
+  }
+
+  // The button carries the recording's real filename. It is a picker over a
+  // fixed, known set, not an upload control that quietly returns a cached
+  // answer for whatever you hand it.
+  $("picker").innerHTML = sessions.map((s, i) => `
+    <button class="sessionbtn" data-i="${i}">
+      <span class="name">${esc(s.file)}</span>
+      <span class="meta">${esc(s.duration_label)} · ${esc(s.speakers)} speakers · ${esc(s.language)} · ${
+        esc(s.backend === "scribe" ? "scribe" : "whisper " + s.model)}${
+        s.has_review ? " · with review" : ""}</span>
+    </button>`).join("");
+
+  $("picker").querySelectorAll(".sessionbtn").forEach(b => {
+    b.onclick = () => open(Number(b.dataset.i));
+  });
+
+  open(0);
+}
+
+async function open(i) {
+  const s = sessions[i];
+  $("picker").querySelectorAll(".sessionbtn").forEach(b =>
+    b.classList.toggle("on", Number(b.dataset.i) === i));
+
+  $("subtitle").textContent = "";
+  $("body").innerHTML = '<div class="panel"><p class="empty">Loading analysis…</p></div>';
+
+  let res = cache.get(s.json);
+  if (!res) {
+    try {
+      res = await (await fetch("data/" + s.json, { cache: "no-store" })).json();
+    } catch (e) {
+      $("body").innerHTML = `<div class="panel"><div class="err">Could not load
+        <span class="mono">data/${esc(s.json)}</span>: ${esc(e.message)}</div></div>`;
+      return;
+    }
+    cache.set(s.json, res);
+  }
+
+  $("subtitle").textContent = `${s.file} — ${Report.subtitle(res)}`;
+  // No onTeacher: correcting the teacher re-derives every downstream number,
+  // which needs the pipeline. That control belongs to the local server.
+  Report.render($("body"), res);
+  document.title = `${s.file} · Classroom Voice Analysis`;
+}
+
+Report.installTips();
+boot();
+</script>
+</body>
+</html>

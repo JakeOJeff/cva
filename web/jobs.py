@@ -232,6 +232,7 @@ def events_path(job_id: str) -> str:
 
 def _run_one(job_id: str) -> None:
     from pipeline import backends as pipeline_backends
+    from pipeline import lang as pipeline_lang
     from pipeline import run as pipeline_run
     from pipeline import stream as pipeline_stream
 
@@ -256,8 +257,8 @@ def _run_one(job_id: str) -> None:
 
         common = dict(
             work_dir=job["work_dir"],
-            language=opts.get("language", "hi"),
-            model_size=opts.get("model_size", "tiny"),
+            language=opts.get("language", pipeline_lang.DEFAULT_LANGUAGE),
+            model_size=opts.get("model_size", "small"),
             num_speakers=opts.get("num_speakers"),
             max_speakers=opts.get("max_speakers", 6),
             use_llm=opts.get("use_llm", False),

@@ -20,11 +20,17 @@ from fastapi.responses import (FileResponse, JSONResponse, Response,
                                StreamingResponse)
 from fastapi.staticfiles import StaticFiles
 
+from pipeline import lang
+
 from . import jobs
 
 load_dotenv()
 
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
+# The static demo. Its stylesheet and report renderer are the ones this server
+# serves too, so the live results page and the published page cannot drift
+# apart - there is one implementation of "render a result", not two.
+SITE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "site")
 MAX_UPLOAD_MB = int(os.environ.get("CVA_MAX_UPLOAD_MB", "500"))
 # 0 = no limit. Set it on any shared or public instance.
 MAX_AUDIO_MINUTES = int(os.environ.get("CVA_MAX_AUDIO_MINUTES", "0"))
@@ -102,8 +108,8 @@ def job_page(job_id: str):
 @app.post("/api/upload")
 async def upload(
     file: UploadFile = File(...),
-    language: str = Form("hi"),
-    model_size: str = Form("tiny"),
+    language: str = Form(lang.DEFAULT_LANGUAGE),
+    model_size: str = Form("small"),
     num_speakers: int | None = Form(None),
     max_speakers: int | None = Form(6),
     use_llm: bool = Form(False),
@@ -275,7 +281,7 @@ def override_teacher(job_id: str, speaker: str = Form(...), use_llm: bool = Form
     try:
         return JSONResponse(pipeline_run.reanalyze(
             job["work_dir"],
-            language=job["options"].get("language", "ml"),
+            language=job["options"].get("language", lang.DEFAULT_LANGUAGE),
             use_llm=use_llm,
             teacher=speaker,
         ))
@@ -370,3 +376,4 @@ def health(request: Request):
 
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+app.mount("/site", StaticFiles(directory=SITE_DIR), name="site")

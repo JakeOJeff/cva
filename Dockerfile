@@ -36,6 +36,10 @@ RUN pip install --extra-index-url "${TORCH_INDEX}" -r requirements.txt
 
 COPY pipeline/ ./pipeline/
 COPY web/ ./web/
+# The static demo. It is not optional here: web/app.py mounts it at /site and
+# serves the stylesheet and report renderer from it, so a container without
+# this directory fails at startup rather than merely losing the demo page.
+COPY site/ ./site/
 COPY main.py ./
 COPY tests/ ./tests/
 

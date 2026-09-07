@@ -2,6 +2,10 @@
 __pycache__/
 *.pyc
 .env
-data/
 out/
 segments.json
+
+# The local job store: uploads, working audio, and every result.json. Rooted
+# on purpose - `data/` unrooted also matched `site/data/`, which is the
+# published output and is meant to be committed.
+/data/

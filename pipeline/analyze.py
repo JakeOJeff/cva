@@ -28,7 +28,7 @@ LONG_MONOLOGUE = 60.0         # seconds of unbroken teacher speech
 
 # ---------------------------------------------------------------- metrics
 
-def metrics(utterances, meta, language: str = "ml") -> dict:
+def metrics(utterances, meta, language: str = lang.DEFAULT_LANGUAGE) -> dict:
     duration = meta.get("duration") or (utterances[-1]["end"] if utterances else 0.0)
     teacher, student = roles.split_by_role(utterances)
 
@@ -242,7 +242,7 @@ def build_transcript(utterances, max_chars: int | None = None) -> str:
     return text
 
 
-def llm_review(utterances, computed: dict, meta: dict, language: str = "ml",
+def llm_review(utterances, computed: dict, meta: dict, language: str = lang.DEFAULT_LANGUAGE,
                model: str = MODEL, effort: str = "high") -> dict:
     """
     Returns the structured review, or an {"error": ...} dict.
@@ -310,7 +310,7 @@ language followed by a short English gloss in parentheses."""
     return review
 
 
-def analyze(utterances, meta, language: str = "ml", use_llm: bool = True,
+def analyze(utterances, meta, language: str = lang.DEFAULT_LANGUAGE, use_llm: bool = True,
             model: str = MODEL) -> dict:
     computed = metrics(utterances, meta, language)
     out = {"metrics": computed}

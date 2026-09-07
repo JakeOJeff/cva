@@ -11,7 +11,7 @@ import sys
 
 from dotenv import load_dotenv
 
-from pipeline import analyze, run
+from pipeline import analyze, lang, run
 
 
 def fmt(t: float) -> str:
@@ -81,10 +81,14 @@ def main() -> None:
 
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("audio", help="path to the recording")
-    p.add_argument("--lang", default="hi", help="hi, ml, ta, te, kn, en ...")
-    p.add_argument("--model", default="tiny",
-                   help="tiny (start here), base, small, medium. small is ~5x "
-                        "slower than tiny on CPU - hours for a full lesson")
+    p.add_argument("--lang", default=lang.DEFAULT_LANGUAGE,
+                   help="mr, hi, ml, ta, en (these have lexicons); te, kn and "
+                        "the rest transcribe but score on English cues only. "
+                        "Get this right - the wrong one does not error")
+    p.add_argument("--model", default="small",
+                   help="tiny, base, small (default), medium. Below `small` no "
+                        "Indic language comes back in the right script; `tiny` "
+                        "is a smoke test, not a transcript")
     p.add_argument("--beam", type=int, default=5,
                    help="beam width; 1 is much faster on tiny, but on small it is "
                         "slower AND worse - it loops on noisy audio")

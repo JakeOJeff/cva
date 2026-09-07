@@ -11,6 +11,8 @@ Get this right and nothing downstream is hard.
 import json
 import os
 
+from . import lang
+
 # faster-whisper is imported inside get_model(), not here, for the same reason
 # diarize.py defers torch: `save`/`load` below define the segments.json format
 # and run.py calls them on every job, including one that ran on Scribe. A
@@ -127,7 +129,7 @@ def _decode(model, wav_path, language, vad, progress, beam_size=5):
     return segments, info
 
 
-def transcribe(wav_path: str, language: str = "ml", model_size: str = "small",
+def transcribe(wav_path: str, language: str = lang.DEFAULT_LANGUAGE, model_size: str = "small",
                progress=None, vad: bool = True, beam_size: int = 5,
                cpu_threads: int = CPU_THREADS):
     """
@@ -175,7 +177,7 @@ def transcribe(wav_path: str, language: str = "ml", model_size: str = "small",
     return segments, meta
 
 
-def transcribe_array(samples, language: str = "hi", model_size: str = "small",
+def transcribe_array(samples, language: str = lang.DEFAULT_LANGUAGE, model_size: str = "small",
                      beam_size: int = 5, vad: bool = True,
                      cpu_threads: int = CPU_THREADS):
     """

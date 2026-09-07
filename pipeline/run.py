@@ -13,13 +13,13 @@ import json
 import os
 import time
 
-from . import analyze, assign, audio, backends, roles
+from . import analyze, assign, audio, backends, lang, roles
 from .transcribe import save as transcribe_mod_save
 
 STAGES = ["normalize", "transcribe", "diarize", "assign", "roles", "analyze"]
 
 
-def run(audio_path: str, *, work_dir: str, language: str = "ml",
+def run(audio_path: str, *, work_dir: str, language: str = lang.DEFAULT_LANGUAGE,
         model_size: str = "small", beam_size: int = 5,
         backend: str | None = None,
         num_speakers: int | None = None,
@@ -121,7 +121,7 @@ def run(audio_path: str, *, work_dir: str, language: str = "ml",
     return result
 
 
-def reanalyze(work_dir: str, *, language: str = "ml", use_llm: bool = True,
+def reanalyze(work_dir: str, *, language: str = lang.DEFAULT_LANGUAGE, use_llm: bool = True,
               llm_model: str = analyze.MODEL, teacher: str | None = None) -> dict:
     """
     Redo everything after diarization from a saved result.json.

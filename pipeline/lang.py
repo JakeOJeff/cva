@@ -1,12 +1,21 @@
 """
 Small multilingual text signals shared by role detection and analysis.
 
-Deliberately lexical, not learned. Whisper output for Malayalam classroom
+Deliberately lexical, not learned. Whisper output for Indian-language classroom
 audio is noisy enough that anything cleverer would be fitting to noise, and
 a wordlist is at least auditable when a number looks wrong.
 """
 
 import re
+
+# The language every entry point falls back to.
+#
+# There is no safe neutral value: Whisper does not error on the wrong
+# language, it returns fluent nonsense, so a default is a guess that will be
+# computed over faithfully either way. This one is a guess about the dataset -
+# the supplied recordings come from Igatpuri, Maharashtra - and it is meant to
+# be overridden per recording, not relied on.
+DEFAULT_LANGUAGE = "mr"
 
 # Whisper punctuates well enough that "?" carries most of the signal. The
 # wordlists are the backstop for when it doesn't.
@@ -17,6 +26,12 @@ QUESTION_WORDS = {
         "മനസ്സിലായോ", "ശരിയാണോ", "പറയാമോ",
     ],
     "hi": ["क्या", "कौन", "कहाँ", "कहां", "कब", "कैसे", "क्यों", "कितना", "कितने", "ना?"],
+    # Marathi. Entries are three characters or more on purpose: matching is
+    # naive substring containment, and the bare interrogative "का" ("why")
+    # occurs inside ordinary words - काम, कारण, एका - so including it would
+    # mark most of the lesson as a question.
+    "mr": ["काय", "कोण", "कुठे", "कधी", "कसं", "कसे", "किती", "कशाला",
+           "आहे का", "नाही का", "समजलं का", "बरोबर का"],
     "ta": ["என்ன", "யார்", "எங்கே", "எப்போது", "எப்படி", "ஏன்", "எத்தனை", "இல்லையா"],
     "en": ["what", "why", "how", "when", "where", "who", "which", "whose",
            "do you", "did you", "can you", "could you", "is it", "are you",
@@ -33,6 +48,11 @@ TEACHER_CUES = {
     ],
     "hi": ["बच्चों", "ध्यान", "लिखो", "देखो", "किताब", "पन्ना", "समझे", "सुनो",
            "पढ़ो", "कक्षा", "उत्तर", "प्रश्न", "उदाहरण", "अध्याय"],
+    # "पान" (page) is deliberately absent: it is a substring of "पाणी"
+    # (water), which a classroom says constantly.
+    "mr": ["मुलांनो", "लक्ष", "लिहा", "बघा", "पुस्तक", "समजलं", "समजले",
+           "ऐका", "वाचा", "वर्ग", "उत्तर", "प्रश्न", "उदाहरण", "धडा",
+           "शांत", "गृहपाठ", "वही"],
     "ta": ["குழந்தைகளே", "கவனி", "எழுது", "பார்", "புத்தகம்", "பக்கம்",
            "புரிந்ததா", "படி", "வகுப்பு", "பதில்", "கேள்வி", "உதாரணம்"],
     "en": ["class", "children", "everyone", "listen", "look at", "write down",
@@ -45,6 +65,7 @@ TEACHER_CUES = {
 PRAISE_CUES = {
     "ml": ["നന്നായി", "കൊള്ളാം", "ശരി", "മിടുക്ക", "കറക്റ്റ"],
     "hi": ["शाबाश", "बहुत अच्छा", "सही", "ठीक"],
+    "mr": ["शाब्बास", "छान", "बरोबर", "ठीक", "मस्त"],
     "ta": ["நல்லது", "சரி", "மிகவும் நன்று"],
     "en": ["good", "very good", "well done", "excellent", "correct", "exactly",
            "right", "perfect", "nice", "great"],
@@ -100,7 +121,7 @@ def _cues(table: dict, language: str) -> list[str]:
     return cues
 
 
-def is_question(text: str, language: str = "ml") -> bool:
+def is_question(text: str, language: str = DEFAULT_LANGUAGE) -> bool:
     t = text.strip()
     if not t:
         return False
@@ -110,16 +131,16 @@ def is_question(text: str, language: str = "ml") -> bool:
     return any(c in low for c in _cues(QUESTION_WORDS, language))
 
 
-def count_cues(text: str, table: dict, language: str = "ml") -> int:
+def count_cues(text: str, table: dict, language: str = DEFAULT_LANGUAGE) -> int:
     low = text.lower()
     return sum(1 for c in _cues(table, language) if c in low)
 
 
-def teacher_cue_score(text: str, language: str = "ml") -> int:
+def teacher_cue_score(text: str, language: str = DEFAULT_LANGUAGE) -> int:
     return count_cues(text, TEACHER_CUES, language)
 
 
-def praise_score(text: str, language: str = "ml") -> int:
+def praise_score(text: str, language: str = DEFAULT_LANGUAGE) -> int:
     return count_cues(text, PRAISE_CUES, language)
 
 

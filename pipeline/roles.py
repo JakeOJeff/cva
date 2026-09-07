@@ -49,7 +49,7 @@ def _hub_scores(utterances) -> dict[str, float]:
     return {sp: n / (2 * changes) for sp, n in counts.items()}
 
 
-def score_speakers(utterances, stats, language: str = "ml", duration=None):
+def score_speakers(utterances, stats, language: str = lang.DEFAULT_LANGUAGE, duration=None):
     """Returns {speaker: {"score": float, "features": {...}, "reasons": [...]}}."""
     speakers = list(stats)
     hub = _hub_scores(utterances)
@@ -112,7 +112,7 @@ def _reasons(sp, raw, normed, detail) -> list[str]:
     return out or ["no distinguishing signal"]
 
 
-def identify_teacher(utterances, stats, language: str = "ml", duration=None):
+def identify_teacher(utterances, stats, language: str = lang.DEFAULT_LANGUAGE, duration=None):
     """
     Returns the full verdict, not just an id. `margin` is what you check
     before trusting it: two speakers within a few points of each other means

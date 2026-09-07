@@ -181,7 +181,7 @@ def reconcile(embeddings: dict[str, np.ndarray], max_speakers: int | None = None
 
 # ------------------------------------------------------------------- run
 
-def run_streaming(audio_path: str, *, work_dir: str, language: str = "hi",
+def run_streaming(audio_path: str, *, work_dir: str, language: str = lang.DEFAULT_LANGUAGE,
                   model_size: str = "tiny", beam_size: int = 5,
                   chunk_seconds: float = CHUNK_SECONDS,
                   num_speakers: int | None = None,
