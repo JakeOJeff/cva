@@ -231,6 +231,7 @@ def events_path(job_id: str) -> str:
 
 
 def _run_one(job_id: str) -> None:
+    from pipeline import backends as pipeline_backends
     from pipeline import run as pipeline_run
     from pipeline import stream as pipeline_stream
 
@@ -247,6 +248,12 @@ def _run_one(job_id: str) -> None:
 
     try:
         opts = job["options"]
+        # Resolve which engine will actually run, the same way backends.get()
+        # does. Reading opts alone would miss CVA_BACKEND=scribe from the
+        # environment whenever the request did not name a backend explicitly,
+        # and route every such job to the local models instead.
+        backend = (opts.get("backend") or pipeline_backends.DEFAULT).strip().lower()
+
         common = dict(
             work_dir=job["work_dir"],
             language=opts.get("language", "hi"),
@@ -254,13 +261,14 @@ def _run_one(job_id: str) -> None:
             num_speakers=opts.get("num_speakers"),
             max_speakers=opts.get("max_speakers", 6),
             use_llm=opts.get("use_llm", False),
-            backend=opts.get("backend"),
             on_progress=on_progress,
         )
-        # Scribe returns the whole transcript in one response, so there is
-        # nothing to stream block by block. Choosing it silently falling back
-        # to the local models would be worse than ignoring the stream flag.
-        streaming = opts.get("stream", True) and opts.get("backend") != "scribe"
+        # Streaming is local-only, and not by omission: run_streaming calls
+        # transcribe_array and diarize_array per chunk, so there is no seam in
+        # it to put another engine behind. Scribe also returns the whole
+        # transcript in one response, so there would be nothing to stream.
+        # Anything that is not the local backend takes the batch path.
+        streaming = opts.get("stream", True) and backend == "local"
         if streaming:
             # Chunked: emits each block as it finishes, then reconciles
             # speakers across the whole lesson at the end.
@@ -268,7 +276,9 @@ def _run_one(job_id: str) -> None:
                 job["audio_path"],
                 chunk_seconds=opts.get("chunk_seconds", 300), **common)
         else:
-            pipeline_run.run(job["audio_path"],
+            # An unknown name raises out of backends.get() here, with a
+            # message naming the valid ones.
+            pipeline_run.run(job["audio_path"], backend=backend,
                              min_speakers=opts.get("min_speakers"), **common)
         _update(job_id, status="done", stage="done", progress=1.0,
                 note="complete", finished_at=_now())
