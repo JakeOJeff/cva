@@ -41,6 +41,27 @@ def decode(path: str) -> np.ndarray:
     return (pcm.astype(np.float32) / 32768.0).clip(-1.0, 1.0)
 
 
+def probe_duration(path: str) -> float | None:
+    """
+    Length in seconds from the container metadata, without decoding.
+
+    Decoding a lesson to find out how long it is costs seconds and hundreds
+    of megabytes; the header already knows. Returns None when the container
+    does not say, which is a reason to let the file through rather than
+    reject it.
+    """
+    try:
+        with av.open(path) as container:
+            if container.duration:
+                return container.duration / 1_000_000        # AV_TIME_BASE
+            stream = container.streams.audio[0]
+            if stream.duration and stream.time_base:
+                return float(stream.duration * stream.time_base)
+    except Exception:                                        # noqa: BLE001
+        pass
+    return None
+
+
 def write_wav(samples: np.ndarray, out_path: str) -> str:
     os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
     pcm16 = (samples.clip(-1.0, 1.0) * 32767.0).astype(np.int16)

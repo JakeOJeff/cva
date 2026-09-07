@@ -26,6 +26,8 @@ load_dotenv()
 
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 MAX_UPLOAD_MB = int(os.environ.get("CVA_MAX_UPLOAD_MB", "500"))
+# 0 = no limit. Set it on any shared or public instance.
+MAX_AUDIO_MINUTES = int(os.environ.get("CVA_MAX_AUDIO_MINUTES", "0"))
 ALLOWED_EXT = {".mp3", ".wav", ".m4a", ".aac", ".ogg", ".opus", ".flac",
                ".wma", ".mp4", ".mkv", ".webm", ".mov"}
 
@@ -133,6 +135,21 @@ async def upload(
     if size == 0:
         os.remove(dest)
         raise HTTPException(400, "empty file")
+
+    # On a small public box, one 64-minute upload is an eight-hour job that
+    # blocks the queue for everyone else. Read the length from the container
+    # header - the file is on disk and this costs nothing - and refuse early
+    # rather than accepting work that will never realistically finish.
+    if MAX_AUDIO_MINUTES:
+        from pipeline import audio as audio_mod
+        seconds = audio_mod.probe_duration(dest)
+        if seconds and seconds > MAX_AUDIO_MINUTES * 60:
+            os.remove(dest)
+            raise HTTPException(413,
+                f"This recording is {seconds / 60:.0f} minutes; this instance "
+                f"accepts up to {MAX_AUDIO_MINUTES}. It runs on a small shared "
+                "CPU, where an hour of audio takes many hours to process. Trim "
+                "the clip, or run it locally where there is no limit.")
 
     job_id = jobs.create(file.filename or stem, dest, {
         "language": language,
