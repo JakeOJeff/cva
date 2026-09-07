@@ -38,6 +38,32 @@ terms once** at
 with the same account. A token without that acceptance fails at load time
 rather than at request time.
 
+Check it before committing an hour to a transcription:
+
+```bash
+.venv\Scripts\python -m pipeline.diarize
+```
+
+### "Access to model ... is restricted and you are not in the authorized list"
+
+A 403 means the token authenticated but the account is not granted access.
+Three causes, in the order they actually happen:
+
+1. **The terms were never accepted.** Open the model page logged in and
+   complete the access form. It has to say *"You have been granted access"*.
+2. **The token belongs to a different account** than the one granted access.
+3. **It is a fine-grained token.** These cannot read gated repos by default
+   even when the account has access — enable *"Read access to contents of all
+   public gated repos you can access"* on the token, or just use a plain
+   **Read** token. This is the usual culprit.
+
+If you have access to a different checkpoint instead, point at it without
+touching code:
+
+```
+CVA_DIARIZATION_MODEL=pyannote/speaker-diarization-3.1
+```
+
 ## Running
 
 ```bash

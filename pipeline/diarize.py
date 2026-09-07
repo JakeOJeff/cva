@@ -15,8 +15,27 @@ _PIPELINES: dict[str, object] = {}
 
 # pyannote.audio 4.x ships this as the default community checkpoint. It is
 # still gated - you accept the terms once on the Hub, then a read token is
-# enough forever.
-MODEL_ID = "pyannote/speaker-diarization-community-1"
+# enough forever. Override with CVA_DIARIZATION_MODEL if you have access to a
+# different checkpoint (e.g. pyannote/speaker-diarization-3.1).
+MODEL_ID = os.environ.get("CVA_DIARIZATION_MODEL",
+                          "pyannote/speaker-diarization-community-1")
+
+
+def _gated_help(model_id: str) -> str:
+    return (
+        f"Your HF_TOKEN works, but the account behind it is not authorized for\n"
+        f"{model_id}.\n\n"
+        f"  1. Open https://hf.co/{model_id} while logged in and complete the\n"
+        f"     access form. It must say 'You have been granted access'.\n"
+        "  2. Check https://hf.co/settings/tokens - the token has to belong to\n"
+        "     the SAME account that was granted access.\n"
+        "  3. If it is a fine-grained token, enable 'Read access to contents of\n"
+        "     all public gated repos you can access'. This is the usual cause:\n"
+        "     fine-grained tokens cannot read gated repos by default, even when\n"
+        "     the account has access. A plain Read token works without it.\n\n"
+        "  Already have access to a different checkpoint? Set\n"
+        "  CVA_DIARIZATION_MODEL=pyannote/speaker-diarization-3.1 in your .env."
+    )
 
 
 def _token() -> str:
@@ -37,11 +56,28 @@ def get_pipeline(model_id: str = MODEL_ID):
         from pyannote.audio import Pipeline
 
         # pyannote 4.x renamed this argument from `use_auth_token` to `token`.
-        pipeline = Pipeline.from_pretrained(model_id, token=_token())
+        try:
+            pipeline = Pipeline.from_pretrained(model_id, token=_token())
+        except Exception as exc:                              # noqa: BLE001
+            # huggingface_hub raises GatedRepoError for "you are not in the
+            # authorized list" and a 401 for a bad token. Both arrive here as
+            # a wall of HTTP detail that says nothing about what to actually
+            # do, so translate them.
+            name = type(exc).__name__
+            if "Gated" in name or "403" in str(exc):
+                raise RuntimeError(_gated_help(model_id)) from exc
+            if "401" in str(exc) or "Unauthorized" in name:
+                raise RuntimeError(
+                    "HF_TOKEN was rejected by HuggingFace. Check it is copied "
+                    "whole and has not been revoked: https://hf.co/settings/tokens"
+                ) from exc
+            raise
+
         if pipeline is None:
+            # from_pretrained returns None rather than raising when the config
+            # loads but the pipeline cannot be built.
             raise RuntimeError(
-                f"could not load {model_id}. The usual cause is not having "
-                "accepted the model terms on the Hub with this token's account."
+                f"could not load {model_id}.\n\n" + _gated_help(model_id)
             )
         if torch.cuda.is_available():
             pipeline.to(torch.device("cuda"))
@@ -97,3 +133,22 @@ def diarize(wav_path: str, num_speakers: int | None = None,
         "diarization_model": model_id,
     }
     return turns, info
+
+
+if __name__ == "__main__":
+    # python -m pipeline.diarize
+    #
+    # Verifies the token and the model access before you spend an hour
+    # transcribing only to fall over at the diarize step.
+    import sys
+
+    from dotenv import load_dotenv
+
+    load_dotenv()
+    print(f"checking access to {MODEL_ID} ...\n")
+    try:
+        get_pipeline()
+    except RuntimeError as exc:
+        print(f"FAILED\n\n{exc}")
+        sys.exit(1)
+    print("OK - token valid and model downloaded. Diarization will run.")
