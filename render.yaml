@@ -1,0 +1,30 @@
+# Render Blueprint for the Scribe deployment. Render requires this file at the
+# repository root; it is inert for every other way of running this project.
+#
+# This is an ALTERNATIVE deployment. `docker compose up` still builds the root
+# Dockerfile and still runs everything locally with CVA_BACKEND=local; nothing
+# here changes that. See deploy/render/README.md.
+services:
+  - type: web
+    name: classroom-voice-analysis
+    runtime: docker
+    plan: free
+    dockerfilePath: ./deploy/render/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      # Required. Without it the app defaults to the local backend, whose
+      # dependencies this image deliberately does not install.
+      - key: CVA_BACKEND
+        value: scribe
+      # Required, and never committed: paste it in the Render dashboard.
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      # Render generates a strong one on first deploy. Read it from the
+      # dashboard (Environment tab) - you need it to log in. Username is
+      # `teacher` unless you set CVA_USERNAME.
+      - key: CVA_PASSWORD
+        generateValue: true
+      # Optional: the AI teaching review. Metrics work without it.
+      - key: ANTHROPIC_API_KEY
+        sync: false

@@ -173,7 +173,7 @@ estimates, not promises — but the ordering is reliable:
 | your 24-core machine | 24 | 42 min | ~80 min |
 | Hetzner CCX43 (dedicated) | 16 | ~56 min | ~107 min |
 | Hetzner CCX33 / DO / Linode | 8 | ~91 min | ~174 min |
-| Hugging Face Spaces, free | 2 | ~4 hr | ~7.7 hr |
+| a cheap 2-core cloud tier | 2 | ~4 hr | ~7.7 hr |
 | **any modern NVIDIA GPU** | — | **minutes** | **minutes** |
 
 The uncomfortable conclusion: **on CPU, every affordable host is slower than
@@ -181,24 +181,32 @@ the machine you already have.** Hosting buys availability, not speed.
 
 ### Free
 
-**Colab, for showing someone.** `deploy/colab/` is a notebook that runs the
-whole pipeline on Colab's free T4 — minutes rather than hours, and no signup,
-no card, no capacity queue. It is the fastest way to a demo somebody can run
-themselves, and the only free option here that gets you a GPU. It is not a
-persistent URL: the session ends and the link stops working.
+**Render's free tier, if you move the models off the box.** The local pipeline
+measures 726MB of RSS at rest against a 512MB cap, and chunking cannot fix
+that - adding ten minutes of decoded audio to the measurement changed nothing,
+because the cost is model runtimes, not audio. Deploying with
+`CVA_BACKEND=scribe` removes them: ElevenLabs transcribes and diarizes, the
+image drops from ~1.5GB to ~150MB with `requirements-scribe.txt`, and a clip
+comes back in about the time it takes to upload. `deploy/render/` has the
+Dockerfile and the walkthrough; `render.yaml` makes it a Blueprint deploy.
 
-**Oracle Cloud Always Free, for a persistent URL.** Four ARM Ampere cores and
-24GB, free indefinitely — better hardware than most paid entry tiers. Two
-caveats: ARM capacity is often unavailable in popular regions and takes
-retries, and signup wants a card (not charged). The root `Dockerfile` builds
-on aarch64 as-is; `torch` publishes arm64 wheels and pip resolves
-`ctranslate2` to 4.6.2 there, which satisfies faster-whisper's pin.
+Render generates `CVA_PASSWORD` on the first deploy — read it from the
+dashboard's Environment tab, and log in as `teacher`.
 
-**Not Hugging Face Spaces.** Docker and Gradio Spaces became PRO-only ($9/mo)
-in 2026; only Static Spaces remain free. `deploy/huggingface/` still holds a
-working Spaces Dockerfile if you have PRO — it handles the UID 1000, port
-7860 and wiped-disk constraints, and caps uploads at 5 minutes of audio. A
-2-minute clip took 141 seconds in that constrained container.
+What you are trading away, in order of how much it will annoy you:
+
+- **The audio leaves your machine.** It goes to ElevenLabs. For classroom
+  recordings of children that is a real change in posture, and it is why
+  `local` stays the default for `docker compose up`.
+- **Free means ~30 minutes of audio a month** on ElevenLabs. With no card
+  attached it stops rather than billing you.
+- **Everything is deleted on restart.** Disks are a paid Render feature, so
+  transcripts and the queue live on ephemeral disk.
+- **It sleeps after ~15 minutes idle**, and the first visit back takes ~30
+  seconds.
+
+If any of those are dealbreakers, run it locally — the machine you already
+have is faster than every free host anyway.
 
 ### Choosing
 

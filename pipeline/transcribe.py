@@ -11,11 +11,15 @@ Get this right and nothing downstream is hard.
 import json
 import os
 
-from faster_whisper import WhisperModel
+# faster-whisper is imported inside get_model(), not here, for the same reason
+# diarize.py defers torch: `save`/`load` below define the segments.json format
+# and run.py calls them on every job, including one that ran on Scribe. A
+# scribe-only host does not install faster-whisper (or ctranslate2 under it) at
+# all, and an eager import would break a server that never transcribes locally.
 
 # Cache models at module level so a size loads once, not per call. The web
 # app processes jobs sequentially in one worker, so a plain dict is enough.
-_MODELS: dict[tuple[str, str, int], WhisperModel] = {}
+_MODELS: dict = {}
 
 # faster-whisper's own default. Raising it was measured on a 24-core box and
 # made no reliable difference - run-to-run variance was larger than the effect
@@ -47,7 +51,9 @@ def device() -> tuple[str, str]:
 
 
 def get_model(size: str = "small", compute_type: str | None = None,
-              cpu_threads: int = CPU_THREADS) -> WhisperModel:
+              cpu_threads: int = CPU_THREADS):
+    from faster_whisper import WhisperModel
+
     dev, default_compute = device()
     compute_type = compute_type or default_compute
     key = (size, compute_type, cpu_threads if dev == "cpu" else -1)
