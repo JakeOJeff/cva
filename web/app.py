@@ -14,7 +14,8 @@ import secrets
 import shutil
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import (FastAPI, File, Form, HTTPException, Request,
+                     UploadFile)
 from fastapi.responses import (FileResponse, JSONResponse, Response,
                                StreamingResponse)
 from fastapi.staticfiles import StaticFiles
@@ -38,24 +39,34 @@ PASSWORD = os.environ.get("CVA_PASSWORD", "").strip()
 USERNAME = os.environ.get("CVA_USERNAME", "teacher").strip()
 
 
+def _authenticated(request) -> bool:
+    if not PASSWORD:
+        return True
+    header = request.headers.get("authorization", "")
+    if not header.startswith("Basic "):
+        return False
+    try:
+        raw = base64.b64decode(header[6:]).decode("utf-8", "replace")
+        user, _, pwd = raw.partition(":")
+        # compare_digest on both halves: no early exit on the first differing
+        # byte, so timing does not leak the password.
+        return (secrets.compare_digest(user, USERNAME)
+                and secrets.compare_digest(pwd, PASSWORD))
+    except Exception:                                         # noqa: BLE001
+        return False
+
+
+# The container healthcheck runs as an anonymous local curl. Behind the auth
+# gate it got a 401, so the container was reported unhealthy and orchestrators
+# would restart it forever. Health is exempt; it returns nothing sensitive
+# unless the caller is actually authenticated.
+PUBLIC_PATHS = {"/api/health"}
+
+
 @app.middleware("http")
 async def _auth(request, call_next):
-    if not PASSWORD:
+    if request.url.path in PUBLIC_PATHS or _authenticated(request):
         return await call_next(request)
-
-    header = request.headers.get("authorization", "")
-    if header.startswith("Basic "):
-        try:
-            raw = base64.b64decode(header[6:]).decode("utf-8", "replace")
-            user, _, pwd = raw.partition(":")
-            # compare_digest on both halves: no early exit on the first
-            # differing byte, so timing does not leak the password.
-            if (secrets.compare_digest(user, USERNAME)
-                    and secrets.compare_digest(pwd, PASSWORD)):
-                return await call_next(request)
-        except Exception:                                     # noqa: BLE001
-            pass
-
     return Response(status_code=401, content="Authentication required",
                     headers={"WWW-Authenticate": 'Basic realm="Classroom Voice Analysis"'})
 
@@ -305,13 +316,23 @@ def remove_finished(status: str = "failed"):
 
 
 @app.get("/api/health")
-def health():
+def health(request: Request):
+    """
+    Liveness, reachable without a password so the container healthcheck works.
+
+    Which credentials are configured and how much disk is left is operational
+    detail, not liveness - an anonymous caller gets neither.
+    """
+    if not _authenticated(request):
+        return {"ok": True}
     return {
         "ok": True,
         "hf_token": bool(os.environ.get("HF_TOKEN") or os.environ.get("HUGGINGFACE_TOKEN")),
         "anthropic_key": bool(os.environ.get("ANTHROPIC_API_KEY")
                               or os.environ.get("ANTHROPIC_AUTH_TOKEN")),
         "disk_free_gb": round(shutil.disk_usage(jobs.DATA_DIR).free / 1e9, 1),
+        "device": __import__("pipeline.transcribe", fromlist=["device"]).device()[0],
+        "auth": bool(PASSWORD),
     }
 
 
