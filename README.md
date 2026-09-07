@@ -179,20 +179,26 @@ estimates, not promises — but the ordering is reliable:
 The uncomfortable conclusion: **on CPU, every affordable host is slower than
 the machine you already have.** Hosting buys availability, not speed.
 
-### Free, for a demo
+### Free
 
-Hugging Face Spaces runs the container for nothing on 2 shared vCPU, which is
-the right trade when the point is showing the thing works rather than
-processing real lessons. `deploy/huggingface/` holds a Spaces-specific
-Dockerfile and the README with its config block; see that folder for the
-four-step setup.
+**Colab, for showing someone.** `deploy/colab/` is a notebook that runs the
+whole pipeline on Colab's free T4 — minutes rather than hours, and no signup,
+no card, no capacity queue. It is the fastest way to a demo somebody can run
+themselves, and the only free option here that gets you a GPU. It is not a
+persistent URL: the session ends and the link stops working.
 
-Three platform constraints shape that variant: Spaces runs the container as
-UID 1000 with no root, expects port 7860, and wipes the disk on every restart
-- so it caps uploads at 5 minutes of audio, because an hour of audio on two
-shared cores is an all-day job that would sit in the queue forever.
+**Oracle Cloud Always Free, for a persistent URL.** Four ARM Ampere cores and
+24GB, free indefinitely — better hardware than most paid entry tiers. Two
+caveats: ARM capacity is often unavailable in popular regions and takes
+retries, and signup wants a card (not charged). The root `Dockerfile` builds
+on aarch64 as-is; `torch` publishes arm64 wheels and pip resolves
+`ctranslate2` to 4.6.2 there, which satisfies faster-whisper's pin.
 
-Measured in the constrained container: a 2-minute clip took 141 seconds.
+**Not Hugging Face Spaces.** Docker and Gradio Spaces became PRO-only ($9/mo)
+in 2026; only Static Spaces remain free. `deploy/huggingface/` still holds a
+working Spaces Dockerfile if you have PRO — it handles the UID 1000, port
+7860 and wiped-disk constraints, and caps uploads at 5 minutes of audio. A
+2-minute clip took 141 seconds in that constrained container.
 
 ### Choosing
 
