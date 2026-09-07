@@ -141,6 +141,34 @@ def main():
     ok &= check("straddling segment is flagged contested", c[0]["contested"] is True,
                 f"conf {c[0]['speaker_conf']}")
 
+    print("\nunattributed speech is not a student")
+    # A segment overlapping no diarization turn gets UNKNOWN. It must never be
+    # handed a student letter - that invents a child who was never there.
+    mixed = labelled + [{"start": 400.0, "end": 410.0, "text": "stray audio",
+                         "speaker": "UNKNOWN", "speaker_conf": 0.0}]
+    lab2, names2 = roles.label_roles(mixed, "SPEAKER_00")
+    ok &= check("UNKNOWN is labelled Unattributed", names2["UNKNOWN"] == "Unattributed")
+    ok &= check("UNKNOWN gets no student letter",
+                not any(v.startswith("Student") and k == "UNKNOWN" for k, v in names2.items()))
+    ok &= check("student letters unchanged by its presence",
+                sorted(v for k, v in names2.items() if v.startswith("Student"))
+                == ["Student A", "Student B"])
+    t3, s3 = roles.split_by_role(lab2)
+    ok &= check("UNKNOWN is in neither teacher nor student",
+                all(i["speaker"] != "UNKNOWN" for i in t3 + s3))
+    ok &= check("UNKNOWN is reachable as unattributed",
+                len(roles.unattributed(lab2)) == 1)
+    m3 = analyze.metrics(lab2, {"duration": duration + 60}, "en")
+    ok &= check("students still counted as 2", m3["n_students_heard"] == 2,
+                str(m3["n_students_heard"]))
+    ok &= check("unattributed time reported", m3["unattributed_talk_time"] == 10.0,
+                str(m3["unattributed_talk_time"]))
+    ok &= check("ratios still sum to 1 with unattributed in the mix",
+                abs(m3["teacher_talk_ratio"] + m3["student_talk_ratio"]
+                    + m3["unattributed_ratio"] - 1.0) < 1e-3)
+    ok &= check("Unattributed absent from participation",
+                "Unattributed" not in m3["student_participation"])
+
     print("\ntranscript")
     text = analyze.build_transcript(labelled)
     ok &= check("transcript has one line per utterance",

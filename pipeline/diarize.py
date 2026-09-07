@@ -111,6 +111,42 @@ def _as_waveform(wav_path: str) -> dict:
     }
 
 
+def diarize_array(samples, pipeline=None, num_speakers: int | None = None,
+                  min_speakers: int | None = None, max_speakers: int | None = None):
+    """
+    Diarize 16k mono float32 samples already in memory.
+
+    For chunked processing: pass the pipeline in so it is loaded once rather
+    than per block. Speaker ids are local to these samples - two calls have no
+    shared notion of who anyone is.
+    """
+    import torch
+
+    from .audio import SAMPLE_RATE
+
+    pipeline = pipeline or get_pipeline()
+    kwargs = {}
+    if num_speakers is not None:
+        kwargs["num_speakers"] = num_speakers
+    else:
+        if min_speakers is not None:
+            kwargs["min_speakers"] = min_speakers
+        if max_speakers is not None:
+            kwargs["max_speakers"] = max_speakers
+
+    output = pipeline({"waveform": torch.from_numpy(samples).unsqueeze(0),
+                       "sample_rate": SAMPLE_RATE, "uri": "chunk"}, **kwargs)
+    annotation = getattr(output, "speaker_diarization", output)
+
+    turns = sorted(
+        ({"start": round(seg.start, 2), "end": round(seg.end, 2), "speaker": spk}
+         for seg, _, spk in annotation.itertracks(yield_label=True)),
+        key=lambda t: t["start"])
+    speakers = sorted({t["speaker"] for t in turns})
+    return turns, {"n_speakers": len(speakers), "speakers": speakers,
+                   "n_turns": len(turns)}
+
+
 def diarize(wav_path: str, num_speakers: int | None = None,
             min_speakers: int | None = None, max_speakers: int | None = None,
             hook=None, model_id: str = MODEL_ID):

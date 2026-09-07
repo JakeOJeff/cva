@@ -214,19 +214,119 @@ function renderUtts(res, role) {
     </div>`).join("") || '<p class="empty">Nothing here.</p>';
 }
 
+/* ---------------------------------------------------------------- live */
+
+// Colours for provisional, chunk-local speakers. They are deliberately NOT
+// the final palette: until reconcile runs, "c3_SPEAKER_00" and
+// "c7_SPEAKER_00" are unrelated, and showing them in the same colour would
+// assert something we do not yet know.
+function provisionalColor(speaker) {
+  let h = 0;
+  for (const ch of speaker) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return `var(--sp${(h % 5) + 1})`;
+}
+
+function live(status) {
+  $("body").innerHTML = `
+    <div class="panel">
+      <h2>Working</h2>
+      <div class="bar"><i id="liveBar" style="width:${Math.round((status.progress || 0) * 100)}%"></i></div>
+      <div class="sub" id="liveNote" style="margin-top:8px">${esc(status.stage || "")} · ${esc(status.note || "")}</div>
+      <div class="warnbox" style="margin-top:14px">
+        <b>Speaker labels below are provisional.</b> Each block is analysed on
+        its own, so a voice in block 1 and the same voice in block 5 do not yet
+        know they are the same person. When the audio runs out they are matched
+        across the whole lesson and relabelled — only then are the teacher and
+        the metrics worked out.
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Transcript <span id="liveCount" class="sub" style="text-transform:none"></span></h2>
+      <div id="liveUtts"><p class="empty">Waiting for the first block…</p></div>
+    </div>`;
+
+  let seen = 0;
+  const box = $("liveUtts");
+  const es = new EventSource(`/api/jobs/${jobId}/stream`);
+
+  // Keep the status bar moving between chunk events.
+  const poll = setInterval(async () => {
+    try {
+      const s = await (await fetch(`/api/jobs/${jobId}`)).json();
+      const bar = $("liveBar");
+      if (bar) bar.style.width = `${Math.round((s.progress || 0) * 100)}%`;
+      const note = $("liveNote");
+      if (note) note.textContent = `${s.stage || ""} · ${s.note || ""}`;
+    } catch {}
+  }, 3000);
+
+  es.onmessage = (e) => {
+    const ev = JSON.parse(e.data);
+
+    if (ev.type === "meta") {
+      $("subtitle").textContent =
+        `${mmss(ev.duration)} · ${ev.n_chunks} blocks · whisper ${ev.model} · ${ev.language}`;
+      if (ev.language_mismatch) {
+        box.insertAdjacentHTML("beforebegin",
+          `<div class="warnbox"><b>Language mismatch.</b> Transcribing as
+           ${esc(ev.language)} but this sounds like ${esc(ev.detected_language)}.</div>`);
+      }
+    }
+
+    if (ev.type === "chunk") {
+      if (seen === 0) box.innerHTML = "";
+      seen += ev.utterances.length;
+      $("liveCount").textContent =
+        `— ${seen} utterances, block ${ev.index + 1} of ${ev.of}`;
+      box.insertAdjacentHTML("beforeend",
+        `<div class="sub" style="margin:14px 0 6px;color:var(--muted);font-size:11px;
+              text-transform:uppercase;letter-spacing:.06em">
+           block ${ev.index + 1} · ${mmss(ev.start)}–${mmss(ev.end)}</div>` +
+        ev.utterances.map(u => `
+          <div class="utt">
+            <div class="t">${mmss(u.start)}</div>
+            <div class="who" style="color:${provisionalColor(u.speaker)}">${esc(u.speaker)}</div>
+            <div class="tx">${esc(u.text)}</div>
+          </div>`).join(""));
+      box.parentElement.scrollIntoView({ block: "nearest" });
+    }
+
+    if (ev.type === "reconciled") {
+      $("liveNote").textContent =
+        `matched ${Object.keys(ev.mapping).length} chunk-speakers into ${ev.n_speakers} people`;
+    }
+
+    if (ev.type === "done" || ev.type === "ended") {
+      es.close();
+      clearInterval(poll);
+      load();                       // swap in the finished report
+    }
+  };
+
+  es.onerror = () => {
+    // EventSource retries on its own; only give up once the job is finished.
+    fetch(`/api/jobs/${jobId}`).then(r => r.json()).then(s => {
+      if (s.status === "done" || s.status === "failed") {
+        es.close(); clearInterval(poll); load();
+      }
+    }).catch(() => {});
+  };
+}
+
 /* ------------------------------------------------------------------ go */
 
 async function load() {
   const status = await (await fetch(`/api/jobs/${jobId}`)).json();
   $("title").textContent = status.filename || "Session";
 
+  if (status.status === "failed") {
+    $("subtitle").textContent = "failed";
+    $("body").innerHTML = `<div class="panel"><div class="err">${esc(status.error)}</div></div>`;
+    return;
+  }
+
   if (status.status !== "done") {
-    $("subtitle").textContent = `${status.status} · ${status.stage || ""} ${status.note || ""}`;
-    $("body").innerHTML = status.status === "failed"
-      ? `<div class="panel"><div class="err">${esc(status.error)}</div></div>`
-      : `<div class="panel"><div class="bar"><i style="width:${Math.round((status.progress || 0) * 100)}%"></i></div>
-         <p class="empty" style="margin-top:10px">Still working — this page refreshes itself.</p></div>`;
-    if (status.status !== "failed") setTimeout(load, 3000);
+    live(status);          // stream the lesson in as it is processed
     return;
   }
 

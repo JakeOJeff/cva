@@ -115,6 +115,28 @@ person across two labels. The results page says so and lets you override it;
 `POST /api/jobs/{id}/teacher` re-derives everything from the saved result
 without touching the audio.
 
+## Streaming vs batch
+
+By default a lesson is processed in ~5-minute blocks and each block's dialogue
+is pushed to the browser as soon as it is done, so you read the transcript
+while the rest is still running. `stream=false` on the upload runs the old
+single-pass path instead.
+
+The catch is speaker identity, which is *global*. pyannote clusters within
+whatever audio you hand it, so block 3's `SPEAKER_00` has nothing to do with
+block 7's. Streaming resolves that in four steps: diarize each block alone,
+emit it under provisional ids, take a voice embedding per (block, speaker),
+and once the audio runs out cluster those embeddings across the whole lesson
+to map every local id onto a global one.
+
+So early output is provisional by construction — two blocks can show what
+turns out to be one person, and the labels change when reconciliation runs.
+The UI says so. Nothing downstream is computed until after reconciliation.
+
+Batch mode is still the more accurate of the two: diarizing 64 minutes at once
+gives the clustering far more to work with than diarizing thirteen 5-minute
+blocks and stitching them together.
+
 ## What comes out
 
 `metrics` are deterministic and comparable across sessions — teacher talk
@@ -136,6 +158,7 @@ compared week to week. The report carries both.
 | `POST /api/upload` | file + options, returns a `job_id` |
 | `GET /api/jobs` | queue with live progress |
 | `GET /api/jobs/{id}` | one job's status, stage, progress |
+| `GET /api/jobs/{id}/stream` | Server-Sent Events: each block's dialogue as it lands |
 | `GET /api/jobs/{id}/result` | the full result document |
 | `GET /api/jobs/{id}/transcript?role=teacher` | plain text, optionally one role |
 | `POST /api/jobs/{id}/teacher` | override the teacher, re-derive downstream |
@@ -159,6 +182,8 @@ pipeline/
   roles.py       feature-scored teacher identification
   analyze.py     deterministic metrics + the Claude review
   run.py         the orchestrator, and `reanalyze` for cheap re-scoring
+  stream.py      the chunked orchestrator: per-block output, then global
+                 speaker reconciliation by voice embedding
 web/
   app.py         FastAPI: upload, status, results, override
   jobs.py        SQLite-backed queue and single worker

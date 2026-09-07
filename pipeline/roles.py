@@ -145,30 +145,52 @@ def identify_teacher(utterances, stats, language: str = "ml", duration=None):
     }
 
 
+UNATTRIBUTED = "UNKNOWN"       # assign.py's marker for speech it could not place
+
+
+def role_of(speaker: str, teacher_id: str) -> str:
+    if speaker == UNATTRIBUTED:
+        return "unknown"
+    return "teacher" if speaker == teacher_id else "student"
+
+
 def label_roles(items, teacher_id: str):
     """
     Stamp role onto segments or utterances, plus a human label.
 
     Students get stable letters ordered by talk time, so "Student A" means
     the same person on every re-read of the same transcript.
+
+    UNKNOWN is not a person. It is what assign.py writes when a segment
+    overlaps no diarization turn at all, and it must never be handed a
+    student letter - doing so invents a child who was never in the room and
+    quietly inflates every participation number.
     """
     others = sorted(
-        {i["speaker"] for i in items if i["speaker"] != teacher_id},
+        {i["speaker"] for i in items
+         if i["speaker"] != teacher_id and i["speaker"] != UNATTRIBUTED},
         key=lambda sp: -sum(i["end"] - i["start"] for i in items if i["speaker"] == sp),
     )
     names = {teacher_id: "Teacher"}
+    if any(i["speaker"] == UNATTRIBUTED for i in items):
+        names[UNATTRIBUTED] = "Unattributed"
     for n, sp in enumerate(others):
         names[sp] = f"Student {chr(ord('A') + n)}" if n < 26 else f"Student {n + 1}"
 
     return [
         {**i,
-         "role": "teacher" if i["speaker"] == teacher_id else "student",
+         "role": role_of(i["speaker"], teacher_id),
          "label": names.get(i["speaker"], i["speaker"])}
         for i in items
     ], names
 
 
 def split_by_role(items):
+    """teacher, student. Unattributed speech is in neither - see label_roles."""
     teacher = [i for i in items if i.get("role") == "teacher"]
     student = [i for i in items if i.get("role") == "student"]
     return teacher, student
+
+
+def unattributed(items):
+    return [i for i in items if i.get("role") == "unknown"]
