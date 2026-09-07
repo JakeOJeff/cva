@@ -13,13 +13,15 @@ import json
 import os
 import time
 
-from . import analyze, assign, audio, diarize, lang, roles, transcribe
+from . import analyze, assign, audio, backends, roles
+from .transcribe import save as transcribe_mod_save
 
 STAGES = ["normalize", "transcribe", "diarize", "assign", "roles", "analyze"]
 
 
 def run(audio_path: str, *, work_dir: str, language: str = "ml",
         model_size: str = "small", beam_size: int = 5,
+        backend: str | None = None,
         num_speakers: int | None = None,
         min_speakers: int | None = None, max_speakers: int | None = None,
         use_llm: bool = True, llm_model: str = analyze.MODEL,
@@ -43,57 +45,24 @@ def run(audio_path: str, *, work_dir: str, language: str = "ml",
     wav, duration = audio.normalize(audio_path, os.path.join(work_dir, "audio_16k.wav"))
     progress("normalize", 1.0, f"{duration:.0f}s of audio")
 
-    # --- 2. transcribe --------------------------------------------------
-    # Check the language before spending 40 minutes transcribing in the wrong
-    # one. Whisper does not fail on a wrong `language` - it returns fluent
-    # nonsense, or an empty transcript, and everything downstream then
-    # analyses that nonsense in perfect detail.
-    progress("transcribe", 0.0, "checking language")
-    detected, confidence, windows = transcribe.detect_language(wav)
-    mismatch = detected != language and confidence >= 0.5
-    if mismatch:
-        progress("transcribe", 0.0,
-                 f"WARNING sounds like '{detected}' not '{language}'")
-
-    progress("transcribe", 0.0, f"whisper {model_size}, lang={language}")
-    segments, meta = transcribe.transcribe(
-        wav, language=language, model_size=model_size, beam_size=beam_size,
-        progress=lambda done, total: progress("transcribe", done / (total or 1),
-                                              f"{done:.0f}s / {total:.0f}s"),
+    # --- 2/3/4. words, voices, and the marriage of the two ----------------
+    # One call, two implementations: local faster-whisper + pyannote, or
+    # Scribe doing both in a single request. Everything below is identical
+    # either way - that is the whole point of the seam.
+    engine = backends.get(backend)
+    progress("transcribe", 0.0, f"backend: {engine.name}")
+    segments, turns, meta = engine.run(
+        audio_path=audio_path, wav_path=wav, language=language,
+        progress=progress, model_size=model_size, beam_size=beam_size,
+        num_speakers=num_speakers, max_speakers=max_speakers,
     )
-    # Did the model actually write the language, or English-looking noise?
-    # A too-small model does not fail on Hindi - it invents plausible English.
-    ratio = lang.script_ratio(" ".join(s["text"] for s in segments), language)
-    meta.update({
-        "script_ratio": ratio,
-        "wrong_script": ratio is not None and ratio < 0.5,
-        "requested_language": language,
-        "detected_language": detected,
-        "detected_confidence": confidence,
-        "language_mismatch": mismatch,
-        "language_windows": windows,
-    })
-    transcribe.save(segments, meta, os.path.join(work_dir, "segments.json"))
-    progress("transcribe", 1.0, f"{len(segments)} segments")
+    meta.setdefault("duration", round(duration, 2))
+    transcribe_mod_save(segments, meta, os.path.join(work_dir, "segments.json"))
 
     if not segments:
-        hint = (f" The audio sounds like '{detected}' "
-                f"(confidence {confidence}), but it was transcribed as "
-                f"'{language}' - try again with the right language.") if mismatch else ""
-        raise ValueError("no speech found in this audio." + hint)
+        raise ValueError("no speech found in this audio")
 
-    # --- 3. diarize -----------------------------------------------------
-    progress("diarize", 0.0, "finding speakers")
-    turns, dinfo = diarize.diarize(
-        wav, num_speakers=num_speakers,
-        min_speakers=min_speakers, max_speakers=max_speakers,
-    )
-    meta.update(dinfo)
-    progress("diarize", 1.0, f"{dinfo['n_speakers']} speakers")
-
-    # --- 4. assign ------------------------------------------------------
-    progress("assign", 0.0, "matching words to voices")
-    segments = assign.assign_speakers(segments, turns)
+    progress("assign", 0.0, "grouping into utterances")
     utterances = assign.to_utterances(segments)
     stats = assign.speaker_stats(utterances, duration)
     progress("assign", 1.0, f"{len(utterances)} utterances")
