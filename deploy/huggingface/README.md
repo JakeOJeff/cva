@@ -11,6 +11,10 @@ startup_duration_timeout: 1h
 
 # Classroom Voice Analysis
 
+> **Note:** Docker Spaces require a PRO subscription as of 2026 — only Static
+> Spaces are free. This config is here for anyone who has PRO. For a free
+> demo, use the Colab notebook in `deploy/colab/` instead.
+
 Upload a classroom recording. It transcribes the lesson, works out who spoke
 when, decides which voice is the teacher, and reports how the talking was
 distributed — teacher vs student talk ratio, question count, wait time after
