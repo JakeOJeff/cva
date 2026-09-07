@@ -83,6 +83,9 @@ def main() -> None:
     p.add_argument("audio", help="path to the recording")
     p.add_argument("--lang", default="ml", help="ml, hi, ta, en ...")
     p.add_argument("--model", default="small", help="tiny, base, small, medium")
+    p.add_argument("--beam", type=int, default=5,
+                   help="beam width; 1 is much faster on tiny, but on small it is "
+                        "slower AND worse - it loops on noisy audio")
     p.add_argument("--speakers", type=int, help="exact speaker count, if known")
     p.add_argument("--max-speakers", type=int, help="upper bound on speakers")
     p.add_argument("--out", default="out", help="directory for the results")
@@ -96,7 +99,8 @@ def main() -> None:
     else:
         result = run.run(
             args.audio, work_dir=args.out, language=args.lang,
-            model_size=args.model, num_speakers=args.speakers,
+            model_size=args.model, beam_size=args.beam,
+            num_speakers=args.speakers,
             max_speakers=args.max_speakers, use_llm=not args.no_llm,
             on_progress=progress,
         )

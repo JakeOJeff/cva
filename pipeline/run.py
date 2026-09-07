@@ -19,7 +19,8 @@ STAGES = ["normalize", "transcribe", "diarize", "assign", "roles", "analyze"]
 
 
 def run(audio_path: str, *, work_dir: str, language: str = "ml",
-        model_size: str = "small", num_speakers: int | None = None,
+        model_size: str = "small", beam_size: int = 5,
+        num_speakers: int | None = None,
         min_speakers: int | None = None, max_speakers: int | None = None,
         use_llm: bool = True, llm_model: str = analyze.MODEL,
         on_progress=None) -> dict:
@@ -56,7 +57,7 @@ def run(audio_path: str, *, work_dir: str, language: str = "ml",
 
     progress("transcribe", 0.0, f"whisper {model_size}, lang={language}")
     segments, meta = transcribe.transcribe(
-        wav, language=language, model_size=model_size,
+        wav, language=language, model_size=model_size, beam_size=beam_size,
         progress=lambda done, total: progress("transcribe", done / (total or 1),
                                               f"{done:.0f}s / {total:.0f}s"),
     )

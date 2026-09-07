@@ -29,6 +29,7 @@ app = FastAPI(title="Classroom Voice Analysis")
 @app.on_event("startup")
 def _startup() -> None:
     jobs.init()
+    jobs.reap_interrupted()          # startup only - never from a request
     jobs.ensure_worker()
 
 

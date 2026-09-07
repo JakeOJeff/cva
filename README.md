@@ -169,9 +169,19 @@ tests/
 - **Segments that straddle a speaker change** get the majority speaker and a
   `speaker_conf` below 1.0; the results page dims them. Splitting them properly
   needs word-level timestamps, which are not currently requested.
-- **Whisper accuracy on Indian-language classroom audio is mediocre** at
-  `small`. `medium` is materially better and materially slower. Expect roughly
-  real-time on CPU at `small` — a one-hour lesson takes about an hour.
+- **It is slow on CPU, and `small` is the reason.** Measured on a 24-core
+  box with no GPU, transcribing 60s of the bundled recording: `tiny` runs at
+  ~3x realtime, `small` at ~0.5x. So a 64-minute lesson is roughly 20 minutes
+  on `tiny` and **1.5-3 hours** on `small`, before diarization adds its own
+  pass. Timings vary a lot run to run — treat them as order-of-magnitude.
+  A GPU is the only step change; everything else is a few percent.
+- **`--beam 1` is a trap on `small`.** It is ~7x faster on `tiny`, but on
+  `small` it measured *slower* and produced fewer segments: greedy decoding
+  falls into repetition loops on noisy audio. Use it with `tiny` only.
+- **Thread count changes the output, not just the speed.** Identical audio and
+  settings gave 48 segments at 16 threads and 10 at 24 — different thread
+  counts reorder float reductions and nudge the decoder. Do not expect
+  bit-reproducible transcripts across machines.
 - **`n_students_heard` counts diarization clusters, not children.** Two quiet
   students at the back are often one cluster; one student who moves seats can
   become two.
