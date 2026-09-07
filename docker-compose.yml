@@ -1,0 +1,32 @@
+services:
+  cva:
+    build:
+      context: .
+      # For a GPU host:
+      #   args:
+      #     TORCH_INDEX: https://download.pytorch.org/whl/cu124
+    ports:
+      - "8000:8000"
+    environment:
+      # Required: diarization will not load without it.
+      HF_TOKEN: ${HF_TOKEN:?set HF_TOKEN in .env}
+      # Set these before exposing the port anywhere public.
+      CVA_USERNAME: ${CVA_USERNAME:-teacher}
+      CVA_PASSWORD: ${CVA_PASSWORD:?set CVA_PASSWORD in .env}
+      # Optional: the paid AI review.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      CVA_MAX_UPLOAD_MB: ${CVA_MAX_UPLOAD_MB:-500}
+    volumes:
+      # Uploads, results, the SQLite queue and the downloaded model weights.
+      # Losing this loses every transcript.
+      - cva-data:/data
+    restart: unless-stopped
+    # A lesson is tens of minutes of sustained CPU. Give it every core you
+    # have - this is the only dial that makes it faster on a CPU host.
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+
+volumes:
+  cva-data:
