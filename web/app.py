@@ -50,11 +50,11 @@ def job_page(job_id: str):
 @app.post("/api/upload")
 async def upload(
     file: UploadFile = File(...),
-    language: str = Form("ml"),
-    model_size: str = Form("small"),
+    language: str = Form("hi"),
+    model_size: str = Form("tiny"),
     num_speakers: int | None = Form(None),
-    max_speakers: int | None = Form(None),
-    use_llm: bool = Form(True),
+    max_speakers: int | None = Form(6),
+    use_llm: bool = Form(False),
 ):
     ext = os.path.splitext(file.filename or "")[1].lower()
     if ext not in ALLOWED_EXT:

@@ -81,27 +81,34 @@ def main() -> None:
 
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("audio", help="path to the recording")
-    p.add_argument("--lang", default="ml", help="ml, hi, ta, en ...")
-    p.add_argument("--model", default="small", help="tiny, base, small, medium")
+    p.add_argument("--lang", default="hi", help="hi, ml, ta, te, kn, en ...")
+    p.add_argument("--model", default="tiny",
+                   help="tiny (start here), base, small, medium. small is ~5x "
+                        "slower than tiny on CPU - hours for a full lesson")
     p.add_argument("--beam", type=int, default=5,
                    help="beam width; 1 is much faster on tiny, but on small it is "
                         "slower AND worse - it loops on noisy audio")
     p.add_argument("--speakers", type=int, help="exact speaker count, if known")
-    p.add_argument("--max-speakers", type=int, help="upper bound on speakers")
+    p.add_argument("--max-speakers", type=int, default=6,
+                   help="upper bound on speakers (default 6)")
     p.add_argument("--out", default="out", help="directory for the results")
-    p.add_argument("--no-llm", action="store_true", help="metrics only, no API call")
+    # The review is the only part that costs money, so it is opt-in.
+    p.add_argument("--llm", action="store_true",
+                   help="also run the paid AI teaching review")
+    p.add_argument("--no-llm", action="store_true",
+                   help=argparse.SUPPRESS)   # now the default; kept so old commands work
     p.add_argument("--teacher", help="re-score an existing --out with this speaker as teacher")
     args = p.parse_args()
 
     if args.teacher:
         result = run.reanalyze(args.out, language=args.lang,
-                               use_llm=not args.no_llm, teacher=args.teacher)
+                               use_llm=args.llm, teacher=args.teacher)
     else:
         result = run.run(
             args.audio, work_dir=args.out, language=args.lang,
             model_size=args.model, beam_size=args.beam,
             num_speakers=args.speakers,
-            max_speakers=args.max_speakers, use_llm=not args.no_llm,
+            max_speakers=args.max_speakers, use_llm=args.llm,
             on_progress=progress,
         )
 

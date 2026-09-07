@@ -27,8 +27,8 @@
     <div class="opts">
       <label class="field"><span>Language</span>
         <select id="language">
-          <option value="ml" selected>Malayalam</option>
-          <option value="hi">Hindi</option>
+          <option value="ml">Malayalam</option>
+          <option value="hi" selected>Hindi</option>
           <option value="ta">Tamil</option>
           <option value="te">Telugu</option>
           <option value="kn">Kannada</option>
@@ -38,9 +38,9 @@
 
       <label class="field"><span>Whisper model</span>
         <select id="model_size">
-          <option value="tiny">tiny &middot; fastest</option>
+          <option value="tiny" selected>tiny &middot; fastest &middot; start here</option>
           <option value="base">base</option>
-          <option value="small" selected>small &middot; balanced</option>
+          <option value="small">small &middot; balanced &middot; hours on CPU</option>
           <option value="medium">medium &middot; best</option>
         </select>
       </label>
@@ -50,13 +50,13 @@
       </label>
 
       <label class="field"><span>Speakers (max)</span>
-        <input type="number" id="max_speakers" min="2" max="20" placeholder="auto">
+        <input type="number" id="max_speakers" min="2" max="20" value="6" placeholder="auto">
       </label>
     </div>
 
     <label class="checkline">
-      <input type="checkbox" id="use_llm" checked>
-      Run the AI teaching review as well as the metrics
+      <input type="checkbox" id="use_llm">
+      Also run the AI teaching review (costs money — everything else is free)
     </label>
 
     <div style="margin-top:18px; display:flex; gap:10px; align-items:center;">
@@ -94,7 +94,7 @@ function pick(f) {
   const mb = (f.size / 1048576).toFixed(1);
   $("dropLabel").textContent = `${f.name} · ${mb} MB`;
   $("go").disabled = false;
-  $("hint").textContent = "Runs on CPU — expect roughly the length of the recording.";
+  $("hint").textContent = `CPU only — allow roughly ${Math.max(1, Math.round(f.size / 1048576 / 60))}–${Math.max(2, Math.round(f.size / 1048576 / 30))} min at "tiny", far longer at "small".`;
 }
 
 function show(msg) {
