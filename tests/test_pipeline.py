@@ -243,6 +243,35 @@ def main():
     ok &= check("availability reports local as always usable",
                 backends.available()["local"] is True)
 
+    print("\njob dispatch")
+    # web/jobs.py builds one kwargs dict and sends it down one of two paths.
+    # Nothing else here executes those calls - they need audio and models - so
+    # the signatures are checked directly. A `backend` argument added to run()
+    # and not to run_streaming() shipped a TypeError on every streaming job.
+    import inspect
+
+    from pipeline import run as pipeline_run
+    from pipeline import stream as pipeline_stream
+
+    common = dict(work_dir="w", language="hi", model_size="tiny",
+                  num_speakers=None, max_speakers=6, use_llm=False,
+                  on_progress=lambda *a: None)
+    try:
+        inspect.signature(pipeline_stream.run_streaming).bind(
+            "a.wav", chunk_seconds=300, **common)
+        ok &= check("jobs.py kwargs bind to run_streaming", True)
+    except TypeError as e:
+        ok &= check("jobs.py kwargs bind to run_streaming", False, str(e))
+    try:
+        inspect.signature(pipeline_run.run).bind(
+            "a.wav", backend="scribe", min_speakers=None, **common)
+        ok &= check("jobs.py kwargs bind to run", True)
+    except TypeError as e:
+        ok &= check("jobs.py kwargs bind to run", False, str(e))
+    ok &= check("streaming takes no backend - it is local by construction",
+                "backend" not in inspect.signature(
+                    pipeline_stream.run_streaming).parameters)
+
     print("\ntranscript")
     text = analyze.build_transcript(labelled)
     ok &= check("transcript has one line per utterance",
