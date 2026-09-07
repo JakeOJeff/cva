@@ -74,7 +74,46 @@ def write_wav(samples: np.ndarray, out_path: str) -> str:
 
 
 def normalize(path: str, out_path: str) -> tuple[str, float]:
-    """Returns (wav_path, duration_seconds)."""
-    samples = decode(path)
-    write_wav(samples, out_path)
-    return out_path, len(samples) / SAMPLE_RATE
+    """
+    Returns (wav_path, duration_seconds).
+
+    Frames are resampled and written straight to the wav as they arrive,
+    instead of going through `decode`. `decode` returns the whole waveform,
+    which for a 64-minute lesson means a 115MB chunk list, a 115MB
+    concatenated copy, and float32 copies of twice that again - peaking near
+    900MB and OOM-killing a 512MB container in the pipeline's first stage.
+
+    Nothing needs the whole waveform here. The wav on disk is what every
+    later stage opens, so the peak is one frame.
+    """
+    os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
+
+    total = 0
+    with av.open(path) as container, wave.open(out_path, "wb") as w:
+        stream = container.streams.audio[0]
+        stream.thread_type = "AUTO"
+
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(SAMPLE_RATE)
+
+        resampler = av.audio.resampler.AudioResampler(
+            format="s16", layout="mono", rate=SAMPLE_RATE
+        )
+
+        def emit(frame):
+            nonlocal total
+            for out in resampler.resample(frame):
+                arr = out.to_ndarray().reshape(-1)
+                w.writeframes(arr.tobytes())
+                total += arr.size
+
+        for frame in container.decode(stream):
+            emit(frame)
+        emit(None)          # flush whatever the resampler still holds
+
+    if total == 0:
+        os.remove(out_path)
+        raise ValueError(f"no decodable audio in {path}")
+
+    return out_path, total / SAMPLE_RATE

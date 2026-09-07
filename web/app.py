@@ -144,13 +144,25 @@ async def upload(
     if MAX_AUDIO_MINUTES:
         from pipeline import audio as audio_mod
         seconds = audio_mod.probe_duration(dest)
-        if seconds and seconds > MAX_AUDIO_MINUTES * 60:
+        estimated = seconds is None
+        if estimated:
+            # A missing duration used to mean "let it through", which is how
+            # an hour-long lesson reached an instance sized for five minutes.
+            # VBR mp3s and phone recordings routinely omit it, so guess from
+            # the byte count at 128kbps. That is a generous bitrate, so the
+            # estimate runs short for quieter files and this still errs
+            # toward accepting rather than refusing something that would
+            # have been fine.
+            seconds = size / 16000.0
+        if seconds > MAX_AUDIO_MINUTES * 60:
             os.remove(dest)
+            about = "about " if estimated else ""
             raise HTTPException(413,
-                f"This recording is {seconds / 60:.0f} minutes; this instance "
-                f"accepts up to {MAX_AUDIO_MINUTES}. It runs on a small shared "
-                "CPU, where an hour of audio takes many hours to process. Trim "
-                "the clip, or run it locally where there is no limit.")
+                f"This recording is {about}{seconds / 60:.0f} minutes; this "
+                f"instance accepts up to {MAX_AUDIO_MINUTES}. It runs on a "
+                "small shared CPU, where an hour of audio takes many hours to "
+                "process. Trim the clip, or run it locally where there is no "
+                "limit.")
 
     job_id = jobs.create(file.filename or stem, dest, {
         "language": language,

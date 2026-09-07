@@ -41,21 +41,41 @@ def run(audio_path: str, *, work_dir: str, language: str = "ml",
             on_progress(stage, max(0.0, min(fraction, 1.0)), note)
 
     # --- 1. normalize ---------------------------------------------------
-    progress("normalize", 0.0, "decoding audio")
-    wav, duration = audio.normalize(audio_path, os.path.join(work_dir, "audio_16k.wav"))
-    progress("normalize", 1.0, f"{duration:.0f}s of audio")
+    # The backend is picked first, because whether this stage runs at all
+    # depends on which one it is. A remote backend is handed the original
+    # file, so decoding here would write a 115MB wav that nothing opens -
+    # and on a 512MB host the decode is what kills the container, in the
+    # pipeline's very first stage, before anything has been transcribed.
+    engine = backends.get(backend)
+
+    if getattr(engine, "needs_wav", True):
+        progress("normalize", 0.0, "decoding audio")
+        wav, duration = audio.normalize(audio_path,
+                                        os.path.join(work_dir, "audio_16k.wav"))
+        progress("normalize", 1.0, f"{duration:.0f}s of audio")
+    else:
+        progress("normalize", 0.0, f"{engine.name} reads the original file")
+        wav = None
+        duration = audio.probe_duration(audio_path) or 0.0
+        progress("normalize", 1.0,
+                 f"{duration:.0f}s of audio" if duration else "length not declared")
 
     # --- 2/3/4. words, voices, and the marriage of the two ----------------
     # One call, two implementations: local faster-whisper + pyannote, or
     # Scribe doing both in a single request. Everything below is identical
     # either way - that is the whole point of the seam.
-    engine = backends.get(backend)
     progress("transcribe", 0.0, f"backend: {engine.name}")
     segments, turns, meta = engine.run(
         audio_path=audio_path, wav_path=wav, language=language,
         progress=progress, model_size=model_size, beam_size=beam_size,
         num_speakers=num_speakers, max_speakers=max_speakers,
     )
+    # A container that never declared its length leaves duration at 0, and
+    # every talk ratio downstream divides by it. The transcript is the
+    # fallback: the last word cannot end after the audio does.
+    if not duration and segments:
+        duration = max(s["end"] for s in segments)
+
     meta.setdefault("duration", round(duration, 2))
     transcribe_mod_save(segments, meta, os.path.join(work_dir, "segments.json"))
 

@@ -284,6 +284,55 @@ def main():
     except ValueError:
         ok &= check("over-long transcript raises rather than truncates", True)
 
+    # A remote backend is handed the original file, so decoding a 16k wav
+    # for it is pure waste - and on a 512MB host it is fatal waste: the
+    # decode peaked at 813MB for a 64-minute lesson and the container was
+    # OOM-killed in the pipeline's first stage, taking the upload with it.
+    print("\nnormalize is skipped when the backend does not need a wav")
+    import tempfile
+
+    from pipeline import audio as audio_mod
+    from pipeline import run as run_mod
+
+    ok &= check("local declares it needs the wav",
+                backends.LocalBackend.needs_wav is True)
+    ok &= check("scribe declares it does not",
+                backends.ScribeBackend.needs_wav is False)
+
+    class StubRemote:
+        name, needs_network, needs_wav = "stub", True, False
+
+        def run(self, *, audio_path, wav_path, **kw):
+            assert wav_path is None, "built a wav for a backend that wants none"
+            segs, turns = build_lesson()
+            for seg, turn in zip(segs, turns):
+                seg["speaker"] = turn["speaker"]
+            return segs, turns, {"backend": "stub"}
+
+    ran = []
+
+    def boom(*a, **k):
+        ran.append(1)
+        raise AssertionError("normalize ran for a backend that needs no wav")
+
+    real_get, real_normalize = backends.get, audio_mod.normalize
+    try:
+        backends.get = lambda name=None: StubRemote()
+        audio_mod.normalize = boom
+        with tempfile.TemporaryDirectory() as wd:
+            # The path does not exist, so probe_duration returns None - which
+            # is exactly the headerless-file case that let an hour of audio
+            # past the five-minute cap.
+            res = run_mod.run("no/such/file.mp3", work_dir=wd,
+                              language="hi", use_llm=False)
+            ok &= check("normalize never ran", not ran)
+            ok &= check("no 16k wav was written",
+                        not os.path.exists(os.path.join(wd, "audio_16k.wav")))
+            ok &= check("duration falls back to the last word",
+                        res["meta"]["duration"] > 0)
+    finally:
+        backends.get, audio_mod.normalize = real_get, real_normalize
+
     print("\n" + ("ALL PASSED" if ok else "FAILURES ABOVE"))
     return 0 if ok else 1
 
