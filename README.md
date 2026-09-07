@@ -23,7 +23,10 @@ copy .env.example .env      # then fill in the tokens
 ```
 
 No system `ffmpeg` is needed — audio is decoded through PyAV, which ships its
-own.
+own. That holds for diarization too: pyannote 4.x would normally decode via
+torchcodec, which *does* need FFmpeg's shared libraries and fails on Windows
+with a wall of DLL errors. We hand it a preloaded waveform instead, so its
+decoder is never reached.
 
 Two credentials go in `.env`:
 
