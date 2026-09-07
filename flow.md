@@ -6,19 +6,19 @@ The Claude review is the only part that costs money. Turn it off and
 everything else still runs — transcript, speaker separation, teacher
 identification, and every metric. Nothing leaves your machine.
 
-**Web app:** untick **"Run the AI teaching review as well as the metrics"**
-before you press the button.
+**Web app:** nothing — the AI review checkbox is off by default. Tick
+"Also run the AI teaching review" only when you want it.
 
-**CLI:** add `--no-llm`.
+**CLI:** nothing — it is off by default. Add `--llm` to turn it on.
 
 ```
-.venv\Scripts\python main.py assets/audio.mp3 --lang hi --model small --out out --no-llm
+.venv\Scripts\python main.py assets/audio.mp3 --out out
 ```
 
 You do **not** need an `ANTHROPIC_API_KEY` for this. If the key is missing the
 review is skipped automatically with a note in the result rather than failing
-the run, so `--no-llm` is really just about not spending money when you *do*
-have a key configured.
+the run, so this is really just about not spending money when you *do* have
+a key configured.
 
 You still need `HF_TOKEN` — that one is free, see the README.
 
@@ -38,8 +38,8 @@ an explanation landed, whether feedback was specific.
 
 ### The recommended way to work
 
-Run `--no-llm` while you are still tuning the language, the model size and the
-speaker count. Once the transcript and the teacher call look right, do one run
+Stay on the defaults while you are still tuning the language, the model size
+and the speaker count. Once the transcript and the teacher call look right, do one run
 with the review on. Correcting the teacher afterwards and re-deriving every
 number costs nothing and takes about a second.
 
@@ -54,17 +54,18 @@ Open http://localhost:8000, drop in a recording, **pick the language**, wait.
 
 ## CLI
 
-    .venv\Scripts\python main.py assets/audio.mp3 --lang hi --model small --out out
+    .venv\Scripts\python main.py assets/audio.mp3 --out out --model small
 
-    --lang ml|hi|ta|te|kn|en   force the language (get this right, see below)
-    --model tiny|base|small|medium
+    --lang hi|ml|ta|te|kn|en   force the language (default hi; get this right)
+    --model tiny|base|small|medium   (default tiny; small is hours on CPU)
+    --beam 5                   beam width; 1 is faster on tiny, a trap on small
     --speakers 4               exact count, if you know it
-    --max-speakers 8           ceiling, safer than an exact count
-    --no-llm                   metrics only, no API call
+    --max-speakers 6           ceiling, safer than an exact count (default 6)
+    --llm                      also run the paid AI review (off by default)
 
 Re-score an existing run without re-transcribing (seconds, not minutes):
 
-    .venv\Scripts\python main.py x --out out --teacher SPEAKER_02 --no-llm
+    .venv\Scripts\python main.py x --out out --teacher SPEAKER_02
 
 Results land in `out/result.json` and `out/transcript.txt`.
 
