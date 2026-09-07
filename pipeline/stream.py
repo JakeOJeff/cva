@@ -29,7 +29,7 @@ import time
 
 import numpy as np
 
-from . import analyze, assign, audio, diarize, roles, transcribe
+from . import analyze, assign, audio, diarize, lang, roles, transcribe
 
 CHUNK_SECONDS = 300.0        # 5 minutes: long enough for clustering to have something to work with
 BOUNDARY_SEARCH = 10.0       # look this far either side of a cut for a quiet moment
@@ -291,7 +291,10 @@ def run_streaming(audio_path: str, *, work_dir: str, language: str = "hi",
 
     # --- everything downstream, on the reconciled whole -------------------
     progress("analyze", 0.0, "scoring the lesson")
+    ratio = lang.script_ratio(" ".join(s["text"] for s in all_segments), language)
     meta = {
+        "script_ratio": ratio,
+        "wrong_script": ratio is not None and ratio < 0.5,
         "language": language, "duration": round(duration, 2),
         "n_segments": len(all_segments), "model": model_size,
         "beam_size": beam_size, "mode": "streaming",

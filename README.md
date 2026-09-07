@@ -77,6 +77,37 @@ CVA_DIARIZATION_MODEL=pyannote/speaker-diarization-3.1
 
 See `flow.md` for the full flag list.
 
+## Model size is not a speed dial for Indian languages
+
+Measured on 60s of the bundled Hindi recording, share of output actually in
+Devanagari:
+
+| Model | Config | Devanagari |
+|---|---|---|
+| `tiny` | as shipped | **0.0%** |
+| `tiny` | + Devanagari `initial_prompt` | 11.4%, and garbage |
+| `small` | **as shipped** | **98.0%** |
+| `small` | + Devanagari `initial_prompt` | 86.5% — worse |
+| `small` | + prompt, `condition_on_previous_text=False` | 93.8% — worse, 65% slower |
+
+Two things follow.
+
+**`tiny` cannot write Hindi at all.** It does not fail; it emits confident
+English ("Let's go to the last time") that reads like a transcript and is not
+one. `small` is the first usable model for Indic languages. Use `tiny` to
+prove the pipeline runs, never to produce a transcript you intend to read.
+
+**Do not add an `initial_prompt` to pin the script.** It is the standard
+advice and it measurably makes `small` worse. `small` already gets there on
+its own.
+
+Because a wrong-script transcript looks fine until you read it, the pipeline
+now measures it: `meta.script_ratio` is the share of letters in the script the
+language is written in, and `meta.wrong_script` flags anything under 0.5. The
+results page leads with a warning when it trips, and says which numbers still
+mean something — the speaker timeline and talk ratios come from the audio, so
+they survive; the words, question counts and any AI review do not.
+
 ## Get the language right
 
 This is the one setting that will silently ruin a run.

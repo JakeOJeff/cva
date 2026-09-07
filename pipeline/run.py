@@ -13,7 +13,7 @@ import json
 import os
 import time
 
-from . import analyze, assign, audio, diarize, roles, transcribe
+from . import analyze, assign, audio, diarize, lang, roles, transcribe
 
 STAGES = ["normalize", "transcribe", "diarize", "assign", "roles", "analyze"]
 
@@ -61,7 +61,12 @@ def run(audio_path: str, *, work_dir: str, language: str = "ml",
         progress=lambda done, total: progress("transcribe", done / (total or 1),
                                               f"{done:.0f}s / {total:.0f}s"),
     )
+    # Did the model actually write the language, or English-looking noise?
+    # A too-small model does not fail on Hindi - it invents plausible English.
+    ratio = lang.script_ratio(" ".join(s["text"] for s in segments), language)
     meta.update({
+        "script_ratio": ratio,
+        "wrong_script": ratio is not None and ratio < 0.5,
         "requested_language": language,
         "detected_language": detected,
         "detected_confidence": confidence,

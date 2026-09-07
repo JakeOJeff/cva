@@ -347,7 +347,20 @@ async function load() {
     everything derived from it as unreliable, and re-run in
     ${esc(res.meta.detected_language)}.</div></div>` : "";
 
-  $("body").innerHTML = langWarn +
+  // A model too small for the language does not fail - it writes confident
+  // English-looking text. Measured: `tiny` returns 0% Devanagari on Hindi
+  // audio that `small` transcribes at 98%.
+  const scriptWarn = res.meta.wrong_script ? `<div class="panel">
+    <div class="warnbox"><b>This transcript is not in the right script.</b> Only
+    ${Math.round((res.meta.script_ratio || 0) * 100)}% of it is in the script
+    ${esc(res.meta.language)} is written in, which means the
+    <b>${esc(res.meta.model)}</b> model is too small for this language and has
+    written plausible-looking nonsense instead. The speaker timeline and talk
+    ratios are still meaningful — they come from the audio, not the words — but
+    the text, question counts and any AI review are not. Re-run with
+    <b>small</b> or larger.</div></div>` : "";
+
+  $("body").innerHTML = langWarn + scriptWarn +
     `<div class="panel"><h2>At a glance</h2>${tiles(res.metrics)}</div>` +
     verdict(res) + proportion(res.metrics) + timeline(res) +
     review(res) + transcript(res);
