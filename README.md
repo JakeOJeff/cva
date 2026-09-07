@@ -115,6 +115,63 @@ person across two labels. The results page says so and lets you override it;
 `POST /api/jobs/{id}/teacher` re-derives everything from the saved result
 without touching the audio.
 
+## Putting it on a live URL
+
+The models run on your CPU and a lesson takes tens of minutes of it. A cheap
+cloud VM is *slower* than the 24-core box you already have, so the usual
+answer is not "deploy it" — it is "tunnel to it".
+
+**Set a password first.** Without `CVA_PASSWORD` there is no authentication at
+all: anyone with the URL can upload audio and read every transcript. This
+holds recordings of children, so treat the gate as mandatory rather than
+optional.
+
+```
+# in .env
+CVA_USERNAME=teacher
+CVA_PASSWORD=something-long-and-not-guessable
+```
+
+Then expose it. Cloudflare Tunnel needs no account for a quick link:
+
+```bash
+winget install --id Cloudflare.cloudflared
+cloudflared tunnel --url http://localhost:8000
+```
+
+That prints a `https://<random>.trycloudflare.com` URL, HTTPS included. It
+lasts as long as the command runs; a named tunnel on your own domain survives
+restarts. ngrok (`ngrok http 8000`) is equivalent and needs a free account.
+
+Two things to know before sharing the link:
+
+- **Uploads are capped** by `CVA_MAX_UPLOAD_MB` (500 by default), and a long
+  upload over a tunnel can time out well before that. Prefer putting large
+  files on the machine directly and using the CLI.
+- **Jobs run one at a time.** Several teachers uploading at once will queue,
+  not parallelise, and each lesson holds the worker for tens of minutes.
+
+Actually deploying to a server only makes sense with a GPU, which changes the
+economics entirely — a GPU box turns hours into minutes. If you go that way,
+put it behind a real reverse proxy with TLS rather than relying on Basic auth
+alone.
+
+## Stopping and deleting sessions
+
+| Action | Where |
+|---|---|
+| Stop a running or queued session | **Stop** in the sessions table, or `POST /api/jobs/{id}/cancel` |
+| Delete one session + its audio + results | **Delete** in the table, or `DELETE /api/jobs/{id}` |
+| Delete every failed session | **Delete all failed sessions** button, or `DELETE /api/jobs?status=failed` |
+
+Cancellation is **cooperative**, not instant. Whisper and pyannote are opaque
+calls that cannot be interrupted partway, so a running job stops at the next
+block boundary — up to one chunk later. A queued job that never started is
+cancelled immediately. Whatever finished before the stop stays on disk.
+
+This is another reason chunked mode is the default: in batch mode the only
+checkpoints are between whole stages, so a stop can take much longer to land.
+
 ## Streaming vs batch
 
 By default a lesson is processed in ~5-minute blocks and each block's dialogue

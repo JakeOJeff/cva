@@ -7,13 +7,16 @@ without a server.
 """
 
 import asyncio
+import base64
 import json
 import os
+import secrets
 import shutil
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
-from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
+from fastapi.responses import (FileResponse, JSONResponse, Response,
+                               StreamingResponse)
 from fastapi.staticfiles import StaticFiles
 
 from . import jobs
@@ -27,12 +30,46 @@ ALLOWED_EXT = {".mp3", ".wav", ".m4a", ".aac", ".ogg", ".opus", ".flac",
 
 app = FastAPI(title="Classroom Voice Analysis")
 
+# Password gate. Off when CVA_PASSWORD is unset, which is right for
+# localhost and wrong for anything else: this app stores classroom
+# recordings of children, and without a gate a public URL lets anyone
+# upload audio and download every transcript.
+PASSWORD = os.environ.get("CVA_PASSWORD", "").strip()
+USERNAME = os.environ.get("CVA_USERNAME", "teacher").strip()
+
+
+@app.middleware("http")
+async def _auth(request, call_next):
+    if not PASSWORD:
+        return await call_next(request)
+
+    header = request.headers.get("authorization", "")
+    if header.startswith("Basic "):
+        try:
+            raw = base64.b64decode(header[6:]).decode("utf-8", "replace")
+            user, _, pwd = raw.partition(":")
+            # compare_digest on both halves: no early exit on the first
+            # differing byte, so timing does not leak the password.
+            if (secrets.compare_digest(user, USERNAME)
+                    and secrets.compare_digest(pwd, PASSWORD)):
+                return await call_next(request)
+        except Exception:                                     # noqa: BLE001
+            pass
+
+    return Response(status_code=401, content="Authentication required",
+                    headers={"WWW-Authenticate": 'Basic realm="Classroom Voice Analysis"'})
+
 
 @app.on_event("startup")
 def _startup() -> None:
     jobs.init()
     jobs.reap_interrupted()          # startup only - never from a request
     jobs.ensure_worker()
+    if not PASSWORD:
+        print("\n  [!] CVA_PASSWORD is not set - this server has NO authentication.")
+        print("      Fine on localhost. Do not expose it to the internet like this:")
+        print("      anyone with the URL could upload audio and read every")
+        print("      transcript of your classroom.\n")
 
 
 # ------------------------------------------------------------------ pages
@@ -147,7 +184,7 @@ async def stream_events(job_id: str):
                 return
 
             current = jobs.get(job_id)
-            if not current or current["status"] in ("done", "failed"):
+            if not current or current["status"] in ("done", "failed", "cancelled"):
                 # The run ended without a done event - say why rather than
                 # leaving the browser on an open socket forever.
                 payload = json.dumps({"type": "ended",
@@ -221,11 +258,50 @@ def transcript(job_id: str, role: str | None = None):
     return JSONResponse({"text": body, "n_utterances": len(utts)})
 
 
+@app.post("/api/jobs/{job_id}/cancel")
+def cancel_job(job_id: str):
+    """
+    Ask a queued or running job to stop.
+
+    A running job stops at the next block boundary, not instantly - Whisper
+    and pyannote are opaque calls that cannot be interrupted partway. Whatever
+    it already finished stays on disk.
+    """
+    job = jobs.get(job_id)
+    if not job:
+        raise HTTPException(404, "no such job")
+    if not jobs.cancel(job_id):
+        raise HTTPException(409, f"job is already {job['status']}")
+    return {"cancelling": job_id, "was": job["status"]}
+
+
 @app.delete("/api/jobs/{job_id}")
 def remove_job(job_id: str):
+    """
+    Remove a job, its uploaded audio and its results.
+
+    A running job is asked to stop first; its files go when it lets go of
+    them, so deleting one mid-run is safe.
+    """
+    job = jobs.get(job_id)
+    if not job:
+        raise HTTPException(404, "no such job")
+    if job["status"] in ("queued", "running"):
+        jobs.cancel(job_id)
     if not jobs.delete(job_id):
         raise HTTPException(404, "no such job")
-    return {"deleted": job_id}
+    return {"deleted": job_id, "was": job["status"]}
+
+
+@app.delete("/api/jobs")
+def remove_finished(status: str = "failed"):
+    """Bulk cleanup, e.g. every failed job. Never touches a live one."""
+    if status not in ("failed", "done", "cancelled"):
+        raise HTTPException(400, "status must be failed, done or cancelled")
+    removed = [j["id"] for j in jobs.listing(500) if j["status"] == status]
+    for job_id in removed:
+        jobs.delete(job_id)
+    return {"deleted": removed, "count": len(removed)}
 
 
 @app.get("/api/health")
