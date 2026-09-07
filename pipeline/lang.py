@@ -52,6 +52,45 @@ PRAISE_CUES = {
 
 _WORD_RE = re.compile(r"\w+", re.UNICODE)
 
+# Unicode block each language should actually come back in. Whisper does not
+# fail when a model is too small for a language - it emits confident English
+# or romanised text instead, which reads like a transcript and is not one.
+SCRIPT_RANGES = {
+    "hi": (0x0900, 0x097F),      # Devanagari
+    "mr": (0x0900, 0x097F),
+    "ne": (0x0900, 0x097F),
+    "bn": (0x0980, 0x09FF),      # Bengali
+    "pa": (0x0A00, 0x0A7F),      # Gurmukhi
+    "gu": (0x0A80, 0x0AFF),      # Gujarati
+    "or": (0x0B00, 0x0B7F),      # Odia
+    "ta": (0x0B80, 0x0BFF),      # Tamil
+    "te": (0x0C00, 0x0C7F),      # Telugu
+    "kn": (0x0C80, 0x0CFF),      # Kannada
+    "ml": (0x0D00, 0x0D7F),      # Malayalam
+    "si": (0x0D80, 0x0DFF),      # Sinhala
+    "ur": (0x0600, 0x06FF),      # Arabic script
+    "ar": (0x0600, 0x06FF),
+}
+
+
+def script_ratio(text: str, language: str) -> float | None:
+    """
+    Share of letters in the script this language is written in.
+
+    None when we have no expectation for the language (English and the rest
+    of the Latin-script set). Otherwise a number near 1.0 means the model
+    wrote the language; near 0.0 means it produced something else entirely -
+    which is what a too-small model does with Indian languages.
+    """
+    span = SCRIPT_RANGES.get(language)
+    if not span:
+        return None
+    letters = [c for c in text if c.isalpha()]
+    if not letters:
+        return None
+    lo, hi = span
+    return round(sum(1 for c in letters if lo <= ord(c) <= hi) / len(letters), 4)
+
 
 def _cues(table: dict, language: str) -> list[str]:
     """Always include English - classroom speech is code-mixed."""
