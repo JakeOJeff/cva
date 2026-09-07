@@ -146,46 +146,78 @@ person across two labels. The results page says so and lets you override it;
 `POST /api/jobs/{id}/teacher` re-derives everything from the saved result
 without touching the audio.
 
-## Putting it on a live URL
+## Hosting it
 
-The models run on your CPU and a lesson takes tens of minutes of it. A cheap
-cloud VM is *slower* than the 24-core box you already have, so the usual
-answer is not "deploy it" — it is "tunnel to it".
-
-**Set a password first.** Without `CVA_PASSWORD` there is no authentication at
-all: anyone with the URL can upload audio and read every transcript. This
-holds recordings of children, so treat the gate as mandatory rather than
-optional.
-
-```
-# in .env
-CVA_USERNAME=teacher
-CVA_PASSWORD=something-long-and-not-guessable
-```
-
-Then expose it. Cloudflare Tunnel needs no account for a quick link:
+There is a Dockerfile, a compose file and a `/data` volume holding uploads,
+results, the SQLite queue and the downloaded model weights.
 
 ```bash
-winget install --id Cloudflare.cloudflared
-cloudflared tunnel --url http://localhost:8000
+cp .env.example .env          # set HF_TOKEN and CVA_PASSWORD at minimum
+docker compose up -d --build
 ```
 
-That prints a `https://<random>.trycloudflare.com` URL, HTTPS included. It
-lasts as long as the command runs; a named tunnel on your own domain survives
-restarts. ngrok (`ngrok http 8000`) is equivalent and needs a free account.
+Then read the honest part before picking a host.
 
-Two things to know before sharing the link:
+### The machine matters more than the platform
 
-- **Uploads are capped** by `CVA_MAX_UPLOAD_MB` (500 by default), and a long
-  upload over a tunnel can time out well before that. Prefer putting large
-  files on the machine directly and using the CLI.
-- **Jobs run one at a time.** Several teachers uploading at once will queue,
-  not parallelise, and each lesson holds the worker for tens of minutes.
+This is not a normal web app. One lesson is tens of minutes of *sustained*
+CPU, so the usual cheap tiers are the wrong shape: it is not request latency
+that hurts, it is throughput on a single long job.
 
-Actually deploying to a server only makes sense with a GPU, which changes the
-economics entirely — a GPU box turns hours into minutes. If you go that way,
-put it behind a real reverse proxy with TLS rather than relying on Basic auth
-alone.
+Extrapolated from a real 64-minute lesson measured end to end on a 24-core box
+(42 min at `tiny`). CPU work scales sublinearly with cores, so these are
+estimates, not promises — but the ordering is reliable:
+
+| Host | Cores | `tiny` | `small` |
+|---|---|---|---|
+| your 24-core machine | 24 | 42 min | ~80 min |
+| Hetzner CCX43 (dedicated) | 16 | ~56 min | ~107 min |
+| Hetzner CCX33 / DO / Linode | 8 | ~91 min | ~174 min |
+| Hugging Face Spaces, free | 2 | ~4 hr | ~7.7 hr |
+| **any modern NVIDIA GPU** | — | **minutes** | **minutes** |
+
+The uncomfortable conclusion: **on CPU, every affordable host is slower than
+the machine you already have.** Hosting buys availability, not speed.
+
+### Choosing
+
+**A CPU VPS, if overnight turnaround is fine.** Hetzner CCX33 (8 dedicated
+vCPU, 32GB) is around €25/month and the best value here; DigitalOcean and
+Linode equivalents cost more for the same cores. Use *dedicated* vCPU, not
+shared — a shared instance gets throttled exactly when a lesson is running.
+Deploy is `git clone`, `docker compose up -d`. Expect ~3 hours a lesson at
+`small`.
+
+**A GPU box, if turnaround matters.** This is the only thing that makes it
+fast: hours become minutes. Build with the CUDA wheels and both stages move —
+
+```bash
+docker compose build --build-arg TORCH_INDEX=https://download.pytorch.org/whl/cu124
+```
+
+`transcribe.py` and `diarize.py` both detect CUDA on their own; `CVA_DEVICE`
+forces it either way. A dedicated GPU server (Hetzner GEX44, ~€184/month) is
+predictable; on-demand pods (RunPod, Lambda) are ~$0.35/hour, which is far
+cheaper if you process a few lessons a day and shut it down between.
+
+**Not serverless.** Vercel, Lambda, Cloud Run and friends cap request time and
+lose local disk. A job here runs for tens of minutes and writes to a volume.
+
+### Things that will bite you
+
+- **Run one web worker.** The job queue is an in-process thread, so a second
+  worker starts a second consumer of a queue it cannot see: two processes
+  racing for the same SQLite rows, each saturating the CPU. Scale by giving
+  the container more cores, never by adding workers. The Dockerfile pins
+  `--workers 1`.
+- **The volume is the product.** `/data` holds every transcript and the queue.
+  Back it up; a container rebuild without it loses everything.
+- **First run downloads ~600MB** of model weights into `/data/huggingface`.
+  Slow once, then cached.
+- **Set `CVA_PASSWORD`.** Compose refuses to start without it, deliberately —
+  this holds recordings of children.
+- **Give it RAM.** A 64-minute lesson is ~250MB of float32 held twice, plus
+  the models. 8GB is comfortable, 4GB is tight.
 
 ## Stopping and deleting sessions
 

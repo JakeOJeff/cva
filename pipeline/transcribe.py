@@ -9,6 +9,7 @@ Get this right and nothing downstream is hard.
 """
 
 import json
+import os
 
 from faster_whisper import WhisperModel
 
@@ -24,12 +25,37 @@ _MODELS: dict[tuple[str, str, int], WhisperModel] = {}
 CPU_THREADS = 0
 
 
-def get_model(size: str = "small", compute_type: str = "int8",
+def device() -> tuple[str, str]:
+    """
+    (device, compute_type) for this machine.
+
+    CUDA is worth 10-30x here, so a GPU host must not be left running the CPU
+    path by accident. float16 on GPU, int8 on CPU - int8 on CUDA is slower
+    than float16 on most cards, which is the opposite of the CPU tradeoff.
+    Override with CVA_DEVICE=cpu|cuda.
+    """
+    forced = os.environ.get("CVA_DEVICE", "").strip().lower()
+    if forced in ("cpu", "cuda"):
+        return forced, ("float16" if forced == "cuda" else "int8")
+    try:
+        import torch
+        if torch.cuda.is_available():
+            return "cuda", "float16"
+    except Exception:                                         # noqa: BLE001
+        pass
+    return "cpu", "int8"
+
+
+def get_model(size: str = "small", compute_type: str | None = None,
               cpu_threads: int = CPU_THREADS) -> WhisperModel:
-    key = (size, compute_type, cpu_threads)
+    dev, default_compute = device()
+    compute_type = compute_type or default_compute
+    key = (size, compute_type, cpu_threads if dev == "cpu" else -1)
     if key not in _MODELS:
-        _MODELS[key] = WhisperModel(size, device="cpu", compute_type=compute_type,
-                                    cpu_threads=cpu_threads)
+        kwargs = {"device": dev, "compute_type": compute_type}
+        if dev == "cpu":
+            kwargs["cpu_threads"] = cpu_threads
+        _MODELS[key] = WhisperModel(size, **kwargs)
     return _MODELS[key]
 
 
