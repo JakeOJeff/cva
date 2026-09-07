@@ -34,7 +34,11 @@ def metrics(utterances, meta, language: str = "ml") -> dict:
 
     t_time = sum(u["end"] - u["start"] for u in teacher)
     s_time = sum(u["end"] - u["start"] for u in student)
-    speech = t_time + s_time or 1.0
+    # Speech the diarizer could not attribute to anyone. It is real speech, so
+    # it belongs in the denominator - but it is not a student, and counting it
+    # as one would overstate how much the class talked.
+    u_time = sum(u["end"] - u["start"] for u in roles.unattributed(utterances))
+    speech = t_time + s_time + u_time or 1.0
 
     t_questions = [u for u in teacher if lang.is_question(u["text"], language)]
     t_words = sum(len(lang.words(u["text"])) for u in teacher)
@@ -49,6 +53,8 @@ def metrics(utterances, meta, language: str = "ml") -> dict:
 
         "teacher_talk_time": round(t_time, 2),
         "student_talk_time": round(s_time, 2),
+        "unattributed_talk_time": round(u_time, 2),
+        "unattributed_ratio": round(u_time / speech, 4),
         # The headline number in classroom research. Sustained above ~0.80
         # means lecture, not discussion.
         "teacher_talk_ratio": round(t_time / speech, 4),

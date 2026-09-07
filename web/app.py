@@ -6,12 +6,14 @@ back. Every decision about the audio lives in `pipeline/` and can be tested
 without a server.
 """
 
+import asyncio
+import json
 import os
 import shutil
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
 from . import jobs
@@ -55,6 +57,8 @@ async def upload(
     num_speakers: int | None = Form(None),
     max_speakers: int | None = Form(6),
     use_llm: bool = Form(False),
+    stream: bool = Form(True),
+    chunk_seconds: int = Form(300),
 ):
     ext = os.path.splitext(file.filename or "")[1].lower()
     if ext not in ALLOWED_EXT:
@@ -88,6 +92,8 @@ async def upload(
         "num_speakers": num_speakers,
         "max_speakers": max_speakers,
         "use_llm": use_llm,
+        "stream": stream,
+        "chunk_seconds": chunk_seconds,
     })
     return {"job_id": job_id, "size_bytes": size}
 
@@ -105,6 +111,60 @@ def job_status(job_id: str):
     job.pop("audio_path", None)
     job.pop("work_dir", None)
     return job
+
+
+@app.get("/api/jobs/{job_id}/stream")
+async def stream_events(job_id: str):
+    """
+    Server-Sent Events: each chunk's dialogue as soon as that chunk is done.
+
+    Events are replayed from the start of the file, so a browser that opens
+    this halfway through still gets everything - no state is held in the
+    connection, and a reconnect is not a lost result.
+    """
+    job = jobs.get(job_id)
+    if not job:
+        raise HTTPException(404, "no such job")
+    path = os.path.join(job["work_dir"], "events.jsonl")
+
+    async def generate():
+        sent = 0
+        idle = 0.0
+        while True:
+            lines = []
+            if os.path.exists(path):
+                with open(path, encoding="utf-8") as f:
+                    lines = f.read().splitlines()
+
+            for line in lines[sent:]:
+                if line.strip():
+                    yield f"data: {line}\n\n"
+            if len(lines) > sent:
+                idle = 0.0
+                sent = len(lines)
+
+            if lines and '"type": "done"' in lines[-1]:
+                return
+
+            current = jobs.get(job_id)
+            if not current or current["status"] in ("done", "failed"):
+                # The run ended without a done event - say why rather than
+                # leaving the browser on an open socket forever.
+                payload = json.dumps({"type": "ended",
+                                      "status": current["status"] if current else "gone",
+                                      "error": (current or {}).get("error")})
+                yield f"data: {payload}\n\n"
+                return
+
+            await asyncio.sleep(0.5)
+            idle += 0.5
+            if idle >= 15.0:               # keep proxies from closing an idle stream
+                yield ": keepalive\n\n"
+                idle = 0.0
+
+    return StreamingResponse(generate(), media_type="text/event-stream",
+                             headers={"Cache-Control": "no-cache",
+                                      "X-Accel-Buffering": "no"})
 
 
 @app.get("/api/jobs/{job_id}/result")

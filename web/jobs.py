@@ -160,25 +160,49 @@ def delete(job_id: str) -> bool:
 # Used only to turn per-stage progress into one honest overall bar.
 STAGE_WEIGHTS = {
     "normalize": 0.03,
+    # batch mode
     "transcribe": 0.55,
     "diarize": 0.35,
+    # streaming mode: one "chunk" stage covers transcribe+diarize per block
+    "chunk": 0.90,
+    "reconcile": 0.03,
     "assign": 0.01,
     "roles": 0.01,
-    "analyze": 0.05,
+    "analyze": 0.04,
 }
 
 
+def _overall_streaming(stage: str, fraction: float) -> float:
+    order = ["normalize", "chunk", "reconcile", "analyze"]
+    done = 0.0
+    for name in order:
+        if name == stage:
+            return round(done + STAGE_WEIGHTS[name] * fraction, 4)
+        done += STAGE_WEIGHTS[name]
+    return round(done, 4)
+
+
 def _overall(stage: str, fraction: float) -> float:
+    if stage in ("chunk", "reconcile"):
+        return _overall_streaming(stage, fraction)
     done = 0.0
     for name, weight in STAGE_WEIGHTS.items():
+        if name in ("chunk", "reconcile"):
+            continue
         if name == stage:
             return round(done + weight * fraction, 4)
         done += weight
     return round(done, 4)
 
 
+def events_path(job_id: str) -> str:
+    job = get(job_id)
+    return os.path.join(job["work_dir"], "events.jsonl") if job else ""
+
+
 def _run_one(job_id: str) -> None:
     from pipeline import run as pipeline_run
+    from pipeline import stream as pipeline_stream
 
     job = get(job_id)
     if not job or job["status"] != "queued":
@@ -191,17 +215,24 @@ def _run_one(job_id: str) -> None:
 
     try:
         opts = job["options"]
-        pipeline_run.run(
-            job["audio_path"],
+        common = dict(
             work_dir=job["work_dir"],
-            language=opts.get("language", "ml"),
-            model_size=opts.get("model_size", "small"),
+            language=opts.get("language", "hi"),
+            model_size=opts.get("model_size", "tiny"),
             num_speakers=opts.get("num_speakers"),
-            min_speakers=opts.get("min_speakers"),
-            max_speakers=opts.get("max_speakers"),
-            use_llm=opts.get("use_llm", True),
+            max_speakers=opts.get("max_speakers", 6),
+            use_llm=opts.get("use_llm", False),
             on_progress=on_progress,
         )
+        if opts.get("stream", True):
+            # Chunked: emits each block as it finishes, then reconciles
+            # speakers across the whole lesson at the end.
+            pipeline_stream.run_streaming(
+                job["audio_path"],
+                chunk_seconds=opts.get("chunk_seconds", 300), **common)
+        else:
+            pipeline_run.run(job["audio_path"],
+                             min_speakers=opts.get("min_speakers"), **common)
         _update(job_id, status="done", stage="done", progress=1.0,
                 note="complete", finished_at=_now())
     except Exception as exc:                                  # noqa: BLE001

@@ -143,6 +143,20 @@ def transcribe(wav_path: str, language: str = "ml", model_size: str = "small",
     return segments, meta
 
 
+def transcribe_array(samples, language: str = "hi", model_size: str = "small",
+                     beam_size: int = 5, vad: bool = True,
+                     cpu_threads: int = CPU_THREADS):
+    """
+    Same as transcribe(), but over 16k mono float32 samples already in memory.
+
+    faster-whisper accepts an array directly, so chunked processing never has
+    to round-trip a temp file per block. Timestamps come back relative to the
+    array - the caller shifts them onto the lesson clock.
+    """
+    return transcribe(samples, language=language, model_size=model_size,
+                      beam_size=beam_size, vad=vad, cpu_threads=cpu_threads)
+
+
 def save(segments, meta, path: str = "segments.json"):
     with open(path, "w", encoding="utf-8") as f:
         json.dump({"meta": meta, "segments": segments}, f,
