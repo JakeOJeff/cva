@@ -85,6 +85,32 @@ def get_pipeline(model_id: str = MODEL_ID):
     return _PIPELINES[model_id]
 
 
+def _as_waveform(wav_path: str) -> dict:
+    """
+    Hand pyannote the samples, not the path.
+
+    pyannote 4.x decodes audio through torchcodec, which needs the system
+    FFmpeg shared libraries - the exact dependency this project avoids by
+    decoding through PyAV. Given a file path it dies with a wall of DLL
+    loading errors on any machine without a full-shared FFmpeg build.
+
+    Its own error message names the way out: pass
+    {"waveform": (channel, time) tensor, "sample_rate": int} and the decoder
+    is never reached. We already have 16k mono samples from audio.py, so this
+    is both the fix and the shorter path.
+    """
+    import torch
+
+    from .audio import SAMPLE_RATE, decode
+
+    samples = decode(wav_path)
+    return {
+        "waveform": torch.from_numpy(samples).unsqueeze(0),   # (1, time)
+        "sample_rate": SAMPLE_RATE,
+        "uri": os.path.splitext(os.path.basename(wav_path))[0],
+    }
+
+
 def diarize(wav_path: str, num_speakers: int | None = None,
             min_speakers: int | None = None, max_speakers: int | None = None,
             hook=None, model_id: str = MODEL_ID):
@@ -108,7 +134,7 @@ def diarize(wav_path: str, num_speakers: int | None = None,
     if hook is not None:
         kwargs["hook"] = hook
 
-    output = pipeline(wav_path, **kwargs)
+    output = pipeline(_as_waveform(wav_path), **kwargs)
 
     # 4.x returns a DiarizeOutput; 3.x (and `legacy=True`) returns the
     # Annotation directly. We want the inclusive diarization either way -
