@@ -62,12 +62,25 @@ def _connect() -> sqlite3.Connection:
 
 
 def init() -> None:
+    """
+    Idempotent and SAFE to call at any time - it must never touch job rows.
+
+    Reaping interrupted jobs lives in reap_interrupted() precisely because
+    this one gets called from request handlers: doing the reap here meant
+    every upload marked the currently-running job as failed.
+    """
     for d in (DATA_DIR, UPLOAD_DIR, RESULT_DIR):
         os.makedirs(d, exist_ok=True)
     with _connect() as conn:
         conn.executescript(SCHEMA)
-        # Anything left mid-flight by a crash or restart is not coming back
-        # on its own - mark it rather than leave a permanent "running".
+
+
+def reap_interrupted() -> None:
+    """
+    Startup only. Anything left mid-flight by a crash is not coming back on
+    its own, so mark it rather than leave a permanent "running".
+    """
+    with _connect() as conn:
         conn.execute(
             "UPDATE jobs SET status='failed', error='interrupted by restart', "
             "finished_at=? WHERE status IN ('running','queued')", (_now(),))

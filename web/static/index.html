@@ -133,6 +133,14 @@ $("go").onclick = async () => {
   }
 };
 
+function elapsed(from, to) {
+  if (!from || !to) return "—";
+  const s = Math.max(0, (new Date(to) - new Date(from)) / 1000);
+  if (s < 90) return `${Math.round(s)}s`;
+  const m = Math.round(s / 60);
+  return m < 90 ? `${m} min` : `${(m / 60).toFixed(1)} hr`;
+}
+
 function stamp(iso) {
   if (!iso) return "—";
   return new Date(iso).toLocaleString([], {
@@ -152,27 +160,44 @@ async function refresh() {
     return;
   }
 
+  // Jobs run one at a time, so a queued job can sit for a long while. Say
+  // why, and say what it is waiting behind - an unexplained "—" reads as
+  // broken when it actually means "working, just not on this one yet".
+  const running = data.jobs.filter(j => j.status === "running").length;
+  let ahead = 0;
+
   el.innerHTML = `<table><thead><tr>
-      <th>File</th><th>Status</th><th style="width:150px">Progress</th><th>Uploaded</th><th></th>
-    </tr></thead><tbody>${data.jobs.map(j => {
+      <th>File</th><th>Status</th><th style="width:190px">Progress</th><th>Uploaded</th><th></th>
+    </tr></thead><tbody>${data.jobs.slice().reverse().map(j => {
       const pct = Math.round((j.progress || 0) * 100);
-      const detail = j.status === "failed"
-        ? `<div class="sub mono" style="color:var(--bad)">${esc(j.error || "failed")}</div>`
-        : j.status === "running"
-          ? `<div class="bar"><i style="width:${pct}%"></i></div>
-             <div class="sub" style="font-size:12px;margin-top:3px">${esc(j.stage || "")} · ${esc(j.note || "")}</div>`
-          : "";
+      let detail;
+      if (j.status === "failed") {
+        detail = `<div class="sub mono" style="color:var(--bad)">${esc(j.error || "failed")}</div>`;
+      } else if (j.status === "running") {
+        detail = `<div class="bar"><i style="width:${pct}%"></i></div>
+          <div class="sub" style="font-size:12px;margin-top:3px">${pct}% · ${esc(j.stage || "")}${
+            j.note ? " · " + esc(j.note) : ""}</div>`;
+      } else if (j.status === "queued") {
+        const n = ahead++;
+        detail = `<div class="sub" style="font-size:12.5px">waiting${
+          running ? " — one lesson is transcribing" : ""}${
+          n ? `, ${n} ahead of it` : ""}</div>
+          <div class="sub" style="font-size:11px;color:var(--muted)">jobs run one at a time</div>`;
+      } else {
+        detail = `<div class="sub" style="font-size:12.5px">finished in ${
+          elapsed(j.created_at, j.finished_at)}</div>`;
+      }
       return `<tr>
         <td>${j.status === "done"
               ? `<a href="/jobs/${j.id}">${esc(j.filename)}</a>`
               : esc(j.filename)}
             <div class="sub mono" style="font-size:11px">${j.id}</div></td>
         <td><span class="pill ${j.status}">${j.status}</span></td>
-        <td>${detail || '<span class="sub">—</span>'}</td>
+        <td>${detail}</td>
         <td class="sub">${stamp(j.created_at)}</td>
         <td>${j.status === "done" ? `<a href="/jobs/${j.id}">Open</a>` : ""}</td>
       </tr>`;
-    }).join("")}</tbody></table>`;
+    }).reverse().join("")}</tbody></table>`;
 }
 
 function esc(s) {
