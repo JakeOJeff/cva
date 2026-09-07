@@ -184,7 +184,7 @@ async function refresh() {
           n ? `, ${n} ahead of it` : ""}</div>
           <div class="sub" style="font-size:11px;color:var(--muted)">jobs run one at a time</div>`;
       } else {
-        detail = `<div class="sub" style="font-size:12.5px">finished in ${
+        detail = `<div class="sub" style="font-size:12.5px">${j.status === "cancelled" ? "stopped after " : "finished in "}${
           elapsed(j.created_at, j.finished_at)}</div>`;
       }
       return `<tr>
@@ -195,9 +195,45 @@ async function refresh() {
         <td><span class="pill ${j.status}">${j.status}</span></td>
         <td>${detail}</td>
         <td class="sub">${stamp(j.created_at)}</td>
-        <td>${j.status === "done" ? `<a href="/jobs/${j.id}">Open</a>` : ""}</td>
+        <td style="white-space:nowrap">
+          ${j.status === "done" ? `<a href="/jobs/${j.id}">Open</a> ` : ""}
+          ${(j.status === "running" || j.status === "queued")
+              ? `<a href="#" data-cancel="${j.id}">Stop</a> ` : ""}
+          <a href="#" data-del="${j.id}" style="color:var(--muted)">Delete</a>
+        </td>
       </tr>`;
     }).reverse().join("")}</tbody></table>`;
+
+  const anyFailed = data.jobs.some(j => j.status === "failed");
+  if (anyFailed) {
+    el.insertAdjacentHTML("beforeend",
+      `<div style="margin-top:14px"><button class="ghost" id="clearFailed">
+         Delete all failed sessions</button></div>`);
+    $("clearFailed").onclick = async () => {
+      if (!confirm("Delete every failed session, its audio and its results?")) return;
+      await fetch("/api/jobs?status=failed", { method: "DELETE" });
+      refresh();
+    };
+  }
+
+  el.querySelectorAll("[data-cancel]").forEach(a => {
+    a.onclick = async (e) => {
+      e.preventDefault();
+      // A running job stops at the next block boundary, not instantly.
+      if (!confirm("Stop this session? It finishes the block it is on, then halts.")) return;
+      await fetch(`/api/jobs/${a.dataset.cancel}/cancel`, { method: "POST" });
+      refresh();
+    };
+  });
+
+  el.querySelectorAll("[data-del]").forEach(a => {
+    a.onclick = async (e) => {
+      e.preventDefault();
+      if (!confirm("Delete this session, its uploaded audio and its results?")) return;
+      await fetch(`/api/jobs/${a.dataset.del}`, { method: "DELETE" });
+      refresh();
+    };
+  });
 }
 
 function esc(s) {

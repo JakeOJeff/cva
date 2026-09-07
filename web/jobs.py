@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS jobs (
     audio_path   TEXT NOT NULL,
     work_dir     TEXT NOT NULL,
     options      TEXT NOT NULL,
-    status       TEXT NOT NULL,   -- queued | running | done | failed
+    status       TEXT NOT NULL,   -- queued | running | done | failed | cancelled
     stage        TEXT,
     progress     REAL DEFAULT 0,
     note         TEXT,
@@ -46,6 +46,36 @@ CREATE TABLE IF NOT EXISTS jobs (
 _q: "queue.Queue[str]" = queue.Queue()
 _worker: threading.Thread | None = None
 _lock = threading.Lock()
+
+# Jobs asked to stop. The worker cannot be interrupted mid-model - Whisper and
+# pyannote are opaque C++ calls - so cancellation is cooperative: the runner
+# checks this between chunks and raises. That is another reason chunked mode
+# is the default; in batch mode the only checkpoint is between whole stages.
+_cancelled: set[str] = set()
+
+
+class Cancelled(Exception):
+    """Raised inside the worker when a job has been asked to stop."""
+
+
+def cancel(job_id: str) -> bool:
+    """Ask a queued or running job to stop. Returns False if it is already over."""
+    job = get(job_id)
+    if not job or job["status"] in ("done", "failed", "cancelled"):
+        return False
+    _cancelled.add(job_id)
+    if job["status"] == "queued":
+        # Never started, so nothing will observe the flag - close it out here.
+        _update(job_id, status="cancelled", note="cancelled before it started",
+                finished_at=_now())
+        _cancelled.discard(job_id)
+    else:
+        _update(job_id, note="stopping after the current block…")
+    return True
+
+
+def is_cancelled(job_id: str) -> bool:
+    return job_id in _cancelled
 
 
 def _now() -> str:
@@ -211,6 +241,8 @@ def _run_one(job_id: str) -> None:
     _update(job_id, status="running", started_at=_now(), stage="normalize", progress=0.0)
 
     def on_progress(stage, fraction, note):
+        if job_id in _cancelled:
+            raise Cancelled()
         _update(job_id, stage=stage, progress=_overall(stage, fraction), note=note)
 
     try:
@@ -235,10 +267,15 @@ def _run_one(job_id: str) -> None:
                              min_speakers=opts.get("min_speakers"), **common)
         _update(job_id, status="done", stage="done", progress=1.0,
                 note="complete", finished_at=_now())
+    except Cancelled:
+        _update(job_id, status="cancelled", note="stopped by request",
+                finished_at=_now())
     except Exception as exc:                                  # noqa: BLE001
         traceback.print_exc()
         _update(job_id, status="failed", error=f"{type(exc).__name__}: {exc}",
                 finished_at=_now())
+    finally:
+        _cancelled.discard(job_id)
 
 
 def _loop() -> None:
