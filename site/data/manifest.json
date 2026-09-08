@@ -1,3 +1,79 @@
 {
-  "sessions": []
+  "sessions": [
+    {
+      "slug": "OD11163_2025-12-23-121239",
+      "file": "OD11163_2025-12-23-121239.mp3",
+      "duration": 4062.19,
+      "duration_label": "1h 07m",
+      "speakers": 2,
+      "language": "Hindi",
+      "language_code": "hi",
+      "model": "small",
+      "backend": "local",
+      "has_review": false,
+      "teacher_talk_ratio": 0.9134,
+      "teacher_questions": 15,
+      "json": "OD11163_2025-12-23-121239.json"
+    },
+    {
+      "slug": "OD11163_2026-01-28-121933",
+      "file": "OD11163_2026-01-28-121933.mp3",
+      "duration": 1321.05,
+      "duration_label": "22m 01s",
+      "speakers": 2,
+      "language": "Hindi",
+      "language_code": "hi",
+      "model": "small",
+      "backend": "local",
+      "has_review": false,
+      "teacher_talk_ratio": 1.0,
+      "teacher_questions": 14,
+      "json": "OD11163_2026-01-28-121933.json"
+    },
+    {
+      "slug": "OD11165_2026-01-06-114155-1",
+      "file": "OD11165_2026-01-06-114155 (1).mp3",
+      "duration": 3859.67,
+      "duration_label": "1h 04m",
+      "speakers": 4,
+      "language": "Hindi",
+      "language_code": "hi",
+      "model": "small",
+      "backend": "local",
+      "has_review": false,
+      "teacher_talk_ratio": 0.8064,
+      "teacher_questions": 22,
+      "json": "OD11165_2026-01-06-114155-1.json"
+    },
+    {
+      "slug": "OD11166_2026-01-12-142132",
+      "file": "OD11166_2026-01-12-142132.mp3",
+      "duration": 2250.52,
+      "duration_label": "37m 30s",
+      "speakers": 2,
+      "language": "Hindi",
+      "language_code": "hi",
+      "model": "small",
+      "backend": "local",
+      "has_review": false,
+      "teacher_talk_ratio": 0.8323,
+      "teacher_questions": 1,
+      "json": "OD11166_2026-01-12-142132.json"
+    },
+    {
+      "slug": "OD11166_2026-01-20-115538",
+      "file": "OD11166_2026-01-20-115538.mp3",
+      "duration": 3611.91,
+      "duration_label": "1h 00m",
+      "speakers": 4,
+      "language": "Hindi",
+      "language_code": "hi",
+      "model": "small",
+      "backend": "local",
+      "has_review": false,
+      "teacher_talk_ratio": 0.8637,
+      "teacher_questions": 2,
+      "json": "OD11166_2026-01-20-115538.json"
+    }
+  ]
 }
