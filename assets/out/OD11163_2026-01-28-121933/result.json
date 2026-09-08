@@ -1,0 +1,5346 @@
+{
+  "meta": {
+    "language": "hi",
+    "duration": 1321.05,
+    "n_segments": 221,
+    "model": "small",
+    "beam_size": 5,
+    "vad": true,
+    "vad_fallback": false,
+    "n_speakers": 2,
+    "speakers": [
+      "SPEAKER_00",
+      "SPEAKER_01"
+    ],
+    "n_turns": 550,
+    "diarization_model": "pyannote/speaker-diarization-community-1",
+    "backend": "local",
+    "script_ratio": 0.7643,
+    "wrong_script": false,
+    "requested_language": "hi",
+    "detected_language": "hi",
+    "detected_confidence": 0.808,
+    "language_mismatch": false,
+    "elapsed": 2574.1,
+    "source": "OD11163_2026-01-28-121933.mp3"
+  },
+  "teacher": {
+    "teacher": "SPEAKER_00",
+    "confidence": "high",
+    "margin": 0.85,
+    "reasons": [
+      "holds the most floor time (100% of all speech)",
+      "present across 99% of the session",
+      "uses the most instructional language (2 cues)",
+      "asks the most questions (14)",
+      "longest average turn (42s)"
+    ],
+    "scores": {
+      "SPEAKER_00": {
+        "score": 0.85,
+        "features": {
+          "talk_share": 1.0,
+          "coverage": 0.9949,
+          "hub": 0.0,
+          "cue_rate": 0.1005,
+          "question_rate": 0.5385,
+          "avg_turn": 42.11
+        },
+        "normalized": {
+          "talk_share": 1.0,
+          "coverage": 1.0,
+          "hub": 0.0,
+          "cue_rate": 1.0,
+          "question_rate": 1.0,
+          "avg_turn": 1.0
+        },
+        "detail": {
+          "n_questions": 14,
+          "n_teacher_cues": 2,
+          "n_words": 1991,
+          "n_turns": 26
+        },
+        "reasons": [
+          "holds the most floor time (100% of all speech)",
+          "present across 99% of the session",
+          "uses the most instructional language (2 cues)",
+          "asks the most questions (14)",
+          "longest average turn (42s)"
+        ]
+      }
+    },
+    "method": "heuristic"
+  },
+  "speakers": {
+    "SPEAKER_00": {
+      "speaker": "SPEAKER_00",
+      "talk_time": 1094.82,
+      "n_turns": 26,
+      "n_words": 1318,
+      "first_at": 1.07,
+      "last_at": 1315.42,
+      "talk_share": 1.0,
+      "avg_turn": 42.11,
+      "longest_turn": 234.58,
+      "span": 1314.35,
+      "coverage": 0.9949,
+      "label": "Teacher",
+      "role": "teacher"
+    }
+  },
+  "turns": [
+    {
+      "start": 1.48,
+      "end": 1.65,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 2.19,
+      "end": 4.6,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 5.19,
+      "end": 7.27,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 7.69,
+      "end": 8.33,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 8.89,
+      "end": 12.06,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 9.03,
+      "end": 10.81,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 12.55,
+      "end": 13.85,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 14.09,
+      "end": 25.24,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 14.14,
+      "end": 15.4,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 20.91,
+      "end": 21.19,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 26.07,
+      "end": 27.08,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 27.57,
+      "end": 29.21,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 29.55,
+      "end": 30.54,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 29.61,
+      "end": 30.19,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 30.71,
+      "end": 31.81,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 32.11,
+      "end": 34.32,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 34.57,
+      "end": 37.19,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 35.32,
+      "end": 35.87,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 37.44,
+      "end": 38.57,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 39.11,
+      "end": 39.45,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 39.65,
+      "end": 40.46,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 40.73,
+      "end": 41.1,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 41.21,
+      "end": 42.1,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 42.44,
+      "end": 44.68,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 45.09,
+      "end": 45.98,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 46.3,
+      "end": 48.04,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 48.65,
+      "end": 57.07,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 48.73,
+      "end": 48.75,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 48.85,
+      "end": 49.59,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 57.84,
+      "end": 59.16,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 59.85,
+      "end": 60.51,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 61.12,
+      "end": 61.57,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 61.78,
+      "end": 71.92,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 62.23,
+      "end": 62.5,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 62.54,
+      "end": 62.57,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 69.18,
+      "end": 70.62,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 72.14,
+      "end": 77.67,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 72.83,
+      "end": 73.13,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 78.03,
+      "end": 87.0,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 79.73,
+      "end": 79.78,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 87.36,
+      "end": 93.5,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 93.54,
+      "end": 95.78,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 96.02,
+      "end": 100.03,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 101.25,
+      "end": 103.37,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 105.26,
+      "end": 108.84,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 109.21,
+      "end": 110.83,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 109.57,
+      "end": 110.63,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 111.84,
+      "end": 116.62,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 112.17,
+      "end": 112.91,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 113.31,
+      "end": 114.16,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 116.96,
+      "end": 117.77,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 118.26,
+      "end": 118.86,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 120.25,
+      "end": 121.8,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 122.07,
+      "end": 122.51,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 123.39,
+      "end": 129.87,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 130.53,
+      "end": 136.52,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 136.58,
+      "end": 139.11,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 139.62,
+      "end": 142.42,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 142.88,
+      "end": 146.61,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 147.33,
+      "end": 149.68,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 150.44,
+      "end": 153.53,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 155.23,
+      "end": 157.44,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 157.96,
+      "end": 158.03,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 158.15,
+      "end": 159.48,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 159.82,
+      "end": 163.53,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 164.38,
+      "end": 168.09,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 166.72,
+      "end": 166.87,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 168.38,
+      "end": 171.36,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 171.95,
+      "end": 173.89,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 175.11,
+      "end": 177.62,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 177.99,
+      "end": 178.48,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 179.36,
+      "end": 182.25,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 180.48,
+      "end": 180.68,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 183.19,
+      "end": 185.5,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 186.3,
+      "end": 189.45,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 190.14,
+      "end": 192.61,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 192.68,
+      "end": 195.43,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 196.74,
+      "end": 197.81,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 198.53,
+      "end": 198.73,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 199.16,
+      "end": 200.49,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 201.08,
+      "end": 203.16,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 204.78,
+      "end": 216.44,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 213.9,
+      "end": 214.29,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 216.84,
+      "end": 217.5,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 217.84,
+      "end": 224.3,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 219.03,
+      "end": 219.2,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 221.09,
+      "end": 221.89,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 223.35,
+      "end": 223.91,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 224.47,
+      "end": 227.17,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 224.74,
+      "end": 225.43,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 227.59,
+      "end": 228.35,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 228.55,
+      "end": 229.04,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 229.67,
+      "end": 230.86,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 230.95,
+      "end": 237.83,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 236.77,
+      "end": 236.97,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 238.31,
+      "end": 239.05,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 238.32,
+      "end": 238.83,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 239.76,
+      "end": 241.41,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 244.74,
+      "end": 246.25,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 246.68,
+      "end": 248.45,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 248.75,
+      "end": 253.19,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 249.95,
+      "end": 249.97,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 250.59,
+      "end": 251.28,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 251.76,
+      "end": 252.31,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 253.68,
+      "end": 256.56,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 256.97,
+      "end": 257.68,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 257.97,
+      "end": 258.81,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 262.76,
+      "end": 264.12,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 266.08,
+      "end": 267.08,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 268.5,
+      "end": 271.5,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 274.05,
+      "end": 276.27,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 276.58,
+      "end": 280.59,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 281.2,
+      "end": 286.4,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 283.4,
+      "end": 283.89,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 286.97,
+      "end": 290.33,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 290.8,
+      "end": 291.75,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 292.31,
+      "end": 294.2,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 294.47,
+      "end": 296.74,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 297.01,
+      "end": 298.36,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 299.07,
+      "end": 301.99,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 302.53,
+      "end": 303.17,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 304.62,
+      "end": 307.12,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 307.32,
+      "end": 308.62,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 312.89,
+      "end": 314.94,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 315.61,
+      "end": 316.76,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 318.38,
+      "end": 320.37,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 322.87,
+      "end": 323.31,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 323.64,
+      "end": 325.58,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 324.39,
+      "end": 324.84,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 325.8,
+      "end": 327.47,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 327.81,
+      "end": 329.75,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 330.43,
+      "end": 333.48,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 334.38,
+      "end": 341.21,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 334.61,
+      "end": 334.83,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 341.43,
+      "end": 342.05,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 342.07,
+      "end": 343.35,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 344.08,
+      "end": 345.07,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 345.53,
+      "end": 347.08,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 347.57,
+      "end": 352.67,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 347.79,
+      "end": 349.04,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 356.43,
+      "end": 357.16,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 356.75,
+      "end": 356.97,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 360.77,
+      "end": 361.81,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 361.93,
+      "end": 364.4,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 364.99,
+      "end": 366.88,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 370.15,
+      "end": 370.64,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 375.3,
+      "end": 376.19,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 376.48,
+      "end": 379.7,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 380.71,
+      "end": 382.22,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 382.76,
+      "end": 385.42,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 388.32,
+      "end": 390.59,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 391.43,
+      "end": 393.0,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 392.27,
+      "end": 392.31,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 393.37,
+      "end": 394.01,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 394.82,
+      "end": 395.19,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 396.59,
+      "end": 399.41,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 396.71,
+      "end": 397.03,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 399.88,
+      "end": 401.32,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 401.66,
+      "end": 408.03,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 408.54,
+      "end": 408.84,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 409.82,
+      "end": 410.75,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 409.92,
+      "end": 410.48,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 411.56,
+      "end": 413.03,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 411.68,
+      "end": 412.12,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 413.5,
+      "end": 419.43,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 419.71,
+      "end": 420.72,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 420.88,
+      "end": 421.3,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 421.79,
+      "end": 424.67,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 425.13,
+      "end": 425.75,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 426.55,
+      "end": 426.77,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 427.58,
+      "end": 431.19,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 431.86,
+      "end": 434.04,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 432.6,
+      "end": 432.87,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 434.31,
+      "end": 435.34,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 435.36,
+      "end": 438.09,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 435.54,
+      "end": 435.95,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 438.29,
+      "end": 439.74,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 440.55,
+      "end": 443.08,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 440.99,
+      "end": 441.97,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 443.13,
+      "end": 445.29,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 443.22,
+      "end": 444.91,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 445.67,
+      "end": 446.91,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 447.94,
+      "end": 449.02,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 450.9,
+      "end": 451.4,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 451.91,
+      "end": 452.8,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 452.96,
+      "end": 454.17,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 453.41,
+      "end": 453.85,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 455.18,
+      "end": 457.68,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 458.42,
+      "end": 465.07,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 465.29,
+      "end": 466.91,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 467.97,
+      "end": 468.03,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 468.5,
+      "end": 471.2,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 468.72,
+      "end": 470.71,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 471.45,
+      "end": 474.24,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 471.97,
+      "end": 473.36,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 475.35,
+      "end": 477.17,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 477.68,
+      "end": 478.62,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 478.98,
+      "end": 479.79,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 480.02,
+      "end": 480.46,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 481.22,
+      "end": 483.23,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 484.14,
+      "end": 485.68,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 486.93,
+      "end": 487.4,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 487.94,
+      "end": 493.81,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 494.43,
+      "end": 494.87,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 495.95,
+      "end": 496.97,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 497.1,
+      "end": 498.4,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 498.96,
+      "end": 503.19,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 502.38,
+      "end": 502.97,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 503.51,
+      "end": 509.23,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 505.47,
+      "end": 505.86,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 509.5,
+      "end": 512.39,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 509.69,
+      "end": 510.33,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 512.64,
+      "end": 514.94,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 515.46,
+      "end": 516.44,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 518.19,
+      "end": 523.09,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 519.34,
+      "end": 520.84,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 524.3,
+      "end": 526.21,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 524.37,
+      "end": 525.13,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 525.55,
+      "end": 525.77,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 526.82,
+      "end": 527.93,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 527.97,
+      "end": 529.65,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 528.24,
+      "end": 529.05,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 530.07,
+      "end": 530.55,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 530.77,
+      "end": 532.15,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 530.83,
+      "end": 531.95,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 532.35,
+      "end": 533.74,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 534.28,
+      "end": 535.68,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 535.85,
+      "end": 536.96,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 536.05,
+      "end": 536.84,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 537.31,
+      "end": 537.72,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 538.43,
+      "end": 542.87,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 543.07,
+      "end": 545.13,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 545.45,
+      "end": 549.92,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 550.34,
+      "end": 553.23,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 553.51,
+      "end": 554.93,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 555.29,
+      "end": 556.82,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 557.13,
+      "end": 565.61,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 566.27,
+      "end": 566.95,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 567.44,
+      "end": 567.89,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 567.98,
+      "end": 574.34,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 571.64,
+      "end": 572.53,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 573.66,
+      "end": 573.76,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 574.89,
+      "end": 576.4,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 576.75,
+      "end": 578.76,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 579.52,
+      "end": 581.17,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 579.7,
+      "end": 580.55,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 581.43,
+      "end": 581.81,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 582.71,
+      "end": 586.56,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 583.92,
+      "end": 585.07,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 585.37,
+      "end": 586.18,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 586.72,
+      "end": 586.91,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 587.47,
+      "end": 587.48,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 587.52,
+      "end": 593.96,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 587.75,
+      "end": 589.58,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 592.33,
+      "end": 593.68,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 595.31,
+      "end": 598.03,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 595.45,
+      "end": 596.12,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 598.05,
+      "end": 599.31,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 599.89,
+      "end": 602.92,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 603.21,
+      "end": 603.62,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 604.78,
+      "end": 607.67,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 608.12,
+      "end": 617.32,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 612.96,
+      "end": 614.13,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 614.26,
+      "end": 614.96,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 617.66,
+      "end": 621.93,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 622.2,
+      "end": 623.65,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 622.82,
+      "end": 622.84,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 622.99,
+      "end": 623.12,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 623.22,
+      "end": 623.28,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 623.83,
+      "end": 625.72,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 626.18,
+      "end": 628.37,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 627.95,
+      "end": 628.24,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 629.52,
+      "end": 632.54,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 629.82,
+      "end": 630.57,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 632.76,
+      "end": 633.37,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 634.19,
+      "end": 635.22,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 636.67,
+      "end": 637.5,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 638.11,
+      "end": 642.46,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 642.9,
+      "end": 643.46,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 644.47,
+      "end": 646.29,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 646.55,
+      "end": 654.49,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 654.73,
+      "end": 657.26,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 657.7,
+      "end": 659.34,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 659.61,
+      "end": 663.79,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 664.1,
+      "end": 672.42,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 665.61,
+      "end": 666.15,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 673.09,
+      "end": 675.99,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 676.3,
+      "end": 677.09,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 677.36,
+      "end": 690.74,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 678.19,
+      "end": 678.46,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 678.59,
+      "end": 678.86,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 679.89,
+      "end": 680.7,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 682.32,
+      "end": 682.42,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 682.59,
+      "end": 683.33,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 683.77,
+      "end": 684.62,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 689.71,
+      "end": 690.4,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 691.08,
+      "end": 694.84,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 691.1,
+      "end": 691.52,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 694.0,
+      "end": 694.07,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 695.53,
+      "end": 700.33,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 695.72,
+      "end": 696.12,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 700.88,
+      "end": 702.98,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 703.28,
+      "end": 705.98,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 706.11,
+      "end": 708.31,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 708.8,
+      "end": 713.03,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 713.34,
+      "end": 719.75,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 719.8,
+      "end": 722.4,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 720.44,
+      "end": 721.44,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 722.79,
+      "end": 728.83,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 729.0,
+      "end": 729.03,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 729.06,
+      "end": 732.56,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 733.01,
+      "end": 733.55,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 734.06,
+      "end": 737.97,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 738.21,
+      "end": 740.61,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 740.93,
+      "end": 742.65,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 743.43,
+      "end": 755.36,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 745.18,
+      "end": 746.02,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 755.69,
+      "end": 760.57,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 761.65,
+      "end": 762.19,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 762.71,
+      "end": 764.37,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 764.81,
+      "end": 766.65,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 767.32,
+      "end": 768.38,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 768.7,
+      "end": 769.38,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 770.61,
+      "end": 772.74,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 773.67,
+      "end": 774.56,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 774.83,
+      "end": 777.58,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 777.77,
+      "end": 780.01,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 781.02,
+      "end": 781.53,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 781.97,
+      "end": 783.2,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 783.4,
+      "end": 790.19,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 785.07,
+      "end": 785.24,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 790.39,
+      "end": 790.86,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 792.4,
+      "end": 795.25,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 795.47,
+      "end": 806.67,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 795.65,
+      "end": 797.61,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 798.99,
+      "end": 800.02,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 805.59,
+      "end": 806.47,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 808.14,
+      "end": 811.23,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 811.68,
+      "end": 813.36,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 813.39,
+      "end": 815.58,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 816.65,
+      "end": 818.69,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 819.57,
+      "end": 825.67,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 826.99,
+      "end": 828.22,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 828.56,
+      "end": 829.29,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 829.91,
+      "end": 835.46,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 836.85,
+      "end": 837.4,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 839.06,
+      "end": 841.84,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 849.74,
+      "end": 851.27,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 857.28,
+      "end": 858.95,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 859.44,
+      "end": 859.95,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 861.2,
+      "end": 864.27,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 865.47,
+      "end": 866.22,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 866.55,
+      "end": 867.51,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 868.01,
+      "end": 869.3,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 871.02,
+      "end": 872.1,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 873.33,
+      "end": 875.83,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 874.53,
+      "end": 875.73,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 875.91,
+      "end": 877.62,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 876.21,
+      "end": 876.67,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 878.17,
+      "end": 881.73,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 882.02,
+      "end": 884.65,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 884.91,
+      "end": 895.49,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 887.99,
+      "end": 888.75,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 889.61,
+      "end": 890.1,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 895.72,
+      "end": 897.34,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 897.65,
+      "end": 902.0,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 902.29,
+      "end": 905.63,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 904.31,
+      "end": 904.8,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 905.8,
+      "end": 907.97,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 908.92,
+      "end": 911.96,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 912.65,
+      "end": 915.15,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 915.57,
+      "end": 917.32,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 917.95,
+      "end": 918.32,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 918.57,
+      "end": 919.47,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 920.48,
+      "end": 921.14,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 922.27,
+      "end": 924.36,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 925.08,
+      "end": 926.25,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 926.72,
+      "end": 932.02,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 933.17,
+      "end": 937.72,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 937.99,
+      "end": 939.16,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 941.18,
+      "end": 942.38,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 943.95,
+      "end": 945.49,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 946.43,
+      "end": 949.13,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 946.68,
+      "end": 946.75,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 951.31,
+      "end": 952.22,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 952.46,
+      "end": 952.84,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 953.33,
+      "end": 957.18,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 953.42,
+      "end": 955.36,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 957.59,
+      "end": 959.14,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 959.61,
+      "end": 960.62,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 961.01,
+      "end": 962.24,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 962.46,
+      "end": 963.49,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 963.95,
+      "end": 964.96,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 965.13,
+      "end": 966.68,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 966.93,
+      "end": 969.84,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 969.96,
+      "end": 970.11,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 971.2,
+      "end": 977.36,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 976.79,
+      "end": 977.03,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 977.87,
+      "end": 978.17,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 978.75,
+      "end": 982.9,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 979.03,
+      "end": 980.7,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 982.97,
+      "end": 999.1,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 989.11,
+      "end": 990.07,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 999.79,
+      "end": 1000.33,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1000.5,
+      "end": 1002.47,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1003.47,
+      "end": 1006.02,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1003.62,
+      "end": 1004.01,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1006.73,
+      "end": 1008.09,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1009.81,
+      "end": 1011.77,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1012.7,
+      "end": 1015.32,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1015.82,
+      "end": 1016.33,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1016.68,
+      "end": 1021.81,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1022.13,
+      "end": 1023.25,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1022.47,
+      "end": 1022.93,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1023.43,
+      "end": 1024.09,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1025.25,
+      "end": 1027.62,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1025.54,
+      "end": 1026.1,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1027.92,
+      "end": 1028.02,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1028.46,
+      "end": 1031.53,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1032.31,
+      "end": 1032.93,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1034.5,
+      "end": 1034.94,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1042.37,
+      "end": 1044.46,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1042.57,
+      "end": 1044.27,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1044.96,
+      "end": 1045.03,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1045.47,
+      "end": 1045.64,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1049.32,
+      "end": 1050.8,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1051.19,
+      "end": 1053.35,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1054.23,
+      "end": 1055.24,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1055.65,
+      "end": 1058.3,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1058.97,
+      "end": 1061.84,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1062.08,
+      "end": 1068.24,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1068.91,
+      "end": 1076.91,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1074.48,
+      "end": 1074.72,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1077.04,
+      "end": 1079.2,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1079.66,
+      "end": 1081.03,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1082.06,
+      "end": 1087.44,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1088.0,
+      "end": 1088.7,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1089.16,
+      "end": 1089.43,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1089.68,
+      "end": 1090.29,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1091.37,
+      "end": 1093.23,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1094.07,
+      "end": 1098.69,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1098.8,
+      "end": 1100.72,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1101.51,
+      "end": 1102.53,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1101.58,
+      "end": 1102.19,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1102.96,
+      "end": 1106.78,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1103.28,
+      "end": 1103.86,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1105.09,
+      "end": 1105.98,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1107.13,
+      "end": 1111.65,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1112.68,
+      "end": 1115.05,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1112.72,
+      "end": 1112.97,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1115.5,
+      "end": 1117.14,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1121.34,
+      "end": 1122.24,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1121.44,
+      "end": 1121.95,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1122.66,
+      "end": 1124.38,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1124.63,
+      "end": 1125.21,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1125.36,
+      "end": 1126.81,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1126.94,
+      "end": 1130.72,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1127.11,
+      "end": 1127.55,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1131.57,
+      "end": 1131.8,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1132.28,
+      "end": 1133.51,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1134.17,
+      "end": 1135.68,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1136.41,
+      "end": 1137.36,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1139.5,
+      "end": 1140.41,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1141.22,
+      "end": 1141.59,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1141.96,
+      "end": 1142.0,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1142.43,
+      "end": 1143.41,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1143.67,
+      "end": 1144.63,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1144.85,
+      "end": 1146.97,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1147.82,
+      "end": 1149.71,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1149.98,
+      "end": 1152.34,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1153.79,
+      "end": 1156.56,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1157.98,
+      "end": 1159.09,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1160.46,
+      "end": 1160.93,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1161.49,
+      "end": 1163.6,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1162.06,
+      "end": 1163.06,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1166.82,
+      "end": 1172.1,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1173.16,
+      "end": 1178.33,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1177.74,
+      "end": 1177.97,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1178.34,
+      "end": 1183.12,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1183.59,
+      "end": 1183.88,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1184.27,
+      "end": 1185.69,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1184.3,
+      "end": 1184.94,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1186.36,
+      "end": 1187.31,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1194.83,
+      "end": 1197.01,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1198.07,
+      "end": 1200.55,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1201.02,
+      "end": 1202.53,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1202.98,
+      "end": 1203.66,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1205.36,
+      "end": 1206.1,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1206.93,
+      "end": 1209.16,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1209.61,
+      "end": 1211.86,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1213.16,
+      "end": 1215.44,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1217.12,
+      "end": 1217.65,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1218.02,
+      "end": 1220.75,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1220.99,
+      "end": 1225.68,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1221.17,
+      "end": 1221.34,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1223.99,
+      "end": 1225.65,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1226.13,
+      "end": 1226.22,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1226.27,
+      "end": 1226.42,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1226.76,
+      "end": 1227.16,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1228.14,
+      "end": 1228.21,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1229.05,
+      "end": 1232.18,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1229.56,
+      "end": 1229.7,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1230.74,
+      "end": 1232.09,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1232.78,
+      "end": 1235.33,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1232.85,
+      "end": 1233.66,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1234.69,
+      "end": 1235.23,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1235.6,
+      "end": 1235.91,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1236.48,
+      "end": 1238.17,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1238.23,
+      "end": 1238.81,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1240.56,
+      "end": 1242.1,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1243.77,
+      "end": 1244.6,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1245.49,
+      "end": 1246.28,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1248.21,
+      "end": 1249.15,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1249.68,
+      "end": 1250.18,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1250.77,
+      "end": 1251.57,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1252.02,
+      "end": 1252.73,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1253.67,
+      "end": 1253.86,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1253.98,
+      "end": 1254.03,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1256.59,
+      "end": 1257.13,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1258.64,
+      "end": 1259.53,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1260.17,
+      "end": 1261.03,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1261.37,
+      "end": 1263.5,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1264.02,
+      "end": 1264.27,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1274.68,
+      "end": 1275.58,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1277.01,
+      "end": 1277.45,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1277.77,
+      "end": 1278.35,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1278.89,
+      "end": 1280.62,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1282.7,
+      "end": 1284.07,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1285.8,
+      "end": 1286.21,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1286.6,
+      "end": 1287.31,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1287.69,
+      "end": 1288.45,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1288.93,
+      "end": 1292.07,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1292.81,
+      "end": 1293.82,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1293.97,
+      "end": 1294.53,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1294.75,
+      "end": 1295.19,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1295.41,
+      "end": 1295.69,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1295.96,
+      "end": 1297.48,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1298.02,
+      "end": 1298.61,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1299.34,
+      "end": 1304.28,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1299.37,
+      "end": 1300.0,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1304.42,
+      "end": 1308.5,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1306.59,
+      "end": 1306.95,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1309.75,
+      "end": 1311.76,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1312.26,
+      "end": 1314.22,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1312.65,
+      "end": 1313.41,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1314.56,
+      "end": 1315.32,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1314.61,
+      "end": 1314.98,
+      "speaker": "SPEAKER_01"
+    },
+    {
+      "start": 1316.13,
+      "end": 1316.25,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1316.28,
+      "end": 1317.28,
+      "speaker": "SPEAKER_00"
+    },
+    {
+      "start": 1317.78,
+      "end": 1318.26,
+      "speaker": "SPEAKER_00"
+    }
+  ],
+  "segments": [
+    {
+      "start": 1.07,
+      "end": 2.09,
+      "text": "अर समान क्लास से जेकmana klax rekord Hin te",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.167,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 2.09,
+      "end": 2.85,
+      "text": "Okay?",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.868,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 2.85,
+      "end": 3.73,
+      "text": "हमना की समान क्लास् Sai visita",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 3.73,
+      "end": 4.53,
+      "text": "Okay?",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 4.61,
+      "end": 6.27,
+      "text": "एकONN",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.651,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 6.27,
+      "end": 7.25,
+      "text": "बाह bloom",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 7.25,
+      "end": 8.31,
+      "text": "क्यौर आस के ह円 seke hiya",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.604,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 8.31,
+      "end": 12.81,
+      "text": "और औरुज और मुरक्राप्ये मेरे आपrien",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.767,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 13.33,
+      "end": 21.13,
+      "text": "अhetto डूजSaydo चुद पीक चुछा पतर हैं ु Gold",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.969,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 24.97,
+      "end": 28.23,
+      "text": "उय� educators ौ Pal",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.595,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 28.23,
+      "end": 31.89,
+      "text": "सीगर नहीं वो यह आप आपता होंगे",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.839,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 32.23,
+      "end": 34.35,
+      "text": "मगलाख कँई भाम ने कर सकें",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.986,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 34.35,
+      "end": 37.07,
+      "text": "इस बहुड़ त्या चाही अचद यह में रेख स्फाग नाय करना",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.919,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 37.07,
+      "end": 38.77,
+      "text": "अगर नाग है plant in a",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.735,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 39.72,
+      "end": 42.24,
+      "text": "और चाही यह में लेख स्फाग नाग स्फाग नाय नाय करना",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.794,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 42.24,
+      "end": 44.52,
+      "text": "अर त्या लेगस करना मगलग प्शाहाना",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.912,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 44.52,
+      "end": 49.55,
+      "text": "प्सलग की आव ग़़ ग़़े साण को लिएगों ज़ाने किसा.",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.734,
+      "contested": true,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 49.55,
+      "end": 54.55,
+      "text": "आप प्सलग की प्सलग किता अगा.",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 54.55,
+      "end": 73.71,
+      "text": "ज़ा वो दे साअंब आप प्सलग की कहं now or you will have bad it.",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.87,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 74.07,
+      "end": 76.87,
+      "text": "उत communication with him",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 81.87,
+      "end": 82.87,
+      "text": "will learn the science of building",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 87.54,
+      "end": 89.18,
+      "text": "making we do",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 91.3,
+      "end": 92.3,
+      "text": "not in this way",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 95.3,
+      "end": 99.18,
+      "text": "we are only making the group",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.938,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 99.18,
+      "end": 105.3,
+      "text": "पेखार कोगिता है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.492,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 105.3,
+      "end": 107.3,
+      "text": "जब ती चान पूँठ दे हैं",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 107.3,
+      "end": 109.3,
+      "text": "पीखार को खाएंजे बताना पता है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.815,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 109.3,
+      "end": 111.65,
+      "text": "सब को हो लग",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.651,
+      "contested": true,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 111.65,
+      "end": 113.65,
+      "text": "सब को अगा सब वतने नहीं आगे",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.905,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 113.65,
+      "end": 116.65,
+      "text": "तो लोगे वोड़ते हो, कि मैंगा सूथ है नहीं इई आगा",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.99,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 116.65,
+      "end": 118.65,
+      "text": "क्या बोब डहे है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.6,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 118.65,
+      "end": 124.1,
+      "text": "खें।",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.534,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 124.1,
+      "end": 126.4,
+      "text": "यहि ev 1958 हमार over",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 126.4,
+      "end": 129.26,
+      "text": "ईूल सी अग़ी नी हब",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 129.26,
+      "end": 131.49,
+      "text": "लुontoे कां pier",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.704,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 131.49,
+      "end": 134.45,
+      "text": "Y一定",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 135.59,
+      "end": 137.49,
+      "text": "दुब आशक र किय लग नफँले के काम किया",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.968,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 137.49,
+      "end": 139.95,
+      "text": "cookies",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.793,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 140.11,
+      "end": 147.24,
+      "text": "care",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.847,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 147.38,
+      "end": 161.7,
+      "text": "rets",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.76,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 161.7,
+      "end": 165.67,
+      "text": "क्यालوता लिम भोल ग़ो?",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.786,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 165.67,
+      "end": 168.23,
+      "text": "ठीके ना रहीं लेकियोता",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.945,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 168.51,
+      "end": 177.83,
+      "text": "मरा पिज़ी रोल जब भी काम अब जबागरें एक भी रहीं?",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.783,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 178.11,
+      "end": 189.46,
+      "text": "है तो कुज मेट़िया सब रहा है कझामाद या जाए ता हो फुस्वाण कुँष्वान कोल नहीं करंणागे",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.768,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 189.46,
+      "end": 195.8,
+      "text": "यह थोनाज कदबगद, समालगी उसघर टरप करेगेगेगे.",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.823,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 195.8,
+      "end": 210.51,
+      "text": "यह को लाज की जबपी, वंप्रोम करेगे, थब हम क्या टरगेगे,",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.708,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 210.51,
+      "end": 213.47,
+      "text": "नाज जुग याशतन है, जो चचच्तॉड़ेगेगे.",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 213.47,
+      "end": 216.37,
+      "text": "यह दर चच्यछ्ट़्ा, निर्थिट्ढेऊगेगे.",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 216.37,
+      "end": 237.36,
+      "text": "उगो अहनकोई नित Skit",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.893,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 237.36,
+      "end": 254.73,
+      "text": "मैं省 उरही।",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.67,
+      "contested": true,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 254.73,
+      "end": 257.89,
+      "text": "जिक्ठा अगि शिस तो द्यागे ऑा harvest",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.804,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 257.89,
+      "end": 277.27,
+      "text": "चिनक रेई बादर लिँ से ऴाहेइ में बाद Still",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.47,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 277.27,
+      "end": 280.79,
+      "text": "अद माँ लाग नाज़ा ले शट्चीझ सोचचचे हैं",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.943,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 281.33,
+      "end": 283.33,
+      "text": "तिक एं पच्चचिस बच्चे हैं",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 283.33,
+      "end": 286.33,
+      "text": "तो हैं, पाज गुप फनाएं के पाज डोगो पाज",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 286.33,
+      "end": 287.68,
+      "text": "तिक एं?",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.578,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 287.68,
+      "end": 301.84,
+      "text": "समबजग अच्चे, सें, प्यार्षि, साच मिर की खाम प्रेगी",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.839,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 301.84,
+      "end": 302.5,
+      "text": "थी हैं? जगर्डना नहीं है।",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.227,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 302.9,
+      "end": 307.12,
+      "text": "वो वरा थीस्चर रूलों गया",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.656,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 308.12,
+      "end": 323.65,
+      "text": "तीस्चर रूल कया था?",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.395,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 324.15,
+      "end": 324.65,
+      "text": "जच्र न है?",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 326.29,
+      "end": 332.84,
+      "text": "अख्र ती रूल था वामारा",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.844,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 332.84,
+      "end": 334.36,
+      "text": "ताच्र नहीं गे।",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.421,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 334.36,
+      "end": 337.57,
+      "text": "अख्र तूदाब बना है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.994,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 337.57,
+      "end": 339.57,
+      "text": "नारे एक साँल �Radhe,",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 339.57,
+      "end": 341.57,
+      "text": "वे भी और पार में तास्मट नहीं लें",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.89,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 341.57,
+      "end": 345.83,
+      "text": "ok swimming class",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.716,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 346.13,
+      "end": 348.56,
+      "text": "what i had card role",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.798,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 348.56,
+      "end": 351.08,
+      "text": "this is 14 rule",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 351.08,
+      "end": 364.29,
+      "text": "what is material",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.433,
+      "contested": true,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 365.05,
+      "end": 379.66,
+      "text": "then what is material",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.437,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 380.59,
+      "end": 383.27,
+      "text": "yes, i will tell",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.754,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 389.59,
+      "end": 393.48,
+      "text": "thought making thus",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.689,
+      "contested": true,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 393.48,
+      "end": 394.04,
+      "text": "ok",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.946,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 394.16,
+      "end": 399.32,
+      "text": "and whenever in one class",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.601,
+      "contested": true,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 399.56,
+      "end": 402.86,
+      "text": "there was lot of time",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.8,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 403.12,
+      "end": 404.62,
+      "text": "then what i will teach",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 404.82,
+      "end": 421.88,
+      "text": "today is a fall",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.783,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 421.88,
+      "end": 431.03,
+      "text": "यर लगाँव स्ँर्था कुईउव की और जानष रवक है।",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.774,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 444.5,
+      "end": 452.38,
+      "text": "दिसे अँश्वाह को him & vajua daza and",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.518,
+      "contested": true,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 453.3,
+      "end": 455.59,
+      "text": "चाーん क् ICE",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.559,
+      "contested": true,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 458.78,
+      "end": 462.12,
+      "text": "टूशe रवाब़닝 करे करीखाँ लिंग़ा Pretty festivals",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 465.04,
+      "end": 468.83,
+      "text": "जो शीा last",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.538,
+      "contested": true,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 469.51,
+      "end": 477.05,
+      "text": "ऌर द्जांच यह की ऩी, थी लगाँगng लएक शालित गे �itors",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.82,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 478.57,
+      "end": 480.55,
+      "text": "नहीं, बॉप्य।",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.657,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 480.55,
+      "end": 485.65,
+      "text": "असक्र हुत्य़ी किभ्रयाब, यस उुरही handheld.",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.69,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 485.65,
+      "end": 496.33,
+      "text": "असक्र ब वोony kum larger and more",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.673,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 496.33,
+      "end": 500.36,
+      "text": "ढार बगईना � Contract",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.829,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 500.36,
+      "end": 503.66,
+      "text": "असक्र बग нормально तुसं.",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.903,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 503.66,
+      "end": 505.54,
+      "text": "समाज़न्री कारे था.",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 505.54,
+      "end": 507.92,
+      "text": "तूँः Spieler तूए एक यह Kathy's group,",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 507.92,
+      "end": 516.04,
+      "text": "अहां, या द़हरें का नहीं तुत पाँजूँ रगा है नहीं, एप दे מחी cowboy",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.872,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 516.16,
+      "end": 528.38,
+      "text": "पाजु बरखा नहीं, खे destin आटे के नहीं दे क्हें Wake",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.705,
+      "contested": true,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 528.42,
+      "end": 542.36,
+      "text": "उनका, ध dB-1 ंर रखा उसकते, लाहल लगा मेENA",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.813,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 542.56,
+      "end": 546.62,
+      "text": "मे च incoming, tornadoong, cow- missiles are",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.872,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 546.62,
+      "end": 551.8,
+      "text": "वैच 악, विंभ्या, ओतने साiller, वrets with",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.919,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 551.8,
+      "end": 561.51,
+      "text": "यानांखा उन लिएग कणांग,सबीठा कणांग ,",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.902,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 561.51,
+      "end": 568.81,
+      "text": "एन दर्टीख कणांग , अन लर्टा कणांग कणांग का,",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.83,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 568.81,
+      "end": 583.68,
+      "text": "टरனव कणांग कणांग आरेंग frequently.",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.81,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 583.68,
+      "end": 634.62,
+      "text": "उनकनांग कणांग कणांग सबीठा हो सब ता कचि रिज़ क्या.",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.842,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 634.62,
+      "end": 643.38,
+      "text": "नहीं तब अमदराग कहाँ भीद में सब दे नहीं रहात हो जुडाद",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.715,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 643.38,
+      "end": 650.75,
+      "text": "अगट उपना आसमान लुग से बादर भीजी जाराता ने वीजी जाराता",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.828,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 650.75,
+      "end": 654.75,
+      "text": "यचना भारी बरसन हो रहाता, बारी बरसन पका है नहाँ",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.94,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 654.75,
+      "end": 658.9,
+      "text": "बहुर भारी सूराता, भोहाँ ध़ाता है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.894,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 658.9,
+      "end": 670.48,
+      "text": "वो दष्टक यह उसे यह वेदियागे पहर से वेदियागे उसे व्जास्टे लोत देयाग.",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.95,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 670.6,
+      "end": 676.1,
+      "text": "और यह वाड आके प्पुरा अत्बानी वोगया.",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.858,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 676.22,
+      "end": 677.3,
+      "text": "किंखे है?",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.731,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 677.42,
+      "end": 679.3,
+      "text": "अख सब नित अदेखाउ देखा है ना?",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 679.46,
+      "end": 682.45,
+      "text": "बरब नीख.",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 682.45,
+      "end": 687.05,
+      "text": "अवर्द बाणी श़्ब होटे बेँ वहोड जाला भीचा भानि कास तर्ग होगया",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 687.25,
+      "end": 690.73,
+      "text": "भानि ईतना दह ग़ा होगया और जोनो गाउ अलरग अलग होगया",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 690.91,
+      "end": 694.83,
+      "text": "याम अच्चानें से एक राबते अनदर ही दोनो गाउ ओल्ग अलरग होगया",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.957,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 694.83,
+      "end": 700.15,
+      "text": "और सब को बताता कि नाप्ःात अगर भूछ करागे लो तिन भीज़ से",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.87,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 700.15,
+      "end": 710.67,
+      "text": "तो राहुर और क्यानापा लेपी का प्रागे राहुल और भीना कप और वोड़ अचनिसाम हो रेए भोड़ों",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.86,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 710.67,
+      "end": 713.15,
+      "text": "ते अनरे पोस तो दर हैं",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.952,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 810.26,
+      "end": 816.47,
+      "text": "ज़ो हम रोना दूना बन करो अबी आम पैट ते है प्लैं बरागे",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.779,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 816.47,
+      "end": 824.26,
+      "text": "पुच प्लैंज रहाँए ताकि हम एम दं एक मिरिए की अंदर अतर आप उस गाँ में आउतर पूँच पागे",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.864,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 824.26,
+      "end": 828.58,
+      "text": "और वारे दोस को दोप्रा के पास लेगाचा है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.616,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 828.66,
+      "end": 831.3,
+      "text": "किके उसुब गाँ में तोख्यान है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.765,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 831.3,
+      "end": 833.1,
+      "text": "यह भी दोस के पास मम्मी नहीं आं",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 833.1,
+      "end": 835.5,
+      "text": "रोस में पास पोईब नहीं फाँ तोस पाखे रागाँ",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.983,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 835.5,
+      "end": 850.42,
+      "text": "क्या प्लैं आपको क्या लगरा है क्या बोज़ सब अगे",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.269,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 850.42,
+      "end": 860.32,
+      "text": "भम बना सकते हैं तुच खे तुबलों",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.306,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 860.32,
+      "end": 864.43,
+      "text": "काए शे हम लिज दवों से ज़ाँ में की तरडाष सकते है?",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.747,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 865.53,
+      "end": 866.41,
+      "text": "अपताओ",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.784,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 866.41,
+      "end": 867.85,
+      "text": "ब्रीज बानाश",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.667,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 868.01,
+      "end": 869.45,
+      "text": "ब्रीज बाणाश दे",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.896,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 870.66,
+      "end": 876.02,
+      "text": "ब्रीज बाणाश ते करे?",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.688,
+      "contested": true,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 876.02,
+      "end": 877.7,
+      "text": "की ब्रीज बणाक लिजा सकते है?",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.952,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 878.18,
+      "end": 879.94,
+      "text": "अबराऔ, मुजे तैएना लिए अता है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 879.94,
+      "end": 881.94,
+      "text": "तो हमको क्या कणना परिगा?",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.895,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 881.94,
+      "end": 902.19,
+      "text": "कोई प्यदा है, और समयस्टा, आपा काहो, ऎब में होंगा सकते हो,",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.947,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 902.19,
+      "end": 908.75,
+      "text": "जो भी होँ सकता है, बहुज दे तरीका हो सकता है, लेके सब सब अफ़ा कंछ क्या हो allerdings,",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.84,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 908.75,
+      "end": 922.13,
+      "text": "अगर बीच में चेट हो जाए, तो हो धुख जाए का ना, चोटा साए प्यदा है,",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.689,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 922.13,
+      "end": 924.41,
+      "text": "गाव में बीज बनाने के लिए",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.917,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 924.87,
+      "end": 926.23,
+      "text": "वो कहा रहे का?",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.846,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 926.67,
+      "end": 929.27,
+      "text": "कुंक्रिट चाहीए,शीमेच चाहीए",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.981,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 929.27,
+      "end": 931.9,
+      "text": "इतने बड़ा बरन्ज चाहीए",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 933.07,
+      "end": 934.79,
+      "text": "रोट चाहीए इना?",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.942,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 934.79,
+      "end": 936.63,
+      "text": "बीज बनाने बीज देखे वो कपेई",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 936.63,
+      "end": 937.63,
+      "text": "बीज देखे हो",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 937.83,
+      "end": 939.18,
+      "text": "लगे वो बीज",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.867,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 939.18,
+      "end": 942.34,
+      "text": "बीज कहा लेखा?",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.367,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 944.45,
+      "end": 946.3,
+      "text": "बीज में लेखा है?",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.562,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 946.98,
+      "end": 955.72,
+      "text": "सहर में देखा. वा बता अप कहा लेखो",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.667,
+      "contested": true,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 961.23,
+      "end": 962.63,
+      "text": "गढ़ ख्ल ऴे देखे है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.843,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 962.63,
+      "end": 963.83,
+      "text": "ख्ल भे देखे हो",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.717,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 964.23,
+      "end": 965.51,
+      "text": "फीड. बड़िया",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.867,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 965.51,
+      "end": 968.58,
+      "text": "गज में बीज वना पहोगेना?",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.919,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 968.58,
+      "end": 969.66,
+      "text": "वः पार न॑ग है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 969.66,
+      "end": 973.34,
+      "text": "जो प्र देखे गाय्ग लग बागा लेगं वागे रहा जुन",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.671,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 973.34,
+      "end": 974.64,
+      "text": "ओ मुउर्ँक एक ब्रर्ँज stroll",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 974.64,
+      "end": 975.14,
+      "text": "कुईसी मेग皆 the head bridge",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 975.14,
+      "end": 976.1,
+      "text": "थाव सम्चोड�机 manos",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 978.68,
+      "end": 980.28,
+      "text": "�voll ब्रीझ साम सकुछで ग़िज कोंसर सउ cours",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.956,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 980.78,
+      "end": 981.74,
+      "text": "एक के उ ăn और सब को कत Allahu",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 981.74,
+      "end": 982.26,
+      "text": "वी अर्ढस हने काईस being",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 982.26,
+      "end": 982.98,
+      "text": "अर्ढस हन",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.903,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 982.98,
+      "end": 983.9,
+      "text": "अर्ढस जी उंपर Jab",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 984.4,
+      "end": 985.3,
+      "text": "यह भी भी",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 985.3,
+      "end": 1003.67,
+      "text": "never",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.899,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1003.67,
+      "end": 1005.99,
+      "text": "अद मज्बुद तश्ण ना प्रटायना प्रीष को",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1006.85,
+      "end": 1008.05,
+      "text": "तकि उगीर ना जाए",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1010.62,
+      "end": 1011.82,
+      "text": "अप रो सब को",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.958,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1012.74,
+      "end": 1014.98,
+      "text": "वीना और रामूल वन ना पडेगा",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1015.82,
+      "end": 1016.42,
+      "text": "तिके",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.85,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1016.78,
+      "end": 1018.46,
+      "text": "सव एके वीना हो",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1018.58,
+      "end": 1020.26,
+      "text": "लग्या हो, पर वीना",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1020.5,
+      "end": 1021.78,
+      "text": "और लग्यो के",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1022.22,
+      "end": 1023.42,
+      "text": "रामूल",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.858,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1023.42,
+      "end": 1024.14,
+      "text": "तिके",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.917,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1025.29,
+      "end": 1027.61,
+      "text": "और तिया बनाउगे आप प्रम बिल्के",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1030.34,
+      "end": 1031.54,
+      "text": "यक ब्रीष बनाउगे",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.992,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1031.62,
+      "end": 1049.49,
+      "text": "तिकट",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.199,
+      "contested": true,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1049.69,
+      "end": 1051.81,
+      "text": "दाव में दख्री आतु है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.816,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1051.81,
+      "end": 1052.93,
+      "text": "दख्री ना",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1052.93,
+      "end": 1058.17,
+      "text": "लग्री रहोड के पास लप्री बھیगा",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.754,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1058.17,
+      "end": 1062.02,
+      "text": "उस लप्री से लिए वहुँकोग से ब्रीष बनाउगा",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.779,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1062.02,
+      "end": 1066.46,
+      "text": "लग्री बनाने के यह तो गौ तींसीज़ भागा उंपारटी कह गजुए",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.986,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1066.46,
+      "end": 1070.58,
+      "text": "भाँ़ मज्फुन है, भो याज रचना पडीगा.",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.837,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1070.58,
+      "end": 1077.04,
+      "text": "या है उपने कि लग्री से ही बनापये दे,",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.98,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1077.04,
+      "end": 1079.42,
+      "text": "दे गरिज को भीट्ट का बना मै,",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.908,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1079.42,
+      "end": 1083.71,
+      "text": "मज्फुट बना में खेलिना जाही,",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.704,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1083.71,
+      "end": 1085.89,
+      "text": "उसके उपन हुप छीज रख के लेके लेकि,",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1085.89,
+      "end": 1087.65,
+      "text": "रिच मज्फृबने कि लीनी.",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.881,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1087.65,
+      "end": 1101.44,
+      "text": "ते कै अगे एक एक भीस मज्भॉध बनाना है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.724,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1101.44,
+      "end": 1106.5,
+      "text": "कैसे बनाना है यह आप बँट वगुड बनाना है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.901,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1106.5,
+      "end": 1114.62,
+      "text": "अगफ थो सुजना पतते है की आप के आई से वो वगुड बनाना है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.83,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1114.62,
+      "end": 1122.95,
+      "text": "बहुंदि सीमु लप्री लेई कोचपेर प्रेण जबस जंथ गे",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.391,
+      "contested": true,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1122.95,
+      "end": 1124.55,
+      "text": "लप्टिनने साप्या लिएतों।",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.894,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1125.5,
+      "end": 1126.62,
+      "text": "लप्टि़ की मी आसी है दि бл intestine is like this",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1127.12,
+      "end": 1134.27,
+      "text": "उनकाज है दि presets कह़ते है तैंझे लिप्टिनते है ज्छे है में आसी हैs a coordinator n a mortal to cut times",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.722,
+      "contested": true,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1134.27,
+      "end": 1139.61,
+      "text": "अपकै बनावगे अपी ब्रेच मनावगे",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.463,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1139.61,
+      "end": 1140.57,
+      "text": "बनावगे है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.833,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1140.61,
+      "end": 1149.96,
+      "text": "नोल पारे हैं हैं",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.68,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1149.96,
+      "end": 1152.24,
+      "text": "तो लेह है हैं हैं बना नहीं यी पाहें आप जां",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.991,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1170.18,
+      "end": 1173.1,
+      "text": "ती कै, अपना विए और पना लिए पें",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.658,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1173.26,
+      "end": 1175.34,
+      "text": "अपी हед बोगट में क्या हो का",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1175.34,
+      "end": 1178.4,
+      "text": "लडका, यग साभ बेरेवें के ही से कां।",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.997,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1178.4,
+      "end": 1180.92,
+      "text": "अपास में जबड़ना नहीं है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1180.92,
+      "end": 1181.68,
+      "text": "तीके है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1181.68,
+      "end": 1197.92,
+      "text": "या नवर रूप",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.387,
+      "contested": true,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1197.92,
+      "end": 1198.52,
+      "text": "मैं",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.75,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1198.52,
+      "end": 1202.46,
+      "text": "तो अम को सर्ट्टी बना सुलग",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.881,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1202.46,
+      "end": 1209.08,
+      "text": "ते आप दो नो आज़",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.55,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1209.08,
+      "end": 1217.81,
+      "text": "आप भुगाप आप बडचो",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.589,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1217.81,
+      "end": 1221.68,
+      "text": "एक बडद तूर ज़ा इं बना ना",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.884,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1221.68,
+      "end": 1222.98,
+      "text": "तीके रूप में",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1222.98,
+      "end": 1223.94,
+      "text": "अखे",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1223.94,
+      "end": 1242.17,
+      "text": "किच्ना वो गए आप दो आज़",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.672,
+      "contested": true,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1274.68,
+      "end": 1280.81,
+      "text": "किच्ना वो आप भी आप तीनो आज़़",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.595,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1280.81,
+      "end": 1284.03,
+      "text": "आप दी आप",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.413,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1284.03,
+      "end": 1286.63,
+      "text": "आप",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.185,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1286.63,
+      "end": 1288.81,
+      "text": "उदर बड़़़",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.661,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1288.81,
+      "end": 1290.61,
+      "text": "कैसे बड़़ना है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.933,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1290.61,
+      "end": 1304.32,
+      "text": "क्या बनाना है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.788,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1304.32,
+      "end": 1305.72,
+      "text": "क्या आप आप आना है",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.929,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1305.72,
+      "end": 1307.81,
+      "text": "जब पड़़",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 1.0,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1310.82,
+      "end": 1312.02,
+      "text": "मैं गे गोड़",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.783,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1312.02,
+      "end": 1313.82,
+      "text": "अप वी आप आज़",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.867,
+      "contested": false,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1313.82,
+      "end": 1315.42,
+      "text": "आज़",
+      "speaker": "SPEAKER_00",
+      "speaker_conf": 0.725,
+      "contested": true,
+      "role": "teacher",
+      "label": "Teacher"
+    }
+  ],
+  "utterances": [
+    {
+      "start": 1.07,
+      "end": 21.13,
+      "speaker": "SPEAKER_00",
+      "text": "अर समान क्लास से जेकmana klax rekord Hin te Okay? हमना की समान क्लास् Sai visita Okay? एकONN बाह bloom क्यौर आस के ह円 seke hiya और औरुज और मुरक्राप्ये मेरे आपrien अhetto डूजSaydo चुद पीक चुछा पतर हैं ु Gold",
+      "speaker_conf": 0.167,
+      "n_segments": 9,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 24.97,
+      "end": 76.87,
+      "speaker": "SPEAKER_00",
+      "text": "उय� educators ौ Pal सीगर नहीं वो यह आप आपता होंगे मगलाख कँई भाम ने कर सकें इस बहुड़ त्या चाही अचद यह में रेख स्फाग नाय करना अगर नाग है plant in a और चाही यह में लेख स्फाग नाग स्फाग नाय नाय करना अर त्या लेगस करना मगलग प्शाहाना प्सलग की आव ग़़ ग़़े साण को लिएगों ज़ाने किसा. आप प्सलग की प्सलग किता अगा. ज़ा वो दे साअंब आप प्सलग की कहं now or you will have bad it. उत communication with him",
+      "speaker_conf": 0.595,
+      "n_segments": 11,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 81.87,
+      "end": 82.87,
+      "speaker": "SPEAKER_00",
+      "text": "will learn the science of building",
+      "speaker_conf": 1.0,
+      "n_segments": 1,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 87.54,
+      "end": 89.18,
+      "speaker": "SPEAKER_00",
+      "text": "making we do",
+      "speaker_conf": 1.0,
+      "n_segments": 1,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 91.3,
+      "end": 92.3,
+      "speaker": "SPEAKER_00",
+      "text": "not in this way",
+      "speaker_conf": 1.0,
+      "n_segments": 1,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 95.3,
+      "end": 134.45,
+      "speaker": "SPEAKER_00",
+      "text": "we are only making the group पेखार कोगिता है जब ती चान पूँठ दे हैं पीखार को खाएंजे बताना पता है सब को हो लग सब को अगा सब वतने नहीं आगे तो लोगे वोड़ते हो, कि मैंगा सूथ है नहीं इई आगा क्या बोब डहे है खें। यहि ev 1958 हमार over ईूल सी अग़ी नी हब लुontoे कां pier Y一定",
+      "speaker_conf": 0.492,
+      "n_segments": 13,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 135.59,
+      "end": 324.65,
+      "speaker": "SPEAKER_00",
+      "text": "दुब आशक र किय लग नफँले के काम किया cookies care rets क्यालوता लिम भोल ग़ो? ठीके ना रहीं लेकियोता मरा पिज़ी रोल जब भी काम अब जबागरें एक भी रहीं? है तो कुज मेट़िया सब रहा है कझामाद या जाए ता हो फुस्वाण कुँष्वान कोल नहीं करंणागे यह थोनाज कदबगद, समालगी उसघर टरप करेगेगेगे. यह को लाज की जबपी, वंप्रोम करेगे, थब हम क्या टरगेगे, नाज जुग याशतन है, जो चचच्तॉड़ेगेगे. यह दर चच्यछ्ट़्ा, निर्थिट्ढेऊगेगे. उगो अहनकोई नित Skit मैं省 उरही। जिक्ठा अगि शिस तो द्यागे ऑा harvest चिनक रेई बादर लिँ से ऴाहेइ में बाद Still अद माँ लाग नाज़ा ले शट्चीझ सोचचचे हैं तिक एं पच्चचिस बच्चे हैं तो हैं, पाज गुप फनाएं के पाज डोगो पाज तिक एं? समबजग अच्चे, सें, प्यार्षि, साच मिर की खाम प्रेगी थी हैं? जगर्डना नहीं है। वो वरा थीस्चर रूलों गया तीस्चर रूल कया था? जच्र न है?",
+      "speaker_conf": 0.227,
+      "n_segments": 25,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 326.29,
+      "end": 383.27,
+      "speaker": "SPEAKER_00",
+      "text": "अख्र ती रूल था वामारा ताच्र नहीं गे। अख्र तूदाब बना है नारे एक साँल �Radhe, वे भी और पार में तास्मट नहीं लें ok swimming class what i had card role this is 14 rule what is material then what is material yes, i will tell",
+      "speaker_conf": 0.421,
+      "n_segments": 11,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 389.59,
+      "end": 431.03,
+      "speaker": "SPEAKER_00",
+      "text": "thought making thus ok and whenever in one class there was lot of time then what i will teach today is a fall यर लगाँव स्ँर्था कुईउव की और जानष रवक है।",
+      "speaker_conf": 0.601,
+      "n_segments": 7,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 444.5,
+      "end": 455.59,
+      "speaker": "SPEAKER_00",
+      "text": "दिसे अँश्वाह को him & vajua daza and चाーん क् ICE",
+      "speaker_conf": 0.518,
+      "n_segments": 2,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 458.78,
+      "end": 462.12,
+      "speaker": "SPEAKER_00",
+      "text": "टूशe रवाब़닝 करे करीखाँ लिंग़ा Pretty festivals",
+      "speaker_conf": 1.0,
+      "n_segments": 1,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 465.04,
+      "end": 477.05,
+      "speaker": "SPEAKER_00",
+      "text": "जो शीा last ऌर द्जांच यह की ऩी, थी लगाँगng लएक शालित गे �itors",
+      "speaker_conf": 0.538,
+      "n_segments": 2,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 478.57,
+      "end": 713.15,
+      "speaker": "SPEAKER_00",
+      "text": "नहीं, बॉप्य। असक्र हुत्य़ी किभ्रयाब, यस उुरही handheld. असक्र ब वोony kum larger and more ढार बगईना � Contract असक्र बग нормально तुसं. समाज़न्री कारे था. तूँः Spieler तूए एक यह Kathy's group, अहां, या द़हरें का नहीं तुत पाँजूँ रगा है नहीं, एप दे מחी cowboy पाजु बरखा नहीं, खे destin आटे के नहीं दे क्हें Wake उनका, ध dB-1 ंर रखा उसकते, लाहल लगा मेENA मे च incoming, tornadoong, cow- missiles are वैच 악, विंभ्या, ओतने साiller, वrets with यानांखा उन लिएग कणांग,सबीठा कणांग , एन दर्टीख कणांग , अन लर्टा कणांग कणांग का, टरனव कणांग कणांग आरेंग frequently. उनकनांग कणांग कणांग सबीठा हो सब ता कचि रिज़ क्या. नहीं तब अमदराग कहाँ भीद में सब दे नहीं रहात हो जुडाद अगट उपना आसमान लुग से बादर भीजी जाराता ने वीजी जाराता यचना भारी बरसन हो रहाता, बारी बरसन पका है नहाँ बहुर भारी सूराता, भोहाँ ध़ाता है वो दष्टक यह उसे यह वेदियागे पहर से वेदियागे उसे व्जास्टे लोत देयाग. और यह वाड आके प्पुरा अत्बानी वोगया. किंखे है? अख सब नित अदेखाउ देखा है ना? बरब नीख. अवर्द बाणी श़्ब होटे बेँ वहोड जाला भीचा भानि कास तर्ग होगया भानि ईतना दह ग़ा होगया और जोनो गाउ अलरग अलग होगया याम अच्चानें से एक राबते अनदर ही दोनो गाउ ओल्ग अलरग होगया और सब को बताता कि नाप्ःात अगर भूछ करागे लो तिन भीज़ से तो राहुर और क्यानापा लेपी का प्रागे राहुल और भीना कप और वोड़ अचनिसाम हो रेए भोड़ों ते अनरे पोस तो दर हैं",
+      "speaker_conf": 0.657,
+      "n_segments": 31,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 810.26,
+      "end": 864.43,
+      "speaker": "SPEAKER_00",
+      "text": "ज़ो हम रोना दूना बन करो अबी आम पैट ते है प्लैं बरागे पुच प्लैंज रहाँए ताकि हम एम दं एक मिरिए की अंदर अतर आप उस गाँ में आउतर पूँच पागे और वारे दोस को दोप्रा के पास लेगाचा है किके उसुब गाँ में तोख्यान है यह भी दोस के पास मम्मी नहीं आं रोस में पास पोईब नहीं फाँ तोस पाखे रागाँ क्या प्लैं आपको क्या लगरा है क्या बोज़ सब अगे भम बना सकते हैं तुच खे तुबलों काए शे हम लिज दवों से ज़ाँ में की तरडाष सकते है?",
+      "speaker_conf": 0.269,
+      "n_segments": 9,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 865.53,
+      "end": 869.45,
+      "speaker": "SPEAKER_00",
+      "text": "अपताओ ब्रीज बानाश ब्रीज बाणाश दे",
+      "speaker_conf": 0.667,
+      "n_segments": 3,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 870.66,
+      "end": 931.9,
+      "speaker": "SPEAKER_00",
+      "text": "ब्रीज बाणाश ते करे? की ब्रीज बणाक लिजा सकते है? अबराऔ, मुजे तैएना लिए अता है तो हमको क्या कणना परिगा? कोई प्यदा है, और समयस्टा, आपा काहो, ऎब में होंगा सकते हो, जो भी होँ सकता है, बहुज दे तरीका हो सकता है, लेके सब सब अफ़ा कंछ क्या हो allerdings, अगर बीच में चेट हो जाए, तो हो धुख जाए का ना, चोटा साए प्यदा है, गाव में बीज बनाने के लिए वो कहा रहे का? कुंक्रिट चाहीए,शीमेच चाहीए इतने बड़ा बरन्ज चाहीए",
+      "speaker_conf": 0.688,
+      "n_segments": 11,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 933.07,
+      "end": 942.34,
+      "speaker": "SPEAKER_00",
+      "text": "रोट चाहीए इना? बीज बनाने बीज देखे वो कपेई बीज देखे हो लगे वो बीज बीज कहा लेखा?",
+      "speaker_conf": 0.367,
+      "n_segments": 5,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 944.45,
+      "end": 955.72,
+      "speaker": "SPEAKER_00",
+      "text": "बीज में लेखा है? सहर में देखा. वा बता अप कहा लेखो",
+      "speaker_conf": 0.562,
+      "n_segments": 2,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 961.23,
+      "end": 976.1,
+      "speaker": "SPEAKER_00",
+      "text": "गढ़ ख्ल ऴे देखे है ख्ल भे देखे हो फीड. बड़िया गज में बीज वना पहोगेना? वः पार न॑ग है जो प्र देखे गाय्ग लग बागा लेगं वागे रहा जुन ओ मुउर्ँक एक ब्रर्ँज stroll कुईसी मेग皆 the head bridge थाव सम्चोड�机 manos",
+      "speaker_conf": 0.671,
+      "n_segments": 9,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 978.68,
+      "end": 1008.05,
+      "speaker": "SPEAKER_00",
+      "text": "�voll ब्रीझ साम सकुछで ग़िज कोंसर सउ cours एक के उ ăn और सब को कत Allahu वी अर्ढस हने काईस being अर्ढस हन अर्ढस जी उंपर Jab यह भी भी never अद मज्बुद तश्ण ना प्रटायना प्रीष को तकि उगीर ना जाए",
+      "speaker_conf": 0.899,
+      "n_segments": 9,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1010.62,
+      "end": 1024.14,
+      "speaker": "SPEAKER_00",
+      "text": "अप रो सब को वीना और रामूल वन ना पडेगा तिके सव एके वीना हो लग्या हो, पर वीना और लग्यो के रामूल तिके",
+      "speaker_conf": 0.85,
+      "n_segments": 8,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1025.29,
+      "end": 1027.61,
+      "speaker": "SPEAKER_00",
+      "text": "और तिया बनाउगे आप प्रम बिल्के",
+      "speaker_conf": 1.0,
+      "n_segments": 1,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1030.34,
+      "end": 1152.24,
+      "speaker": "SPEAKER_00",
+      "text": "यक ब्रीष बनाउगे तिकट दाव में दख्री आतु है दख्री ना लग्री रहोड के पास लप्री बھیगा उस लप्री से लिए वहुँकोग से ब्रीष बनाउगा लग्री बनाने के यह तो गौ तींसीज़ भागा उंपारटी कह गजुए भाँ़ मज्फुन है, भो याज रचना पडीगा. या है उपने कि लग्री से ही बनापये दे, दे गरिज को भीट्ट का बना मै, मज्फुट बना में खेलिना जाही, उसके उपन हुप छीज रख के लेके लेकि, रिच मज्फृबने कि लीनी. ते कै अगे एक एक भीस मज्भॉध बनाना है कैसे बनाना है यह आप बँट वगुड बनाना है अगफ थो सुजना पतते है की आप के आई से वो वगुड बनाना है बहुंदि सीमु लप्री लेई कोचपेर प्रेण जबस जंथ गे लप्टिनने साप्या लिएतों। लप्टि़ की मी आसी है दि бл intestine is like this उनकाज है दि presets कह़ते है तैंझे लिप्टिनते है ज्छे है में आसी हैs a coordinator n a mortal to cut times अपकै बनावगे अपी ब्रेच मनावगे बनावगे है नोल पारे हैं हैं तो लेह है हैं हैं बना नहीं यी पाहें आप जां",
+      "speaker_conf": 0.199,
+      "n_segments": 24,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1170.18,
+      "end": 1242.17,
+      "speaker": "SPEAKER_00",
+      "text": "ती कै, अपना विए और पना लिए पें अपी हед बोगट में क्या हो का लडका, यग साभ बेरेवें के ही से कां। अपास में जबड़ना नहीं है तीके है या नवर रूप मैं तो अम को सर्ट्टी बना सुलग ते आप दो नो आज़ आप भुगाप आप बडचो एक बडद तूर ज़ा इं बना ना तीके रूप में अखे किच्ना वो गए आप दो आज़",
+      "speaker_conf": 0.387,
+      "n_segments": 14,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1274.68,
+      "end": 1307.81,
+      "speaker": "SPEAKER_00",
+      "text": "किच्ना वो आप भी आप तीनो आज़़ आप दी आप आप उदर बड़़़ कैसे बड़़ना है क्या बनाना है क्या आप आप आना है जब पड़़",
+      "speaker_conf": 0.185,
+      "n_segments": 8,
+      "role": "teacher",
+      "label": "Teacher"
+    },
+    {
+      "start": 1310.82,
+      "end": 1315.42,
+      "speaker": "SPEAKER_00",
+      "text": "मैं गे गोड़ अप वी आप आज़ आज़",
+      "speaker_conf": 0.725,
+      "n_segments": 3,
+      "role": "teacher",
+      "label": "Teacher"
+    }
+  ],
+  "metrics": {
+    "duration": 1321.05,
+    "speech_time": 1094.82,
+    "silence_time": 226.23,
+    "silence_ratio": 0.1713,
+    "teacher_talk_time": 1094.82,
+    "student_talk_time": 0,
+    "unattributed_talk_time": 0,
+    "unattributed_ratio": 0.0,
+    "teacher_talk_ratio": 1.0,
+    "student_talk_ratio": 0.0,
+    "teacher_turns": 26,
+    "student_turns": 0,
+    "teacher_avg_turn": 42.11,
+    "teacher_longest_turn": 234.58,
+    "long_monologues": 5,
+    "teacher_questions": 14,
+    "questions_per_10min": 6.36,
+    "questions_answered": 0,
+    "question_response_rate": 0.0,
+    "median_wait_time": 3.42,
+    "teacher_words": 1991,
+    "teacher_words_per_min": 90.4,
+    "teacher_vocabulary_diversity": 0.2084,
+    "praise_moves": 1,
+    "irf_triads": 0,
+    "n_students_heard": 0,
+    "student_participation": {}
+  }
+}

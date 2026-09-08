@@ -21,31 +21,35 @@
 
   <div class="panel">
     <h2>Why this page is local-only</h2>
-    <p class="sub" style="margin:0 0 10px">
-      The public demo is a static site. Its pages are built from JSON that is
-      committed to the repo, and there is no server behind them. Transcribing
-      is the part that needs real hardware, so it happens here instead, on
-      whatever machine is serving this page.
+    <p class="why">
+      The public demo is a <b>static site</b>. Its pages are built from JSON
+      that is committed to the repo, and there is no server behind them.
+      <b>Transcribing is the part that needs real hardware</b>, so it happens
+      here instead, on whatever machine is serving this page.
     </p>
-    <p class="sub" style="margin:0 0 10px">
-      Hosting it properly was the first plan. Render's free tier gives you
-      512&nbsp;MB of RAM, and the pipeline sits at roughly 726&nbsp;MB before it
-      has even opened an audio file, so the first stage was killed every time.
-      Their paid CPU tiers are shared vCPU, which is the wrong shape for a job
-      that runs flat out for tens of minutes rather than milliseconds.
+
+    <p class="why">
+      Hosting it properly was the first plan. <b>Render's free tier gives you
+      512&nbsp;MB of RAM</b>, and the pipeline sits at roughly
+      <b>726&nbsp;MB</b> before it has even opened an audio file, so
+      <b>the first stage was killed every time</b>. Their paid CPU tiers are
+      <b>shared vCPU</b>, which is the wrong shape for a job that runs flat out
+      for tens of minutes rather than milliseconds.
     </p>
-    <p class="sub" style="margin:0 0 10px">
-      There was no VPS to move it to either. That matters less than it sounds:
-      on CPU, most tiers you would actually pay for are slower than a normal
-      laptop, so hosting the server would have bought availability rather than
-      speed.
+
+    <p class="why">
+      There was <b>no VPS</b> to move it to either. That matters less than it
+      sounds: on CPU, <b>most tiers you would actually pay for are slower than a
+      normal laptop</b>, so hosting the server would have bought availability
+      rather than speed.
     </p>
-    <p class="sub" style="margin:0">
-      Cloud compute is still the upgrade when it is worth it, and it does not
-      need a rewrite. The same container on a rented GPU box, or in Colab,
-      takes a 97 minute lesson down to a few minutes. Build it with
-      <span class="mono">--build-arg TORCH_INDEX=.../whl/cu124</span> and the
-      pipeline finds CUDA by itself.
+
+    <p class="why">
+      Cloud compute is still the upgrade when it is worth it, and
+      <b>it does not need a rewrite</b>. The same container on a rented GPU box,
+      or in Colab, takes a <b>97 minute lesson down to a few minutes</b>. Build
+      it with <span class="mono">--build-arg TORCH_INDEX=.../whl/cu124</span>
+      and the pipeline finds CUDA by itself.
     </p>
   </div>
 

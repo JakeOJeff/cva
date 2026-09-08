@@ -158,6 +158,39 @@ It has to be served rather than opened from disk: browsers block `fetch()` on
 `file://`, so double-clicking `site/index.html` shows an explanatory box and no
 data. Any static host works — GitHub Pages, Netlify, an S3 bucket, `nginx`.
 
+### Deploying to Cloudflare Pages
+
+`site/` is plain HTML, CSS, JS and JSON. There is no framework and no build
+step, so a static host needs no configuration beyond being told which folder to
+serve.
+
+**From the dashboard**, Workers & Pages → Create → Pages → Connect to Git, then:
+
+| Setting | Value |
+|---|---|
+| Framework preset | None |
+| Build command | *leave empty* |
+| Build output directory | `site` |
+| Root directory | *leave empty* |
+
+**Or from the command line**, without involving Git at all:
+
+```bash
+npm install -g wrangler
+wrangler pages deploy site --project-name classroom-voice-analysis
+```
+
+Re-deploying is `python -m pipeline.publish` followed by whichever of those you
+used. Two things to know:
+
+- **`site/data/*.json` must be committed** for the Git path, or the deployed
+  picker is empty. It is not gitignored (`/data/` in `.gitignore` is rooted
+  precisely so it does not swallow `site/data/`), but `pipeline.publish` has to
+  have been run *before* the commit that triggers the build.
+- **Only the demo goes to Cloudflare.** Pages serves static files, and Workers
+  cannot run PyTorch, so `web/app.py` stays local. That is the split described
+  in *Where the inference runs* above, not a limitation of Cloudflare.
+
 The running server also mounts `site/` at `/site`, because the stylesheet and
 the report renderer in there are the ones it serves to its own results page.
 There is one implementation of "render a result", not two, so the live view
