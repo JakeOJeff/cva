@@ -16,3 +16,11 @@ segments.json
 # republish; the analyses it produces, in assets/out, are what gets committed.
 /assets/in/*
 !/assets/in/.gitkeep
+
+# A session directory is result.json and transcript.txt. Everything else the
+# pipeline writes into it is an intermediate - audio_16k.wav is the normalized
+# waveform and runs to ~120MB for a 64-minute lesson, which is over GitHub's
+# hard 100MB file limit and is reconstructible from the source audio anyway.
+/assets/out/*/*
+!/assets/out/*/result.json
+!/assets/out/*/transcript.txt
