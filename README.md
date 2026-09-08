@@ -191,6 +191,32 @@ used. Two things to know:
   cannot run PyTorch, so `web/app.py` stays local. That is the split described
   in *Where the inference runs* above, not a limitation of Cloudflare.
 
+### Deploying to Vercel
+
+`vercel.json` in the repo root already says everything Vercel needs:
+
+```json
+{ "framework": null, "buildCommand": null, "outputDirectory": "site" }
+```
+
+So the dashboard flow is Add New → Project → import the repo → Deploy, with
+nothing to configure. Or from the command line:
+
+```bash
+npm install -g vercel
+vercel --prod
+```
+
+`.vercelignore` keeps everything except `site/` out of the upload. That is not
+a security measure, it is to stop Vercel autodetecting a Python project from
+`requirements.txt` and trying to build one.
+
+The same two caveats as Cloudflare apply: run `python -m pipeline.publish`
+*before* the commit that triggers the deploy, and do not try to host the server
+here. Vercel's Python functions cap out at a 250&nbsp;MB bundle and a request
+timeout measured in seconds; this pipeline is ~2&nbsp;GB of PyTorch running for
+tens of minutes, so it is not a size problem you can optimise your way out of.
+
 The running server also mounts `site/` at `/site`, because the stylesheet and
 the report renderer in there are the ones it serves to its own results page.
 There is one implementation of "render a result", not two, so the live view

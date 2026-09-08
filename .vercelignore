@@ -1,0 +1,8 @@
+# Only site/ is deployed. Vercel decides what to build from what it can see,
+# and it can autodetect a Python project from api/ or requirements.txt - so the
+# server, the pipeline and the recordings are kept out of the upload entirely.
+# This is not a security boundary, it is a way of making the deploy boring.
+*
+!site/
+!site/**
+!vercel.json
