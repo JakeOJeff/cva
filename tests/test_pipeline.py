@@ -9,8 +9,10 @@ bugs would actually hurt.
     python -m pytest tests/ -q      (or: python tests/test_pipeline.py)
 """
 
+import json
 import os
 import sys
+import tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -44,7 +46,7 @@ def build_lesson():
 
 
 def check(name, cond, extra=""):
-    print(f"  {'PASS' if cond else 'FAIL'}  {name}{(' — ' + extra) if extra else ''}")
+    print(f"  {'PASS' if cond else 'FAIL'}  {name}{(' - ' + extra) if extra else ''}")
     return cond
 
 
@@ -289,7 +291,6 @@ def main():
     # decode peaked at 813MB for a 64-minute lesson and the container was
     # OOM-killed in the pipeline's first stage, taking the upload with it.
     print("\nnormalize is skipped when the backend does not need a wav")
-    import tempfile
 
     from pipeline import audio as audio_mod
     from pipeline import run as run_mod
@@ -332,6 +333,75 @@ def main():
                         res["meta"]["duration"] > 0)
     finally:
         backends.get, audio_mod.normalize = real_get, real_normalize
+
+
+    # ---------------------------------------------------------- library
+    #
+    # assets/in -> assets/out. The slug is the only part with teeth: it names
+    # a directory and it arrives from a URL, so a bad one reads files outside
+    # the library. The rest is directory scanning, checked against a real one
+    # built in a temp dir.
+    print("\nlibrary")
+    import importlib
+
+    from pipeline import library as library_mod
+    ok &= check("slug drops the extension",
+                library_mod.slug("OD11163_2025-12-23.mp3") == "OD11163_2025-12-23")
+    # basename() eats the directories on both separators, which is what
+    # keeps a path from becoming a nested slug.
+    ok &= check("slug keeps only the filename",
+                library_mod.slug("a/b\\c d.mp3") == "c-d")
+    ok &= check("slug hyphenates spaces",
+                library_mod.slug("Grade 4 maths.mp3") == "Grade-4-maths")
+    ok &= check("slug never returns empty", library_mod.slug("...") == "session")
+    for bad in ("..", ".", "", "a/b", "..\\x", "C:", "a b"):
+        ok &= check(f"slug {bad!r} is rejected", not library_mod.is_safe_slug(bad))
+    ok &= check("an ordinary slug is accepted",
+                library_mod.is_safe_slug("OD11163_2025-12-23"))
+
+    with tempfile.TemporaryDirectory() as root:
+        inbox = os.path.join(root, "in")
+        outbox = os.path.join(root, "out")
+        os.makedirs(os.path.join(outbox, "lesson-one"))
+        os.makedirs(os.path.join(outbox, "half-done"))     # no result.json
+        os.makedirs(inbox)
+        for name in ("lesson-one.mp3", "lesson-two.mp3", "notes.txt"):
+            with open(os.path.join(inbox, name), "wb") as f:
+                f.write(b"x" * 1024)
+
+        finished = {"meta": {"source": "lesson-one.mp3", "duration": 3600.0,
+                             "n_speakers": 4, "language": "mr", "model": "small"},
+                    "metrics": {"teacher_talk_ratio": 0.71, "teacher_questions": 24},
+                    "utterances": [], "turns": [1], "segments": [2]}
+        with open(os.path.join(outbox, "lesson-one", "result.json"), "w",
+                  encoding="utf-8") as f:
+            json.dump(finished, f)
+
+        os.environ["CVA_INBOX_DIR"], os.environ["CVA_SESSIONS_DIR"] = inbox, outbox
+        try:
+            lib = importlib.reload(library_mod)
+            rows = lib.sessions()
+            ok &= check("only directories with a result.json are sessions",
+                        len(rows) == 1, f"got {len(rows)}")
+            ok &= check("the session is named by its recording, not its folder",
+                        rows[0]["file"] == "lesson-one.mp3")
+            ok &= check("duration is rendered for the list",
+                        rows[0]["duration_label"] == "1h 00m", rows[0]["duration_label"])
+            ok &= check("the language code becomes a name",
+                        rows[0]["language"] == "Marathi")
+
+            waiting = lib.inbox()
+            ok &= check("non-audio in the inbox is ignored",
+                        [e["file"] for e in waiting] == ["lesson-one.mp3", "lesson-two.mp3"],
+                        str([e["file"] for e in waiting]))
+            ok &= check("a recording already analysed is marked done",
+                        [e["done"] for e in waiting] == [True, False])
+            ok &= check("slim drops the intermediates the viewer never reads",
+                        set(lib.slim(finished)) == {"meta", "metrics", "utterances"})
+        finally:
+            os.environ.pop("CVA_INBOX_DIR")
+            os.environ.pop("CVA_SESSIONS_DIR")
+            importlib.reload(library_mod)
 
     print("\n" + ("ALL PASSED" if ok else "FAILURES ABOVE"))
     return 0 if ok else 1

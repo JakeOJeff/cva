@@ -5,8 +5,8 @@ The demo interface is a static page. Nothing is transcribed at demo time:
 the pipeline runs on a machine that has the audio, and only the derived JSON
 is published. This is the step in between.
 
-    python -m pipeline.publish                # every finished job in data/
-    python -m pipeline.publish out            # one --out directory
+    python -m pipeline.publish                # every session in assets/out
+    python -m pipeline.publish assets/out/OD11163   # one session
     python -m pipeline.publish a/result.json b/result.json
 
 It writes site/data/<recording>.json plus site/data/manifest.json, which is
@@ -29,6 +29,8 @@ import os
 import sqlite3
 import sys
 
+from . import library
+
 SITE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "site")
 OUT_DIR = os.path.join(SITE_DIR, "data")
 
@@ -36,13 +38,8 @@ DATA_DIR = os.environ.get("CVA_DATA_DIR",
                           os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data"))
 
 # Everything the viewer reads. Anything not listed here is an intermediate.
-KEEP = ("meta", "teacher", "speakers", "metrics", "utterances", "review")
-
-LANGUAGE_NAMES = {
-    "hi": "Hindi", "mr": "Marathi", "ml": "Malayalam", "ta": "Tamil",
-    "te": "Telugu", "kn": "Kannada", "bn": "Bengali", "gu": "Gujarati",
-    "pa": "Punjabi", "ur": "Urdu", "en": "English",
-}
+KEEP = library.VIEW_KEYS
+LANGUAGE_NAMES = library.LANGUAGE_NAMES
 
 
 def _uploaded_names() -> dict[str, str]:
@@ -69,28 +66,26 @@ def _uploaded_names() -> dict[str, str]:
     return {os.path.abspath(w): f for w, f in rows}
 
 
-def _slug(name: str) -> str:
-    stem = os.path.splitext(os.path.basename(name))[0]
-    safe = "".join(c if (c.isalnum() or c in "-_.") else "-" for c in stem)
-    return safe.strip("-.") or "session"
-
-
-def _hms(seconds: float) -> str:
-    seconds = int(seconds or 0)
-    h, rest = divmod(seconds, 3600)
-    m, s = divmod(rest, 60)
-    return f"{h}h {m:02d}m" if h else f"{m}m {s:02d}s"
+_slug = library.slug
+_hms = library.hms
 
 
 def _find(targets: list[str]) -> list[str]:
-    """Resolve CLI arguments to result.json paths."""
+    """
+    Resolve CLI arguments to result.json paths.
+
+    With no arguments this is the session library - assets/out - and not the
+    job store. The library is the curated set: things are there because
+    somebody decided to keep them, by running the batch or by pressing "Save
+    to sessions". Publishing every scratch job instead would put failed
+    experiments in the demo.
+    """
     if not targets:
-        results = os.path.join(DATA_DIR, "results")
-        if not os.path.isdir(results):
+        if not os.path.isdir(library.SESSION_DIR):
             return []
         return sorted(
-            p for d in os.listdir(results)
-            if os.path.isfile(p := os.path.join(results, d, "result.json"))
+            p for d in sorted(os.listdir(library.SESSION_DIR))
+            if os.path.isfile(p := os.path.join(library.SESSION_DIR, d, "result.json"))
         )
 
     paths = []
@@ -141,20 +136,14 @@ def publish(paths: list[str], out_dir: str = OUT_DIR) -> list[dict]:
         with open(os.path.join(out_dir, json_name), "w", encoding="utf-8") as f:
             json.dump(slim, f, ensure_ascii=False, separators=(",", ":"))
 
-        lang = meta.get("language") or "?"
-        sessions.append({
-            "file": filename,
-            "json": json_name,
-            "duration_label": _hms(meta.get("duration", 0)),
-            "duration": meta.get("duration"),
-            "speakers": meta.get("n_speakers"),
-            "language": LANGUAGE_NAMES.get(lang, lang),
-            "language_code": lang,
-            "model": meta.get("model"),
-            "backend": meta.get("backend", "local"),
-            "has_review": bool(result.get("review")
-                               and not result["review"].get("error")),
-        })
+        # The same row the server's session list renders, so the two views
+        # cannot disagree about what a session is. Only the slug and the
+        # filename are overridden: publish dedups slugs across the batch, and
+        # prefers the name the file was uploaded under.
+        row = library.summarize(result, filename)
+        row.update({"slug": slug, "file": filename, "json": json_name})
+        row.pop("processed_at", None)
+        sessions.append(row)
 
         size = os.path.getsize(os.path.join(out_dir, json_name))
         print(f"  ok    {filename}  ->  site/data/{json_name}  ({size / 1024:.0f} KB)")
@@ -171,15 +160,15 @@ def main() -> None:
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("targets", nargs="*",
                    help="result.json files or the directories holding them. "
-                        "With none, every finished job under data/results/.")
+                        "With none, every session in assets/out.")
     args = p.parse_args()
 
     paths = _find(args.targets)
     if not paths:
-        print("Nothing to publish. Process a recording first — either through "
-              "the local server, or:\n"
-              "  python main.py <audio> --lang mr --model small --out out\n"
-              "then point this at it:\n"
+        print(f"No sessions in {library.SESSION_DIR}\n\n"
+              "Put recordings in assets/in and process them first:\n"
+              "  python -m pipeline.batch\n\n"
+              "Or point this at a single run directory:\n"
               "  python -m pipeline.publish out")
         sys.exit(1)
 

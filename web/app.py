@@ -20,7 +20,7 @@ from fastapi.responses import (FileResponse, JSONResponse, Response,
                                StreamingResponse)
 from fastapi.staticfiles import StaticFiles
 
-from pipeline import lang
+from pipeline import lang, library
 
 from . import jobs
 
@@ -93,14 +93,102 @@ def _startup() -> None:
 
 # ------------------------------------------------------------------ pages
 
+# Two halves, deliberately separate. The home page is a library of finished
+# analyses in assets/out - that is the thing anyone actually wants to look at.
+# Processing is a workshop you visit to start a run, at /process.
+
 @app.get("/")
 def index():
-    return FileResponse(os.path.join(STATIC_DIR, "index.html"))
+    return FileResponse(os.path.join(STATIC_DIR, "sessions.html"))
+
+
+@app.get("/process")
+def process_page():
+    return FileResponse(os.path.join(STATIC_DIR, "process.html"))
+
+
+@app.get("/sessions/{slug}")
+def session_page(slug: str):
+    return FileResponse(os.path.join(STATIC_DIR, "session.html"))
 
 
 @app.get("/jobs/{job_id}")
 def job_page(job_id: str):
     return FileResponse(os.path.join(STATIC_DIR, "job.html"))
+
+
+# ------------------------------------------------------------- the library
+
+@app.get("/api/sessions")
+def api_sessions():
+    """
+    Everything in assets/out, plus what is still waiting in assets/in.
+
+    The inbox is included so the home page can say "two recordings are
+    waiting, run this command" instead of looking empty for no visible
+    reason when the folder is full.
+    """
+    return {"sessions": library.sessions(),
+            "inbox": [{k: v for k, v in e.items() if k != "path"}
+                      for e in library.inbox()],
+            "inbox_dir": library.INBOX_DIR,
+            "sessions_dir": library.SESSION_DIR}
+
+
+@app.get("/api/sessions/{slug}")
+def api_session(slug: str, full: bool = False):
+    # The slug is a URL path segment used to build a filesystem path, so it
+    # is checked rather than trusted: ".." or a separator would otherwise
+    # read a result.json from anywhere on the disk.
+    if not library.is_safe_slug(slug):
+        raise HTTPException(400, "bad session name")
+    result = library.load(slug)
+    if result is None:
+        raise HTTPException(404, "no such session")
+    # `?full=1` for the raw document including the intermediates - what you
+    # want if you are downloading it to diff or to re-run something on it.
+    return JSONResponse(result if full else library.slim(result))
+
+
+@app.get("/api/sessions/{slug}/transcript")
+def api_session_transcript(slug: str, role: str | None = None):
+    if not library.is_safe_slug(slug):
+        raise HTTPException(400, "bad session name")
+    result = library.load(slug)
+    if result is None:
+        raise HTTPException(404, "no such session")
+
+    utterances = result.get("utterances", [])
+    if role in ("teacher", "student"):
+        utterances = [u for u in utterances if u.get("role") == role]
+    body = __import__("pipeline.analyze", fromlist=["build_transcript"])         .build_transcript(utterances)
+    return Response(body, media_type="text/plain; charset=utf-8")
+
+
+@app.post("/api/sessions/{slug}/teacher")
+def api_session_teacher(slug: str, speaker: str = Form(...),
+                        use_llm: bool = Form(False)):
+    """
+    Correct the teacher on a session in the library and re-derive from it.
+
+    No audio is touched - the saved utterances are re-scored - so this is a
+    second or two, and it is the reason the stages are kept separate.
+    """
+    if not library.is_safe_slug(slug):
+        raise HTTPException(400, "bad session name")
+    directory = library.session_path(slug)
+    if not library.is_session(directory):
+        raise HTTPException(404, "no such session")
+
+    from pipeline import run as pipeline_run
+    result = library.load(slug) or {}
+    language = (result.get("meta") or {}).get("language", lang.DEFAULT_LANGUAGE)
+    try:
+        updated = pipeline_run.reanalyze(directory, language=language,
+                                         use_llm=use_llm, teacher=speaker)
+    except Exception as exc:                                      # noqa: BLE001
+        raise HTTPException(400, str(exc))
+    return JSONResponse(updated)
 
 
 # -------------------------------------------------------------------- api
@@ -261,6 +349,48 @@ def job_result(job_id: str):
             raise HTTPException(404, "no such job")
         raise HTTPException(409, f"job is {job['status']}, no result yet")
     return JSONResponse(res)
+
+
+@app.post("/api/jobs/{job_id}/save")
+def save_to_library(job_id: str):
+    """
+    Copy a finished job into assets/out, where the home page lists it.
+
+    Uploading through the browser and running the batch CLI produce the same
+    result document; only where it lands differs. Without this, a lesson
+    processed here would sit in the job store and never appear in the library,
+    which reads as a bug rather than as two separate places.
+    """
+    job = jobs.get(job_id)
+    if not job:
+        raise HTTPException(404, "no such job")
+    if job["status"] != "done":
+        raise HTTPException(400, f"job is {job['status']}, not done")
+
+    source = os.path.join(job["work_dir"], "result.json")
+    if not os.path.exists(source):
+        raise HTTPException(404, "that job has no result.json")
+
+    slug = library.slug(job["filename"])
+    directory = library.session_path(slug)
+    # Two uploads of the same filename would otherwise overwrite each other
+    # silently. Keep both and let whoever is looking decide.
+    if library.is_session(directory):
+        n = 2
+        while library.is_session(library.session_path(f"{slug}-{n}")):
+            n += 1
+        slug = f"{slug}-{n}"
+        directory = library.session_path(slug)
+
+    os.makedirs(directory, exist_ok=True)
+    shutil.copyfile(source, os.path.join(directory, "result.json"))
+
+    result = library.load(slug) or {}
+    transcript = __import__("pipeline.analyze", fromlist=["build_transcript"])         .build_transcript(result.get("utterances", []))
+    with open(os.path.join(directory, "transcript.txt"), "w", encoding="utf-8") as f:
+        f.write(transcript)
+
+    return {"slug": slug, "url": f"/sessions/{slug}"}
 
 
 @app.post("/api/jobs/{job_id}/teacher")

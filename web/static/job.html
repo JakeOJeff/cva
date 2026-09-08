@@ -11,7 +11,8 @@
 
   <header class="top">
     <h1 id="title">Session</h1>
-    <a href="/">&larr; All sessions</a>
+    <a href="/process">&larr; Processing queue</a>
+    <a href="/">All sessions</a>
   </header>
   <div class="sub" id="subtitle"></div>
 
@@ -159,18 +160,32 @@ async function load() {
     },
   });
 
-  // This job is finished, so its analysis can go into the committed static
-  // demo. Say how, here, where someone has just finished looking at it.
+  // A finished job is not in the library yet - it is in the job store. Say
+  // so here, where someone has just finished looking at it and is deciding
+  // whether it is worth keeping.
   $("body").insertAdjacentHTML("beforeend", `
-    <div class="panel"><h2>Publish to the static demo</h2>
-      <p class="sub" style="margin:0 0 10px">This analysis is on disk. To put it
-        in <span class="mono">site/</span>, where the static demo reads it:</p>
-      <div class="formula mono">python -m pipeline.publish</div>
-      <p class="sub" style="margin:10px 0 0">That republishes every finished
-        session and rewrites <span class="mono">site/data/manifest.json</span>.
-        <a href="/api/jobs/${jobId}/result" download="result.json">Download this
-        one's result.json</a> if you only want the raw document.</p>
+    <div class="panel"><h2>Keep this session</h2>
+      <p class="sub" style="margin:0 0 12px">Copies it into
+        <span class="mono">assets/out/</span>, where the
+        <a href="/">home page</a> lists it.</p>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button id="saveLib">Save to sessions</button>
+        <a href="/api/jobs/${jobId}/result" download="result.json">Download result.json</a>
+        <span class="sub" id="saveMsg"></span>
+      </div>
     </div>`);
+
+  $("saveLib").onclick = async () => {
+    const btn = $("saveLib");
+    btn.disabled = true;
+    $("saveMsg").textContent = "Saving…";
+    const r = await fetch(`/api/jobs/${jobId}/save`, { method: "POST" });
+    if (r.ok) location.href = (await r.json()).url;
+    else {
+      $("saveMsg").textContent = (await r.json()).detail || "could not save";
+      btn.disabled = false;
+    }
+  };
 }
 
 Report.installTips();

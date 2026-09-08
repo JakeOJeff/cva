@@ -16,11 +16,6 @@
 
   <div class="panel">
     <h2>Lessons</h2>
-    <p class="sub" style="margin:0 0 12px">
-      Each recording below was processed offline and its analysis committed to
-      this repository as JSON. Nothing is transcribed in your browser &mdash;
-      this page only reads results.
-    </p>
     <div class="picker" id="picker"><p class="empty">Loading&hellip;</p></div>
   </div>
 
@@ -28,15 +23,10 @@
   <div id="body"></div>
 
   <footer class="note">
-    <b>Analysis is precomputed offline.</b> This is a static page: the pipeline
-    runs on a machine with the audio on it, and only the derived JSON is
-    published here. To regenerate a session, run
-    <code>python main.py &lt;audio&gt; --lang mr --model small --out out</code>
-    and then <code>python -m pipeline.publish out</code>, which writes
-    <code>site/data/</code>.
-    <br>
-    Source audio comes from the MakerGhat classroom recordings; it is not
-    published here.
+    <b>Analysis is precomputed offline.</b> The pipeline runs where the audio
+    is; only the derived JSON is published here. Regenerate with
+    <code>python -m pipeline.batch</code>, then
+    <code>python -m pipeline.publish</code>. Source audio is not published.
   </footer>
 
 </div>
@@ -75,23 +65,33 @@ async function boot() {
 
   sessions = manifest.sessions || [];
   if (!sessions.length) {
-    $("picker").innerHTML = `<p class="empty">No analyses have been published yet.
-      Process a recording &mdash; <span class="mono">python main.py &lt;audio&gt;
-      --lang mr --model small --out out</span> &mdash; then publish it with
-      <span class="mono">python -m pipeline.publish out</span>.</p>`;
+    $("picker").innerHTML = `<p class="empty">Nothing published yet. Run
+      <span class="mono">python -m pipeline.batch</span>, then
+      <span class="mono">python -m pipeline.publish</span>.</p>`;
     return;
   }
 
   // The button carries the recording's real filename. It is a picker over a
   // fixed, known set, not an upload control that quietly returns a cached
   // answer for whatever you hand it.
-  $("picker").innerHTML = sessions.map((s, i) => `
-    <button class="sessionbtn" data-i="${i}">
+  $("picker").innerHTML = sessions.map((s, i) => {
+    // Language and model as chips rather than buried in the line: a number
+    // computed over the wrong language is worthless, so which settings
+    // produced a result is the first thing to know about it.
+    const chips = [`<span class="chip lang">${esc(s.language || "?")}</span>`,
+      `<span class="chip">${esc(s.backend === "scribe"
+        ? "ElevenLabs Scribe" : "whisper " + (s.model || "?"))}</span>`];
+    if (s.has_review) chips.push(`<span class="chip">AI review</span>`);
+    const bits = [s.duration_label, `${s.speakers} speakers`,
+      s.teacher_talk_ratio != null ? `teacher ${Math.round(s.teacher_talk_ratio * 100)}%` : null,
+      s.teacher_questions != null ? `${s.teacher_questions} questions` : null,
+    ].filter(Boolean);
+    return `<button class="sessionbtn" data-i="${i}">
       <span class="name">${esc(s.file)}</span>
-      <span class="meta">${esc(s.duration_label)} · ${esc(s.speakers)} speakers · ${esc(s.language)} · ${
-        esc(s.backend === "scribe" ? "scribe" : "whisper " + s.model)}${
-        s.has_review ? " · with review" : ""}</span>
-    </button>`).join("");
+      <span class="row">${chips.join("")}
+        <span class="meta">${bits.map(esc).join(" · ")}</span></span>
+    </button>`;
+  }).join("");
 
   $("picker").querySelectorAll(".sessionbtn").forEach(b => {
     b.onclick = () => open(Number(b.dataset.i));

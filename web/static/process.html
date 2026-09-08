@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Classroom Voice Analysis</title>
+<title>Process a recording &middot; Classroom Voice Analysis</title>
 <link rel="stylesheet" href="/site/app.css">
 </head>
 <body>
@@ -13,6 +13,41 @@
     <h1>Classroom Voice Analysis</h1>
     <span class="sub">upload a lesson recording &rarr; transcript, speakers, teacher analysis</span>
   </header>
+
+  <nav class="tabs">
+    <a href="/">Sessions</a>
+    <a href="/process" class="on">Process a recording</a>
+  </nav>
+
+  <div class="panel">
+    <h2>Why this page is local-only</h2>
+    <p class="sub" style="margin:0 0 10px">
+      The public demo is a static site. Its pages are built from JSON that is
+      committed to the repo, and there is no server behind them. Transcribing
+      is the part that needs real hardware, so it happens here instead, on
+      whatever machine is serving this page.
+    </p>
+    <p class="sub" style="margin:0 0 10px">
+      Hosting it properly was the first plan. Render's free tier gives you
+      512&nbsp;MB of RAM, and the pipeline sits at roughly 726&nbsp;MB before it
+      has even opened an audio file, so the first stage was killed every time.
+      Their paid CPU tiers are shared vCPU, which is the wrong shape for a job
+      that runs flat out for tens of minutes rather than milliseconds.
+    </p>
+    <p class="sub" style="margin:0 0 10px">
+      There was no VPS to move it to either. That matters less than it sounds:
+      on CPU, most tiers you would actually pay for are slower than a normal
+      laptop, so hosting the server would have bought availability rather than
+      speed.
+    </p>
+    <p class="sub" style="margin:0">
+      Cloud compute is still the upgrade when it is worth it, and it does not
+      need a rewrite. The same container on a rented GPU box, or in Colab,
+      takes a 97 minute lesson down to a few minutes. Build it with
+      <span class="mono">--build-arg TORCH_INDEX=.../whl/cu124</span> and the
+      pipeline finds CUDA by itself.
+    </p>
+  </div>
 
   <div class="panel">
     <h2>New recording</h2>
@@ -27,8 +62,8 @@
     <div class="opts">
       <label class="field"><span>Language</span>
         <select id="language">
-          <option value="mr" selected>Marathi</option>
-          <option value="hi">Hindi</option>
+          <option value="hi" selected>Hindi</option>
+          <option value="mr">Marathi</option>
           <option value="ml">Malayalam</option>
           <option value="ta">Tamil</option>
           <option value="te">Telugu &middot; no lexicon</option>
@@ -57,8 +92,12 @@
 
     <label class="checkline">
       <input type="checkbox" id="use_llm">
-      Also run the AI teaching review (costs money — everything else is free)
+      Also run the AI teaching review (costs money, everything else is free)
     </label>
+
+    <p class="sub" style="margin:14px 0 0">Got a whole folder? Put the files in
+      <span class="mono">assets/in/</span> and run this instead:</p>
+    <div class="cmd">.venv\Scripts\python -m pipeline.batch</div>
 
     <div style="margin-top:18px; display:flex; gap:10px; align-items:center;">
       <button id="go" disabled>Transcribe &amp; analyse</button>
@@ -69,7 +108,10 @@
   </div>
 
   <div class="panel">
-    <h2>Sessions</h2>
+    <h2>Processing queue</h2>
+    <p class="sub" style="margin:0 0 12px">A finished upload gets a
+      <b>Save to sessions</b> link, which copies it into
+      <span class="mono">assets/out/</span>.</p>
     <div id="jobs"><p class="empty">Nothing uploaded yet.</p></div>
   </div>
 
@@ -100,7 +142,7 @@ function pick(f) {
   // "a few minutes" for what is actually an hour and a half is the single
   // thing most likely to make someone think the server has hung.
   const mins = (perMB) => Math.max(1, Math.round(f.size / 1048576 * perMB));
-  $("hint").textContent = `CPU only — roughly ${mins(0.7)} min at "tiny", `
+  $("hint").textContent = `CPU only. Roughly ${mins(0.7)} min at "tiny", `
     + `${mins(1.6)} min at "small". A GPU turns either into minutes.`;
 }
 
@@ -168,7 +210,7 @@ async function refresh() {
   }
 
   // Jobs run one at a time, so a queued job can sit for a long while. Say
-  // why, and say what it is waiting behind - an unexplained "—" reads as
+  // why, and say what it is waiting behind - an unexplained dash reads as
   // broken when it actually means "working, just not on this one yet".
   const running = data.jobs.filter(j => j.status === "running").length;
   let ahead = 0;
@@ -187,7 +229,7 @@ async function refresh() {
       } else if (j.status === "queued") {
         const n = ahead++;
         detail = `<div class="sub" style="font-size:12.5px">waiting${
-          running ? " — one lesson is transcribing" : ""}${
+          running ? ", one lesson is transcribing" : ""}${
           n ? `, ${n} ahead of it` : ""}</div>
           <div class="sub" style="font-size:11px;color:var(--muted)">jobs run one at a time</div>`;
       } else {
@@ -202,12 +244,13 @@ async function refresh() {
         <td><span class="pill ${j.status}">${j.status}</span></td>
         <td>${detail}</td>
         <td class="sub">${stamp(j.created_at)}</td>
-        <td style="white-space:nowrap">
-          ${j.status === "done" ? `<a href="/jobs/${j.id}">Open</a> ` : ""}
-          ${(j.status === "running" || j.status === "queued")
-              ? `<a href="#" data-cancel="${j.id}">Stop</a> ` : ""}
-          <a href="#" data-del="${j.id}" style="color:var(--muted)">Delete</a>
-        </td>
+        <td style="white-space:nowrap">${[
+            j.status === "done" ? `<a href="/jobs/${j.id}">Open</a>` : "",
+            j.status === "done" ? `<a href="#" data-save="${j.id}">Save to sessions</a>` : "",
+            (j.status === "running" || j.status === "queued")
+              ? `<a href="#" data-cancel="${j.id}">Stop</a>` : "",
+            `<a href="#" data-del="${j.id}" style="color:var(--muted)">Delete</a>`,
+          ].filter(Boolean).join(" &middot; ")}</td>
       </tr>`;
     }).reverse().join("")}</tbody></table>`;
 
@@ -230,6 +273,22 @@ async function refresh() {
       if (!confirm("Stop this session? It finishes the block it is on, then halts.")) return;
       await fetch(`/api/jobs/${a.dataset.cancel}/cancel`, { method: "POST" });
       refresh();
+    };
+  });
+
+  // Copy a finished job into assets/out. The two paths produce the same
+  // result document; only where it lands differs, and without this a lesson
+  // processed here would never show up on the home page.
+  el.querySelectorAll("[data-save]").forEach(a => {
+    a.onclick = async (e) => {
+      e.preventDefault();
+      a.textContent = "Saving…";
+      const r = await fetch(`/api/jobs/${a.dataset.save}/save`, { method: "POST" });
+      if (r.ok) location.href = (await r.json()).url;
+      else {
+        a.textContent = "Save to sessions";
+        show((await r.json()).detail || "could not save");
+      }
     };
   });
 

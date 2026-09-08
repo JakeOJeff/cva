@@ -41,6 +41,12 @@ COPY web/ ./web/
 # this directory fails at startup rather than merely losing the demo page.
 COPY site/ ./site/
 COPY main.py ./
+# The session library: assets/in goes in, assets/out comes out. Empty in the
+# image on purpose - recordings and their analyses belong on the mounted
+# volume, not baked into a layer - but the directories have to exist before
+# anything reads them. Point them at the volume with CVA_INBOX_DIR and
+# CVA_SESSIONS_DIR to keep sessions across a rebuild.
+RUN mkdir -p assets/in assets/out
 COPY tests/ ./tests/
 
 # Runs as a non-root user, but /data is a mounted volume whose ownership is

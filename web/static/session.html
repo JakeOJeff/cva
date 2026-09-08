@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Session &middot; Classroom Voice Analysis</title>
+<link rel="stylesheet" href="/site/app.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <h1 id="title">Session</h1>
+    <a href="/">&larr; All sessions</a>
+  </header>
+  <div class="sub" id="subtitle"></div>
+
+  <div id="body"><p class="empty">Loading&hellip;</p></div>
+
+  <footer class="note" id="foot" hidden>
+    Read from <code id="where"></code>. Everything on this page was derived
+    offline by the pipeline; nothing was computed in your browser.
+  </footer>
+</div>
+
+<script src="/site/report.js"></script>
+<script>
+/*
+ * One session out of the library. Rendering lives in report.js, shared with
+ * the static demo and the live job page - this file only fetches, and wires
+ * up the one thing that needs a server: correcting the teacher.
+ */
+const slug = decodeURIComponent(location.pathname.split("/").pop());
+const $ = (id) => document.getElementById(id);
+const esc = Report.esc;
+
+async function load() {
+  let res;
+  try {
+    const r = await fetch(`/api/sessions/${encodeURIComponent(slug)}`, { cache: "no-store" });
+    if (!r.ok) throw new Error((await r.json()).detail || r.statusText);
+    res = await r.json();
+  } catch (e) {
+    $("body").innerHTML = `<div class="panel"><div class="err">Could not load
+      <span class="mono">${esc(slug)}</span>: ${esc(e.message)}</div>
+      <p class="sub" style="margin:10px 0 0"><a href="/">Back to all sessions</a></p></div>`;
+    return;
+  }
+
+  const name = (res.meta && res.meta.source) || slug;
+  $("title").textContent = name;
+  document.title = `${name} · Classroom Voice Analysis`;
+  $("subtitle").textContent = Report.subtitle(res);
+
+  Report.render($("body"), res, {
+    // Re-scores the saved utterances - no audio is touched, so this takes a
+    // second. The static demo has no equivalent because it has no server.
+    onTeacher: async (speaker) => {
+      const btn = $("applyTeacher");
+      btn.disabled = true;
+      $("teacherMsg").textContent = "Re-deriving…";
+      const body = new FormData();
+      body.append("speaker", speaker);
+      body.append("use_llm", "false");
+      const r = await fetch(`/api/sessions/${encodeURIComponent(slug)}/teacher`,
+                            { method: "POST", body });
+      if (r.ok) location.reload();
+      else {
+        $("teacherMsg").textContent = (await r.json()).detail || "failed";
+        btn.disabled = false;
+      }
+    },
+  });
+
+  $("body").insertAdjacentHTML("beforeend", `
+    <div class="panel"><h2>Files</h2>
+      <p class="sub" style="margin:0 0 10px">This session on disk, and what it
+        can be exported as.</p>
+      <p style="margin:0">
+        <a href="/api/sessions/${encodeURIComponent(slug)}/transcript" download="${esc(slug)}.txt">transcript.txt</a>
+        &nbsp;·&nbsp;
+        <a href="/api/sessions/${encodeURIComponent(slug)}?full=1" download="${esc(slug)}.json">result.json</a>
+        &nbsp;·&nbsp;
+        <a href="/api/sessions/${encodeURIComponent(slug)}/transcript?role=teacher">teacher lines only</a>
+      </p>
+    </div>`);
+
+  $("where").textContent = `assets/out/${slug}/result.json`;
+  $("foot").hidden = false;
+}
+
+Report.installTips();
+load();
+</script>
+</body>
+</html>

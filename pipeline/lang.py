@@ -8,14 +8,20 @@ a wordlist is at least auditable when a number looks wrong.
 
 import re
 
-# The language every entry point falls back to.
+# The language every entry point falls back to: the CLI, the batch, the web
+# form, and every stage that scores text.
 #
-# There is no safe neutral value: Whisper does not error on the wrong
-# language, it returns fluent nonsense, so a default is a guess that will be
-# computed over faithfully either way. This one is a guess about the dataset -
-# the supplied recordings come from Igatpuri, Maharashtra - and it is meant to
-# be overridden per recording, not relied on.
-DEFAULT_LANGUAGE = "mr"
+# There is no safe neutral value. Whisper does not error on the wrong
+# language - it returns fluent nonsense - so whatever sits here is a guess
+# that everything downstream will compute over faithfully. It is meant to be
+# overridden per recording, not relied on.
+#
+# Worth knowing before you inherit it: the supplied recordings were made in
+# Igatpuri, Maharashtra, which is Marathi-speaking, and Marathi shares the
+# Devanagari script with Hindi - so a Marathi lesson transcribed as Hindi
+# passes the script check at 98% while the words mean nothing. `mr` has a
+# full lexicon here too. Check one recording before committing a batch.
+DEFAULT_LANGUAGE = "hi"
 
 # Whisper punctuates well enough that "?" carries most of the signal. The
 # wordlists are the backstop for when it doesn't.

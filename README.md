@@ -26,14 +26,27 @@ The pipeline runs on a machine that has the audio on it. It writes a JSON
 document per lesson. Only that JSON is published, and the demo page reads it.
 
 ```
-  a machine with the audio                         anywhere
- ┌──────────────────────────┐                   ┌──────────────┐
- │  mp3 ──▶ pipeline/ ──▶   │  result.json      │   site/      │
- │  whisper + pyannote      │ ────────────────▶ │   static     │
- │  (or ElevenLabs Scribe)  │  committed        │   page       │
- └──────────────────────────┘                   └──────────────┘
-       minutes to hours                            instant
+  a machine with the audio                          anywhere
+ +--------------------------------------+        +--------------+
+ |  assets/in/lesson.mp3                |        |              |
+ |          |                           |publish |   site/      |
+ |          v   whisper + pyannote      | -----> |   static     |
+ |  assets/out/lesson/result.json       |        |   page       |
+ +----------|---------------------------+        +--------------+
+     minutes to hours                                  instant
+            |
+            +--> the local server's home page reads the same
+                 folder, live, and never writes to it
 ```
+
+Two folders are the whole interface. Recordings go in `assets/in`; one analysis
+directory per lesson comes out in `assets/out`. A session **is** that directory
+- a `result.json` and a `transcript.txt`, nothing else - so it can be moved,
+copied, committed or handed to somebody without an export step.
+
+Two things read `assets/out`, and neither writes to it. The local server's home
+page lists it, which is what you use while working. `pipeline.publish` copies it
+into `site/`, which is the standalone demo.
 
 This is not a shortcut around a hosting problem, though it does happen to
 avoid one. It is the shape the product wants. Classroom recordings are audio
@@ -46,8 +59,13 @@ read.
 The honest consequence, stated plainly rather than hidden behind an upload
 button: **the static page cannot analyse a file you give it.** It shows the
 lessons that were processed offline, named as they are named in the dataset.
-To analyse something new, run the pipeline locally — which is the next
-section, and takes one command.
+To analyse something new, run the pipeline locally - the next section, and one
+command.
+
+The local server is the exception, and it is open about being one: it has a
+**Process a recording** page that really does upload and transcribe, because it
+runs on the machine holding the models. That page is at `/process`, deliberately
+not the home page - the home page is the library.
 
 ---
 
@@ -86,23 +104,49 @@ Check it before committing an hour to a transcription:
 .venv\Scripts\python -m pipeline.diarize
 ```
 
-### The three commands
+### The loop
 
 ```bash
-# 1. the local server: upload a recording, watch it process, read the result
-.venv\Scripts\uvicorn web.app:app --port 8000          # then open localhost:8000
+# 1. put recordings in assets/in, then process the lot
+.venv\Scripts\python -m pipeline.batch                  # everything not done yet
+.venv\Scripts\python -m pipeline.batch --list           # what it would run, no work
+.venv\Scripts\python -m pipeline.batch --only OD11163   # just one
 
-# 2. or the same pipeline from the CLI
-.venv\Scripts\python main.py assets/audio.mp3 --lang mr --model small --out out
+# 2. read them
+.venv\Scripts\uvicorn web.app:app --port 8000           # then open localhost:8000
 
-# 3. publish finished analyses into the static demo
-.venv\Scripts\python -m pipeline.publish                # every finished job
-.venv\Scripts\python -m pipeline.publish out            # or one --out directory
+# 3. publish the library as a standalone static site
+.venv\Scripts\python -m pipeline.publish
 ```
+
+`batch` skips any recording that already has a result, so re-running it after
+adding one file costs you one file. A failure on one recording does not stop the
+rest, and the exit code is non-zero if anything failed.
 
 `publish` writes `site/data/<recording>.json` and rewrites
 `site/data/manifest.json`, which is the list the demo's picker renders. Commit
 `site/` and the demo is deployable as static files anywhere.
+
+### The two pages the server has
+
+| | |
+|---|---|
+| `/` | **Sessions.** Everything in `assets/out`, and what is still waiting in `assets/in`. Open one for the full report; correcting the teacher here re-derives every number in about a second. |
+| `/process` | **Process a recording.** Upload one file and watch it transcribe block by block. Worth it when you are unsure of the language - a wrong one shows up in the first block instead of an hour later. |
+
+An upload lands in the job store, not the library; a finished job gets a **Save
+to sessions** button that copies it into `assets/out`. One button rather than
+automatic, because the job store is where experiments go - a wrong language, a
+model that turned out too small - and the library is what you chose to keep.
+
+### One file, from the command line
+
+```bash
+.venv\Scripts\python main.py assets/in/lesson.mp3 --lang mr --model small --out out
+```
+
+Same pipeline, same result document, written wherever `--out` says. `batch` is
+this in a loop with the bookkeeping done for you.
 
 ### Previewing the static demo
 
@@ -125,7 +169,7 @@ and the published view cannot drift apart.
 .venv\Scripts\python tests\test_pipeline.py
 ```
 
-76 checks over every stage that is a pure function. No audio, no credentials,
+95 checks over every stage that is a pure function. No audio, no credentials,
 no network.
 
 ---
@@ -165,12 +209,17 @@ So read the language detection, not just the script ratio:
 
 A confident detection looks like a single language at p > 0.9 in every window.
 That is not what this file does, which is a signal in itself: Whisper's
-language ID does not distinguish Marathi from Hindi well, and the supplied
-recordings come from **Igatpuri, Maharashtra** — Marathi-speaking. That is why
-`pipeline/lang.py` sets `DEFAULT_LANGUAGE = "mr"`.
+language ID does not separate Marathi from Hindi well.
 
-Treat that default as a guess about the dataset, not a fact about a file. Set
-`--lang` per recording.
+`pipeline/lang.py` sets `DEFAULT_LANGUAGE = "hi"`, and that is the one setting
+worth second-guessing per recording. The supplied recordings were made in
+**Igatpuri, Maharashtra** — Marathi-speaking — so if a Hindi transcript comes
+back reading oddly, re-run the same file with `--lang mr` before concluding the
+model is too small. Marathi has a full lexicon here, so nothing downstream is
+lost by switching.
+
+Treat the default as a starting point, not a fact about a file. Set `--lang`
+per recording.
 
 ### Which languages are more than a transcript
 
@@ -179,8 +228,8 @@ is lexical, and only some languages have a lexicon:
 
 | Language | Transcribes | Question / cue / praise lexicon |
 |---|---|---|
-| Marathi `mr` | yes | yes |
 | Hindi `hi` | yes | yes |
+| Marathi `mr` | yes | yes |
 | Malayalam `ml` | yes | yes |
 | Tamil `ta` | yes | yes |
 | English `en` | yes | yes |
@@ -362,6 +411,10 @@ checkpoints are between whole stages, so a stop can take much longer to land.
 
 | Endpoint | Does |
 |---|---|
+| `GET /api/sessions` | the library in `assets/out`, plus what is waiting in `assets/in` |
+| `GET /api/sessions/{slug}` | one session's result; `?full=1` keeps the intermediates |
+| `GET /api/sessions/{slug}/transcript?role=teacher` | plain text, optionally one role |
+| `POST /api/sessions/{slug}/teacher` | override the teacher, re-derive downstream |
 | `POST /api/upload` | file + options, returns a `job_id` |
 | `GET /api/jobs` | queue with live progress |
 | `GET /api/jobs/{id}` | one job's status, stage, progress |
@@ -369,6 +422,7 @@ checkpoints are between whole stages, so a stop can take much longer to land.
 | `GET /api/jobs/{id}/result` | the full result document |
 | `GET /api/jobs/{id}/transcript?role=teacher` | plain text, optionally one role |
 | `POST /api/jobs/{id}/teacher` | override the teacher, re-derive downstream |
+| `POST /api/jobs/{id}/save` | copy a finished job into `assets/out` |
 | `DELETE /api/jobs/{id}` | remove the job, its audio, and its results |
 | `GET /api/health` | which credentials are present, disk free |
 
@@ -391,18 +445,27 @@ pipeline/
   run.py         the orchestrator, and `reanalyze` for cheap re-scoring
   stream.py      the chunked orchestrator: per-block output, then global
                  speaker reconciliation by voice embedding
-  publish.py     finished result.json -> site/data/, for the static demo
+  library.py     assets/in and assets/out: what exists, and is it safe to open
+  batch.py       assets/in -> assets/out, resumable, one recording at a time
+  publish.py     the library -> site/data/, for the static demo
 web/
-  app.py         FastAPI: upload, status, results, override
+  app.py         FastAPI: the library, upload, status, results, override
   jobs.py        SQLite-backed queue and single worker
-  static/        upload page, live results page
+  static/
+    sessions.html  the home page: the library in assets/out
+    session.html   one session's report
+    process.html   upload and options
+    job.html       a running upload, streamed block by block
+assets/
+  in/            recordings waiting to be processed (gitignored - audio is big)
+  out/           one directory per finished lesson. THIS IS THE LIBRARY.
 site/            THE DEMO. Static, deployable as files, no server.
   index.html     session picker + report
   report.js      the report renderer, shared with web/static/job.html
   app.css        the stylesheet, shared likewise
   data/          committed analyses + manifest.json
 tests/
-  test_pipeline.py   76 checks over every stage that is a pure function
+  test_pipeline.py   95 checks over every stage that is a pure function
 ```
 
 `site/report.js` and `site/app.css` are shared, not copied: the server mounts

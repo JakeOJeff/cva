@@ -2,10 +2,17 @@
 __pycache__/
 *.pyc
 .env
-out/
+# The CLI default --out at the repo root. Rooted: unrooted `out/` also
+# matched assets/out/, the session library, which is meant to be committed.
+/out/
 segments.json
 
 # The local job store: uploads, working audio, and every result.json. Rooted
 # on purpose - `data/` unrooted also matched `site/data/`, which is the
 # published output and is meant to be committed.
 /data/
+
+# Recordings waiting to be processed. Audio is large and is not ours to
+# republish; the analyses it produces, in assets/out, are what gets committed.
+/assets/in/*
+!/assets/in/.gitkeep

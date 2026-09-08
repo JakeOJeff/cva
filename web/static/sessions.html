@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sessions &middot; Classroom Voice Analysis</title>
+<link rel="stylesheet" href="/site/app.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <h1>Classroom Voice Analysis</h1>
+    <span class="sub">transcript, engagement metrics and summary, from classroom audio</span>
+  </header>
+
+  <nav class="tabs">
+    <a href="/" class="on">Sessions</a>
+    <a href="/process">Process a recording</a>
+  </nav>
+
+  <div class="panel">
+    <h2>Sessions</h2>
+    <div id="sessions"><p class="empty">Loading&hellip;</p></div>
+  </div>
+
+  <div class="panel" id="waitingPanel" hidden>
+    <h2>Waiting in <span class="mono">assets/in</span></h2>
+    <div id="waiting"></div>
+    <div class="cmd">.venv\Scripts\python -m pipeline.batch</div>
+  </div>
+
+  <footer class="note">
+    Sessions are folders in <code>assets/out/</code>. Publish them as a static
+    site with <code>python -m pipeline.publish</code>.
+  </footer>
+
+</div>
+
+<script src="/site/report.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = Report.esc;
+
+function pct(x) { return x == null ? null : `${Math.round(x * 100)}%`; }
+
+// The settings a session was produced with. Shown as chips, not buried in
+// the run-on line: a metric computed over the wrong language is worthless,
+// and two runs of one lesson differ only by these.
+function chips(s) {
+  const out = [`<span class="chip lang">${esc(s.language || "?")}</span>`];
+  out.push(`<span class="chip">${esc(s.backend === "scribe"
+    ? "ElevenLabs Scribe" : "whisper " + (s.model || "?"))}</span>`);
+  if (s.has_review) out.push(`<span class="chip">AI review</span>`);
+  return out.join("");
+}
+
+function card(s) {
+  // Two numbers alongside them, so the list is worth scanning on its own:
+  // how much of the talking was the teacher's, and how many questions were
+  // asked. Those are the two figures the brief leads with.
+  const bits = [
+    s.duration_label,
+    s.speakers ? `${s.speakers} speakers` : null,
+    s.teacher_talk_ratio != null ? `teacher ${pct(s.teacher_talk_ratio)}` : null,
+    s.teacher_questions != null ? `${s.teacher_questions} questions` : null,
+  ].filter(Boolean);
+
+  return `<a class="sessionbtn" href="/sessions/${encodeURIComponent(s.slug)}">
+      <span class="name">${esc(s.file)}</span>
+      <span class="row">${chips(s)}
+        <span class="meta">${bits.map(esc).join(" · ")}</span></span>
+    </a>`;
+}
+
+async function load() {
+  let data;
+  try {
+    data = await (await fetch("/api/sessions", { cache: "no-store" })).json();
+  } catch (e) {
+    $("sessions").innerHTML =
+      `<div class="err">Could not read the session library: ${esc(e.message)}</div>`;
+    return;
+  }
+
+  const sessions = data.sessions || [];
+  const pending = (data.inbox || []).filter(e => !e.done);
+
+  if (sessions.length) {
+    $("sessions").innerHTML =
+      `<div class="picker">${sessions.map(card).join("")}</div>`;
+  } else if (pending.length) {
+    $("sessions").innerHTML = `<p class="empty">Nothing analysed yet &mdash;
+      but ${pending.length} recording${pending.length > 1 ? "s are" : " is"}
+      waiting below.</p>`;
+  } else {
+    // Empty and nothing queued: say what the two folders are for, because
+    // that is the one thing a first-time reader cannot guess.
+    $("sessions").innerHTML = `<p class="empty">No sessions yet. Put recordings
+      in <span class="mono">assets/in/</span>, or
+      <a href="/process">upload one</a>.</p>
+      <div class="cmd">.venv\\Scripts\\python -m pipeline.batch</div>`;
+  }
+
+  $("waitingPanel").hidden = !pending.length;
+  $("waiting").innerHTML = pending.map(e => `
+    <div class="waiting">
+      <span class="name">${esc(e.file)}</span>
+      <span>${esc(e.size_mb)} MB</span>
+    </div>`).join("");
+}
+
+load();
+</script>
+</body>
+</html>

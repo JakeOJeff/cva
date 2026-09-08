@@ -115,7 +115,11 @@ def speaker_stats(utterances, total_duration: float | None = None):
         s["longest_turn"] = round(max(s["turn_lengths"]), 2)
         s["span"] = round(s["last_at"] - s["first_at"], 2)
         if total_duration:
-            s["coverage"] = round(s["span"] / total_duration, 4)
+            # Clamped. Whisper's last segment can end a few seconds past the
+            # decoded duration, which made a teacher "present across 103% of
+            # the session" on screen. Coverage is a share of the lesson, so
+            # anything over 1.0 is rounding noise, not information.
+            s["coverage"] = round(min(s["span"] / total_duration, 1.0), 4)
         del s["turn_lengths"]
 
     return dict(sorted(stats.items(), key=lambda kv: -kv[1]["talk_time"]))
