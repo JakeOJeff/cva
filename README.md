@@ -17,6 +17,16 @@ a second, because it only touches the saved utterances.
 **[flow.md](flow.md) is everything else:** how to run it, what each metric
 means, the language setting that silently ruins a run, and the known limits.
 
+## Development
+
+### Approach
+
+Initially, a simple transcriber was made, featuring a CLI where you can process audio using python and faster whisper. Then, the diarization was done using pyAnnote and a final but additional bonus AI review using Anthropic SDK. There is a Hugging face model also used to compare and properly diarize and process the audio. A docker image was also built so that this can be pushed to the cloud to attain a web audio processor. If you are running this locally, you can either upload the lesson/classroom audio files into the assets/in folder, run the pipeline batch command ( which defaults to hindi and the small model), and get the required results in assets/out. The other method is that you can either run this locally or on a proper cloud cpu or container, where you can host it and directly drag and drop your audio files and get it processed on the web! That webapp is available in the /web folder and the current demo static site is served from the /site folder. The demo site features the classroom audios which I processed locally overnight using the batching method.
+
+### Assumptions
+
+I thought that a webapp where you can drag and drop audio to process them is what was required, which I had made and pushed, but it isn't served on the demo site because this requires proper CPU computing, and there were no free alternatives which could provide enough compute for it, because pyAnnote uses a lot of resources at runtime. This works when run locally or using a VPS which is a really great method, and also because this is mostly self hosted and doesn't use any backend dependancies. Then I just ran the audio through my pipeline locally and then served the results onto a static site where you can view the heuristics and all the data clearly without requiring a server.
+
 ## Project structure
 
 ```
