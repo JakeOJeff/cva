@@ -12,10 +12,16 @@ segments.json
 # published output and is meant to be committed.
 /data/
 
-# Recordings waiting to be processed. Audio is large and is not ours to
-# republish; the analyses it produces, in assets/out, are what gets committed.
+# Recordings waiting to be processed. The source audio is committed alongside
+# the analyses it produces in assets/out, so a clone can rerun the pipeline
+# from scratch. Anything else the directory collects stays local.
 /assets/in/*
 !/assets/in/.gitkeep
+!/assets/in/*.mp3
+!/assets/in/*.m4a
+!/assets/in/*.wav
+!/assets/in/*.flac
+!/assets/in/*.ogg
 
 # A session directory is result.json and transcript.txt. Everything else the
 # pipeline writes into it is an intermediate - audio_16k.wav is the normalized

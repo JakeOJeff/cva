@@ -88,10 +88,11 @@ the pipeline produced.
 .venv\Scripts\python -m http.server -d site 8080    # localhost:8080
 ```
 
-Then commit `assets/out/` and `site/`, which are the deliverable. The audio in
-`assets/in/` is gitignored: it is large, and it is not ours to republish. So are
-the pipeline's own intermediates inside a session folder; only `result.json` and
-`transcript.txt` are tracked.
+Then commit `assets/out/` and `site/`, which are the deliverable. The source
+audio in `assets/in/` is committed too, so a clone can rerun the pipeline from
+scratch. The pipeline's own intermediates inside a session folder are not: only
+`result.json` and `transcript.txt` are tracked, because the normalized waveform
+runs past GitHub's file limit and is rebuildable from the source anyway.
 
 ## Batch
 
