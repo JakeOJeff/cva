@@ -49,8 +49,7 @@ function pct(x) { return x == null ? null : `${Math.round(x * 100)}%`; }
 // and two runs of one lesson differ only by these.
 function chips(s) {
   const out = [`<span class="chip lang">${esc(s.language || "?")}</span>`];
-  out.push(`<span class="chip">${esc(s.backend === "scribe"
-    ? "ElevenLabs Scribe" : "whisper " + (s.model || "?"))}</span>`);
+  out.push(`<span class="chip">whisper ${esc(s.model || "?")}</span>`);
   if (s.has_review) out.push(`<span class="chip">AI review</span>`);
   return out.join("");
 }

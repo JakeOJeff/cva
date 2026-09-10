@@ -59,7 +59,7 @@ def process(entry: dict, opts: argparse.Namespace) -> dict:
 
     result = run.run(
         entry["path"], work_dir=out_dir, language=opts.lang,
-        model_size=opts.model, beam_size=opts.beam, backend=opts.backend,
+        model_size=opts.model, beam_size=opts.beam,
         num_speakers=opts.speakers, max_speakers=opts.max_speakers,
         use_llm=opts.llm, on_progress=_progress(),
     )
@@ -87,9 +87,6 @@ def main() -> None:
     p.add_argument("--speakers", type=int, help="exact speaker count, if known")
     p.add_argument("--max-speakers", type=int, default=6,
                    help="upper bound on speakers (default 6)")
-    p.add_argument("--backend", choices=["local", "scribe"],
-                   help="local = whisper+pyannote here (default); "
-                        "scribe = ElevenLabs, needs ELEVENLABS_API_KEY")
     p.add_argument("--llm", action="store_true",
                    help="also run the paid AI teaching review")
     p.add_argument("--only", action="append", metavar="NAME",

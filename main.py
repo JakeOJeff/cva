@@ -95,9 +95,6 @@ def main() -> None:
     p.add_argument("--speakers", type=int, help="exact speaker count, if known")
     p.add_argument("--max-speakers", type=int, default=6,
                    help="upper bound on speakers (default 6)")
-    p.add_argument("--backend", choices=["local", "scribe"],
-                   help="local = whisper+pyannote on this machine (default); "
-                        "scribe = ElevenLabs, one API call, needs ELEVENLABS_API_KEY")
     p.add_argument("--out", default="out", help="directory for the results")
     # The review is the only part that costs money, so it is opt-in.
     p.add_argument("--llm", action="store_true",
@@ -113,7 +110,7 @@ def main() -> None:
     else:
         result = run.run(
             args.audio, work_dir=args.out, language=args.lang,
-            model_size=args.model, beam_size=args.beam, backend=args.backend,
+            model_size=args.model, beam_size=args.beam,
             num_speakers=args.speakers,
             max_speakers=args.max_speakers, use_llm=args.llm,
             on_progress=progress,

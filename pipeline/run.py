@@ -13,15 +13,13 @@ import json
 import os
 import time
 
-from . import analyze, assign, audio, backends, lang, roles
-from .transcribe import save as transcribe_mod_save
+from . import analyze, assign, audio, diarize, lang, roles, transcribe
 
 STAGES = ["normalize", "transcribe", "diarize", "assign", "roles", "analyze"]
 
 
 def run(audio_path: str, *, work_dir: str, language: str = lang.DEFAULT_LANGUAGE,
         model_size: str = "small", beam_size: int = 5,
-        backend: str | None = None,
         num_speakers: int | None = None,
         min_speakers: int | None = None, max_speakers: int | None = None,
         use_llm: bool = True, llm_model: str = analyze.MODEL,
@@ -41,46 +39,57 @@ def run(audio_path: str, *, work_dir: str, language: str = lang.DEFAULT_LANGUAGE
             on_progress(stage, max(0.0, min(fraction, 1.0)), note)
 
     # --- 1. normalize ---------------------------------------------------
-    # The backend is picked first, because whether this stage runs at all
-    # depends on which one it is. A remote backend is handed the original
-    # file, so decoding here would write a 115MB wav that nothing opens -
-    # and on a 512MB host the decode is what kills the container, in the
-    # pipeline's very first stage, before anything has been transcribed.
-    engine = backends.get(backend)
+    progress("normalize", 0.0, "decoding audio")
+    wav, duration = audio.normalize(audio_path,
+                                    os.path.join(work_dir, "audio_16k.wav"))
+    progress("normalize", 1.0, f"{duration:.0f}s of audio")
 
-    if getattr(engine, "needs_wav", True):
-        progress("normalize", 0.0, "decoding audio")
-        wav, duration = audio.normalize(audio_path,
-                                        os.path.join(work_dir, "audio_16k.wav"))
-        progress("normalize", 1.0, f"{duration:.0f}s of audio")
-    else:
-        progress("normalize", 0.0, f"{engine.name} reads the original file")
-        wav = None
-        duration = audio.probe_duration(audio_path) or 0.0
-        progress("normalize", 1.0,
-                 f"{duration:.0f}s of audio" if duration else "length not declared")
+    # --- 2. transcribe --------------------------------------------------
+    # The language check comes first: whisper transcribes whatever it is
+    # told to, so the wrong language produces a confident transcript in the
+    # wrong script rather than an error.
+    progress("transcribe", 0.0, "checking language")
+    detected, confidence, _ = transcribe.detect_language(wav)
+    mismatch = detected != language and confidence >= 0.5
+    if mismatch:
+        progress("transcribe", 0.0,
+                 f"WARNING sounds like '{detected}' not '{language}'")
 
-    # --- 2/3/4. words, voices, and the marriage of the two ----------------
-    # One call, two implementations: local faster-whisper + pyannote, or
-    # Scribe doing both in a single request. Everything below is identical
-    # either way - that is the whole point of the seam.
-    progress("transcribe", 0.0, f"backend: {engine.name}")
-    segments, turns, meta = engine.run(
-        audio_path=audio_path, wav_path=wav, language=language,
-        progress=progress, model_size=model_size, beam_size=beam_size,
-        num_speakers=num_speakers, max_speakers=max_speakers,
-    )
-    # A container that never declared its length leaves duration at 0, and
-    # every talk ratio downstream divides by it. The transcript is the
-    # fallback: the last word cannot end after the audio does.
-    if not duration and segments:
-        duration = max(s["end"] for s in segments)
-
-    meta.setdefault("duration", round(duration, 2))
-    transcribe_mod_save(segments, meta, os.path.join(work_dir, "segments.json"))
+    progress("transcribe", 0.0, f"whisper {model_size}, lang={language}")
+    segments, meta = transcribe.transcribe(
+        wav, language=language, model_size=model_size, beam_size=beam_size,
+        progress=lambda done, total: progress("transcribe", done / (total or 1),
+                                              f"{done:.0f}s / {total:.0f}s"))
+    progress("transcribe", 1.0, f"{len(segments)} segments")
 
     if not segments:
-        raise ValueError("no speech found in this audio")
+        hint = (f" The audio sounds like '{detected}' (confidence {confidence}), "
+                f"but it was transcribed as '{language}'.") if mismatch else ""
+        raise ValueError("no speech found in this audio." + hint)
+
+    # --- 3. diarize -----------------------------------------------------
+    progress("diarize", 0.0, "finding speakers")
+    turns, dinfo = diarize.diarize(wav, num_speakers=num_speakers,
+                                   max_speakers=max_speakers)
+    progress("diarize", 1.0, f"{dinfo['n_speakers']} speakers")
+
+    # --- 4. assign ------------------------------------------------------
+    # The words know when they were said and the turns know who was
+    # speaking; this is where the two are married.
+    ratio = lang.script_ratio(" ".join(s["text"] for s in segments), language)
+    meta.update(dinfo)
+    meta.update({
+        "script_ratio": ratio,
+        "wrong_script": ratio is not None and ratio < 0.5,
+        "requested_language": language,
+        "detected_language": detected,
+        "detected_confidence": confidence,
+        "language_mismatch": mismatch,
+    })
+    segments = assign.assign_speakers(segments, turns)
+
+    meta.setdefault("duration", round(duration, 2))
+    transcribe.save(segments, meta, os.path.join(work_dir, "segments.json"))
 
     progress("assign", 0.0, "grouping into utterances")
     utterances = assign.to_utterances(segments)

@@ -16,7 +16,7 @@ import tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from pipeline import analyze, assign, backends, lang, roles
+from pipeline import analyze, assign, lang, roles
 
 
 # A tiny synthetic lesson: SPEAKER_00 teaches, 01 and 02 answer.
@@ -171,85 +171,11 @@ def main():
     ok &= check("Unattributed absent from participation",
                 "Unattributed" not in m3["student_participation"])
 
-    print("\nscribe adapter")
-    # A response shaped exactly like Scribe's: word-level, with spacing and
-    # audio_event items mixed in, speakers as "speaker_N".
-    scribe_words = [
-        {"type": "word", "text": "Good",  "start": 0.0, "end": 0.4, "speaker_id": "speaker_0"},
-        {"type": "spacing", "text": " ", "start": 0.4, "end": 0.42},
-        {"type": "word", "text": "morning", "start": 0.42, "end": 0.9, "speaker_id": "speaker_0"},
-        {"type": "audio_event", "text": "(laughter)", "start": 1.0, "end": 1.5},
-        {"type": "word", "text": "Sunlight", "start": 2.0, "end": 2.6, "speaker_id": "speaker_1"},
-        {"type": "word", "text": "Correct", "start": 5.0, "end": 5.5, "speaker_id": "speaker_0"},
-        {"type": "word", "text": "now",     "start": 5.6, "end": 5.9, "speaker_id": "speaker_0"},
-        # a word with no timings at all - Scribe marks start/end optional
-        {"type": "word", "text": "ghost", "speaker_id": "speaker_0"},
-    ]
-    segs, turns = backends.words_to_segments(scribe_words)
-    ok &= check("words become segments", len(segs) == 3, str(len(segs)))
-    ok &= check("consecutive same-speaker words merge",
-                segs[0]["text"] == "Good morning", segs[0]["text"])
-    ok &= check("speaker change starts a new segment",
-                segs[1]["text"] == "Sunlight" and segs[1]["speaker"] != segs[0]["speaker"])
-    ok &= check("a long pause splits a segment",
-                segs[2]["text"] == "Correct now", segs[2]["text"])
-    ok &= check("spacing is not a segment",
-                all("  " not in s["text"] for s in segs))
-    ok &= check("audio events are excluded",
-                not any("laughter" in s["text"] for s in segs))
-    ok &= check("words without timings are dropped",
-                not any("ghost" in s["text"] for s in segs))
-    ok &= check("speaker ids map to our convention",
-                {s["speaker"] for s in segs} == {"SPEAKER_00", "SPEAKER_01"},
-                str({s["speaker"] for s in segs}))
-    ok &= check("the same voice keeps one id",
-                segs[0]["speaker"] == segs[2]["speaker"])
-    ok &= check("turns merge the split segments back into two",
-                len(turns) == 3 and turns[0]["speaker"] == "SPEAKER_00", str(len(turns)))
-    ok &= check("segments are word-attributed, so never contested",
-                all(s["speaker_conf"] == 1.0 and not s["contested"] for s in segs))
-    ok &= check("timings are ordered",
-                all(s["start"] <= s["end"] for s in segs)
-                and all(a["end"] <= b["start"] for a, b in zip(segs, segs[1:])))
-
-    # An unnumbered / missing speaker id must not crash or collide.
-    odd = backends.words_to_segments([
-        {"type": "word", "text": "a", "start": 0.0, "end": 0.5, "speaker_id": "spk-XY"},
-        {"type": "word", "text": "b", "start": 3.0, "end": 3.5},
-    ])[0]
-    ok &= check("unnumbered speaker id still maps", odd[0]["speaker"] == "SPEAKER_00")
-    ok &= check("missing speaker id becomes UNKNOWN", odd[1]["speaker"] == "UNKNOWN")
-    ok &= check("empty word list is handled",
-                backends.words_to_segments([]) == ([], []))
-
-    # The adapter's output must satisfy the same contract as the local path.
-    u = assign.to_utterances(segs)
-    st = assign.speaker_stats(u, 10.0)
-    vd = roles.identify_teacher(u, st, "en", 10.0)
-    lab, _ = roles.label_roles(u, vd["teacher"])
-    mm = analyze.metrics(lab, {"duration": 10.0}, "en")
-    ok &= check("scribe output flows through the rest of the pipeline",
-                vd["teacher"] in ("SPEAKER_00", "SPEAKER_01")
-                and 0.0 <= mm["teacher_talk_ratio"] <= 1.0)
-
-    print("\nbackend selection")
-    ok &= check("local is the default", backends.get("local").name == "local")
-    ok &= check("scribe is selectable", backends.get("scribe").name == "scribe")
-    ok &= check("local needs no network", backends.get("local").needs_network is False)
-    ok &= check("scribe is marked as networked", backends.get("scribe").needs_network is True)
-    try:
-        backends.get("nonsense")
-        ok &= check("an unknown backend is rejected", False)
-    except ValueError:
-        ok &= check("an unknown backend is rejected", True)
-    ok &= check("availability reports local as always usable",
-                backends.available()["local"] is True)
-
     print("\njob dispatch")
     # web/jobs.py builds one kwargs dict and sends it down one of two paths.
     # Nothing else here executes those calls - they need audio and models - so
-    # the signatures are checked directly. A `backend` argument added to run()
-    # and not to run_streaming() shipped a TypeError on every streaming job.
+    # the signatures are checked directly, because a keyword that exists on
+    # one path and not the other is a TypeError on every job of that kind.
     import inspect
 
     from pipeline import run as pipeline_run
@@ -266,13 +192,10 @@ def main():
         ok &= check("jobs.py kwargs bind to run_streaming", False, str(e))
     try:
         inspect.signature(pipeline_run.run).bind(
-            "a.wav", backend="scribe", min_speakers=None, **common)
+            "a.wav", min_speakers=None, **common)
         ok &= check("jobs.py kwargs bind to run", True)
     except TypeError as e:
         ok &= check("jobs.py kwargs bind to run", False, str(e))
-    ok &= check("streaming takes no backend - it is local by construction",
-                "backend" not in inspect.signature(
-                    pipeline_stream.run_streaming).parameters)
 
     print("\ntranscript")
     text = analyze.build_transcript(labelled)
@@ -285,55 +208,6 @@ def main():
         ok &= check("over-long transcript raises rather than truncates", False)
     except ValueError:
         ok &= check("over-long transcript raises rather than truncates", True)
-
-    # A remote backend is handed the original file, so decoding a 16k wav
-    # for it is pure waste - and on a 512MB host it is fatal waste: the
-    # decode peaked at 813MB for a 64-minute lesson and the container was
-    # OOM-killed in the pipeline's first stage, taking the upload with it.
-    print("\nnormalize is skipped when the backend does not need a wav")
-
-    from pipeline import audio as audio_mod
-    from pipeline import run as run_mod
-
-    ok &= check("local declares it needs the wav",
-                backends.LocalBackend.needs_wav is True)
-    ok &= check("scribe declares it does not",
-                backends.ScribeBackend.needs_wav is False)
-
-    class StubRemote:
-        name, needs_network, needs_wav = "stub", True, False
-
-        def run(self, *, audio_path, wav_path, **kw):
-            assert wav_path is None, "built a wav for a backend that wants none"
-            segs, turns = build_lesson()
-            for seg, turn in zip(segs, turns):
-                seg["speaker"] = turn["speaker"]
-            return segs, turns, {"backend": "stub"}
-
-    ran = []
-
-    def boom(*a, **k):
-        ran.append(1)
-        raise AssertionError("normalize ran for a backend that needs no wav")
-
-    real_get, real_normalize = backends.get, audio_mod.normalize
-    try:
-        backends.get = lambda name=None: StubRemote()
-        audio_mod.normalize = boom
-        with tempfile.TemporaryDirectory() as wd:
-            # The path does not exist, so probe_duration returns None - which
-            # is exactly the headerless-file case that let an hour of audio
-            # past the five-minute cap.
-            res = run_mod.run("no/such/file.mp3", work_dir=wd,
-                              language="hi", use_llm=False)
-            ok &= check("normalize never ran", not ran)
-            ok &= check("no 16k wav was written",
-                        not os.path.exists(os.path.join(wd, "audio_16k.wav")))
-            ok &= check("duration falls back to the last word",
-                        res["meta"]["duration"] > 0)
-    finally:
-        backends.get, audio_mod.normalize = real_get, real_normalize
-
 
     # ---------------------------------------------------------- library
     #

@@ -79,8 +79,7 @@ async function boot() {
     // computed over the wrong language is worthless, so which settings
     // produced a result is the first thing to know about it.
     const chips = [`<span class="chip lang">${esc(s.language || "?")}</span>`,
-      `<span class="chip">${esc(s.backend === "scribe"
-        ? "ElevenLabs Scribe" : "whisper " + (s.model || "?"))}</span>`];
+      `<span class="chip">whisper ${esc(s.model || "?")}</span>`];
     if (s.has_review) chips.push(`<span class="chip">AI review</span>`);
     const bits = [s.duration_label, `${s.speakers} speakers`,
       s.teacher_talk_ratio != null ? `teacher ${Math.round(s.teacher_talk_ratio * 100)}%` : null,

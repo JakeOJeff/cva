@@ -14,10 +14,10 @@ import os
 from . import lang
 
 # faster-whisper is imported inside get_model(), not here, for the same reason
-# diarize.py defers torch: `save`/`load` below define the segments.json format
-# and run.py calls them on every job, including one that ran on Scribe. A
-# scribe-only host does not install faster-whisper (or ctranslate2 under it) at
-# all, and an eager import would break a server that never transcribes locally.
+# diarize.py defers torch: `save`/`load` below define the segments.json format,
+# and plenty of callers want only those. Reading a saved result, listing the
+# session library or re-scoring one costs an import of ctranslate2 and a few
+# hundred MB of runtime if the model library loads at module import.
 
 # Cache models at module level so a size loads once, not per call. The web
 # app processes jobs sequentially in one worker, so a plain dict is enough.

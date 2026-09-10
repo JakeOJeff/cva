@@ -106,7 +106,6 @@ def summarize(result: dict, name: str, mtime: float | None = None) -> dict:
         "language": LANGUAGE_NAMES.get(code, code),
         "language_code": code,
         "model": meta.get("model"),
-        "backend": meta.get("backend", "local"),
         "has_review": bool(result.get("review") and not result["review"].get("error")),
         # Two numbers on the card, so the list is worth reading on its own
         # rather than being a directory of filenames.

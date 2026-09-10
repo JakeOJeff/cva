@@ -424,8 +424,8 @@ function render(el, res, opts) {
 /** One-line description of a result, for a page subtitle. */
 function subtitle(res) {
   const m = res.meta;
-  return `${mmss(m.duration)} · ${m.n_speakers} speakers · ${
-    m.backend === "scribe" ? "scribe" : "whisper " + m.model} · ${m.language}` +
+  return `${mmss(m.duration)} · ${m.n_speakers} speakers · whisper ${
+    m.model} · ${m.language}` +
     (m.elapsed ? ` · analysed in ${Math.round(m.elapsed)}s` : "");
 }
 

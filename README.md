@@ -42,7 +42,6 @@ pipeline/          the analysis. No web framework anywhere in here.
   lang.py          question/cue/praise lexicons, and the script check
   roles.py         feature-scored teacher identification
   analyze.py       deterministic metrics, and the Claude review
-  backends.py      one seam: local whisper+pyannote, or ElevenLabs Scribe
   run.py           the orchestrator, and reanalyze for cheap re-scoring
   stream.py        chunked orchestration: per-block output, then global
                    speaker reconciliation by voice embedding

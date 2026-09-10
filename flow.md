@@ -15,7 +15,6 @@ mean, and what will bite you.
 - [Model size](#model-size)
 - [Picking the teacher](#picking-the-teacher)
 - [The metrics](#the-metrics)
-- [Swapping the transcription backend](#swapping-the-transcription-backend)
 - [Deploying](#deploying)
 - [Tests](#tests)
 - [Known limits](#known-limits)
@@ -107,7 +106,6 @@ the pipeline's own intermediates inside a session folder; only `result.json` and
     --beam 5                   beam width; 1 is faster on tiny, a trap on small
     --speakers 4               exact count, if you know it
     --max-speakers 6           ceiling, safer than an exact count (default 6)
-    --backend local|scribe     default local; scribe needs ELEVENLABS_API_KEY
     --llm                      also run the paid AI review (off by default)
 
 A recording that already has a `result.json` is skipped, so this is safe to
@@ -303,27 +301,6 @@ asking, whether an explanation landed, whether feedback was specific. It is told
 the transcript is ASR output and to judge the teaching rather than the
 transcription. Numbers without judgement flatter a lecture. Judgement without
 numbers cannot be compared week to week.
-
-## Swapping the transcription backend
-
-Everything downstream is a pure function over one shape:
-
-```python
-segments: [{"start", "end", "text", "speaker"}]
-turns:    [{"start", "end", "speaker"}]
-```
-
-So the whole transcribe-and-diarize half is swappable. `backends.py` holds two
-implementations behind one call, chosen with `--backend` or `CVA_BACKEND`:
-`local` is faster-whisper plus pyannote on your machine, `scribe` is ElevenLabs
-Scribe v2 over the network.
-
-`local` is the default because it works with no account, no key and no network,
-and because for recordings of children "the audio never leaves the machine" is a
-property worth defending. Scribe is faster and attributes every word to a
-speaker directly, so there is no diarization to disagree with the transcript,
-but the audio is uploaded and it costs per minute. Streaming is local-only,
-because Scribe answers in one response and there are no blocks to emit.
 
 ## Deploying
 

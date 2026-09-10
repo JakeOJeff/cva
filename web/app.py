@@ -203,7 +203,6 @@ async def upload(
     use_llm: bool = Form(False),
     stream: bool = Form(True),
     chunk_seconds: int = Form(300),
-    backend: str | None = Form(None),
 ):
     ext = os.path.splitext(file.filename or "")[1].lower()
     if ext not in ALLOWED_EXT:
@@ -266,7 +265,6 @@ async def upload(
         "use_llm": use_llm,
         "stream": stream,
         "chunk_seconds": chunk_seconds,
-        "backend": backend,
     })
     return {"job_id": job_id, "size_bytes": size}
 
@@ -499,8 +497,6 @@ def health(request: Request):
                               or os.environ.get("ANTHROPIC_AUTH_TOKEN")),
         "disk_free_gb": round(shutil.disk_usage(jobs.DATA_DIR).free / 1e9, 1),
         "device": __import__("pipeline.transcribe", fromlist=["device"]).device()[0],
-        "backends": __import__("pipeline.backends", fromlist=["available"]).available(),
-        "backend_default": __import__("pipeline.backends", fromlist=["DEFAULT"]).DEFAULT,
         "auth": bool(PASSWORD),
     }
 
